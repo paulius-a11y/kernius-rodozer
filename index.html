@@ -391,12 +391,12 @@ function renderStep(){
           const lng=pos.coords.longitude;
           const acc=Math.round(pos.coords.accuracy);
           const mgrs=latLonToMGRS(lat,lng,5);
-          const val=mgrs+' (±'+acc+'m)';
+          const val=mgrs;
           updateVal(val);
           const fi=card.querySelector('.free-input');
           if(fi) fi.value=val;
           gpsbtn.className='gps-btn success';
-          gpsbtn.innerHTML='✓ '+mgrs;
+          gpsbtn.innerHTML='✓ MGRS: '+mgrs;
         },
         ()=>{ gpsShowManual(gpsbtn,card,updateVal); },
         {enableHighAccuracy:true,timeout:8000}
@@ -499,70 +499,5 @@ function tick(){
 }
 tick(); setInterval(tick,10000);
 </script>
-
-<div id="install-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1c1c1e;border-top:1px solid #2c2c2e;padding:12px 16px;z-index:1000;display:flex;align-items:center;gap:12px;">
-  <div style="flex:1">
-    <div style="font-family:Oswald,sans-serif;font-size:14px;letter-spacing:2px;color:#fff;">KERNIUS RODŽER</div>
-    <div style="font-size:10px;color:#8e8e93;letter-spacing:1px;margin-top:2px;">Įdiegti kaip app į telefoną</div>
-  </div>
-  <button onclick="installApp()" style="background:#00e676;border:none;border-radius:8px;padding:10px 18px;font-family:Oswald,sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;color:#000;cursor:pointer;">DIEGTI</button>
-  <button onclick="document.getElementById('install-bar').style.display='none'" style="background:none;border:none;color:#8e8e93;font-size:20px;cursor:pointer;padding:4px;">×</button>
-</div>
-
-<div id="ios-hint" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1c1c1e;border-top:2px solid #00e676;padding:16px;z-index:1000;">
-  <div style="font-family:Oswald,sans-serif;font-size:13px;letter-spacing:2px;color:#00e676;margin-bottom:8px;">📲 ĮDIEGTI Į iPhone</div>
-  <div style="font-size:12px;color:#ccc;line-height:1.8;">
-    1. Spausk <strong style="color:#fff;">⬆ Dalintis</strong> (Share) apačioje<br>
-    2. Pasirink <strong style="color:#fff;">"Add to Home Screen"</strong><br>
-    3. Spausk <strong style="color:#fff;">Add</strong> – app atsiras ekrane!
-  </div>
-  <button onclick="document.getElementById('ios-hint').style.display='none'" style="margin-top:12px;width:100%;background:#2c2c2e;border:none;border-radius:8px;padding:10px;font-family:Oswald,sans-serif;font-size:13px;letter-spacing:2px;color:#fff;cursor:pointer;">SUPRATAU</button>
-</div>
-
-<script>
-let deferredPrompt = null;
-
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  document.getElementById('install-bar').style.display = 'flex';
-});
-
-function installApp() {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => {
-      deferredPrompt = null;
-      document.getElementById('install-bar').style.display = 'none';
-    });
-  }
-}
-
-// iOS detection - show manual instructions
-const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-const isStandalone = window.navigator.standalone;
-if (isIOS && !isStandalone) {
-  setTimeout(() => {
-    document.getElementById('ios-hint').style.display = 'block';
-  }, 1500);
-}
-
-// Service Worker for offline use
-if ('serviceWorker' in navigator) {
-  const sw = `
-    const CACHE = 'kr-v1';
-    const ASSETS = [location.href];
-    self.addEventListener('install', e => {
-      e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
-    });
-    self.addEventListener('fetch', e => {
-      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
-    });
-  `;
-  const blob = new Blob([sw], {type: 'application/javascript'});
-  navigator.serviceWorker.register(URL.createObjectURL(blob), {scope: './'}).catch(()=>{});
-}
-</script>
-
 </body>
 </html>
