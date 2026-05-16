@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Kernius Rodžer">
+<meta name="theme-color" content="#0e0e0e">
+<link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Kernius%20Rod%C5%BEer%22%2C%22short_name%22%3A%22KR%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230e0e0e%22%2C%22theme_color%22%3A%22%230e0e0e%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%3D%2527http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%2527%2520viewBox%3D%25270%25200%2520100%2520100%2527%253E%253Crect%2520width%3D%2527100%2527%2520height%3D%2527100%2527%2520fill%3D%2527%25230e0e0e%2527%2F%253E%253Ctext%2520y%3D%2527.9em%2527%2520font-size%3D%252790%2527%253E%25F0%259F%2593%25A1%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22any%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kernius Rodžer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oswald:wght@500;700&display=swap');
+
+:root {
+  --bg: #0e0e0e; --card: #1c1c1e; --border: #2c2c2e;
+  --green: #00e676; --red: #ff453a; --amber: #ffd60a;
+  --blue: #0a84ff; --pink: #ff375f; --text: #ffffff;
+  --muted: #8e8e93; --r: 14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Share Tech Mono', monospace; overscroll-behavior: none; }
+
+.screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
+.screen.active { display: flex; }
+
+.topbar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; background: var(--bg); }
+.back-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--card); border: none; color: var(--text); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.back-btn:active { background: #333; }
+.topbar-title { font-family: 'Oswald', sans-serif; font-size: 16px; letter-spacing: 3px; }
+.topbar-sub { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-top: 1px; }
+.clock { margin-left: auto; font-size: 14px; color: var(--amber); flex-shrink: 0; font-family: 'Oswald', sans-serif; }
+
+.report-list { flex: 1; overflow-y: auto; padding: 12px 16px 32px; display: flex; flex-direction: column; gap: 10px; }
+.rep-btn { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 14px; width: 100%; }
+.rep-btn:active { opacity: 0.7; }
+.rep-icon { width: 50px; height: 50px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; }
+.rep-text { flex: 1; }
+.rep-code { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: 2px; margin-bottom: 3px; }
+.rep-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
+.rep-arrow { color: var(--muted); font-size: 20px; }
+.ic-red   { background: rgba(255,69,58,.18);  color: var(--red); }
+.ic-amber { background: rgba(255,214,10,.15); color: var(--amber); }
+.ic-green { background: rgba(0,230,118,.15);  color: var(--green); }
+.ic-pink  { background: rgba(255,55,95,.18);  color: var(--pink); }
+.ic-blue  { background: rgba(10,132,255,.18); color: var(--blue); }
+.bl-red   { border-left: 3px solid var(--red); }
+.bl-amber { border-left: 3px solid var(--amber); }
+.bl-green { border-left: 3px solid var(--green); }
+.bl-pink  { border-left: 3px solid var(--pink); }
+.bl-blue  { border-left: 3px solid var(--blue); }
+
+.progress-wrap { padding: 10px 16px 0; flex-shrink: 0; }
+.progress-track { height: 3px; background: var(--border); border-radius: 2px; }
+.progress-fill  { height: 3px; border-radius: 2px; transition: width 0.3s ease; }
+.progress-label { font-size: 10px; color: var(--muted); letter-spacing: 2px; margin-top: 5px; text-align: right; }
+
+.step-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px 16px 20px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+
+.step-card { background: var(--card); border-radius: var(--r); border: 1px solid var(--border); flex-shrink: 0; }
+.step-card-head { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.step-letter { font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; width: 36px; text-align: center; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+.step-label { font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+.step-value { font-size: 15px; color: var(--text); word-break: break-word; }
+.step-value.empty { color: var(--muted); font-size: 13px; }
+
+.opts-grid { display: grid; gap: 8px; padding: 12px 14px 14px; grid-template-columns: 1fr 1fr; }
+.opts-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+.opts-grid.cols1 { grid-template-columns: 1fr; }
+
+.opt-btn { background: #252525; border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 8px; font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--text); cursor: pointer; text-align: center; line-height: 1.3; min-height: 50px; display: flex; align-items: center; justify-content: center; }
+.opt-btn:active { background: #333; }
+.opt-btn.selected { border-color: var(--accent, #fff); background: rgba(255,255,255,0.07); }
+
+.gps-btn { margin: 0 14px 12px; width: calc(100% - 28px); background: rgba(10,132,255,0.15); border: 1.5px solid var(--blue); border-radius: 10px; padding: 14px; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 2px; color: var(--blue); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.gps-btn:active { background: rgba(10,132,255,0.3); }
+.gps-btn.loading { opacity: 0.6; }
+.gps-btn.success { background: rgba(0,230,118,0.15); border-color: var(--green); color: var(--green); font-size: 12px; }
+
+.free-input-wrap { padding: 0 14px 14px; }
+.free-input { width: 100%; background: #252525; border: 1.5px solid var(--border); border-radius: 10px; color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 15px; padding: 13px 14px; outline: none; resize: none; min-height: 50px; }
+.free-input:focus { border-color: #666; }
+.free-input::placeholder { color: #555; font-size: 13px; }
+
+.nav-bar { padding: 12px 16px 20px; display: flex; gap: 10px; flex-shrink: 0; background: var(--bg); border-top: 1px solid var(--border); }
+.btn-prev { width: 52px; height: 52px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); color: var(--text); font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.btn-prev:active { background: #333; }
+.btn-prev:disabled { opacity: 0.25; }
+.btn-next { flex: 1; height: 52px; border-radius: 12px; background: var(--green); border: none; font-family: 'Oswald', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 3px; color: #000; cursor: pointer; }
+.btn-next:active { opacity: 0.85; }
+.btn-next.last { background: var(--amber); color: #000; }
+
+.summary-list { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+.sum-row { display: flex; align-items: center; gap: 10px; background: var(--card); border-radius: 10px; padding: 10px 14px; border: 1px solid var(--border); cursor: pointer; }
+.sum-row:active { background: #252525; }
+.sum-ltr { font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 700; width: 22px; flex-shrink: 0; }
+.sum-lbl { font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+.sum-val { font-size: 12px; color: var(--text); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sum-val.empty { color: var(--muted); font-style: italic; }
+.sum-edit { margin-left: auto; font-size: 12px; color: var(--muted); flex-shrink: 0; }
+
+.preview-body { flex: 1; overflow-y: auto; padding: 16px; }
+.preview-box { background: var(--card); border-radius: var(--r); border: 1px solid var(--border); padding: 18px; font-size: 15px; line-height: 2; color: var(--green); white-space: pre-wrap; margin-bottom: 10px; }
+.preview-meta { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-align: center; margin-bottom: 16px; }
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.action-btn { border-radius: 12px; padding: 20px 10px; border: none; cursor: pointer; font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 2px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.action-btn:active { opacity: 0.8; }
+.action-btn .icon { font-size: 26px; }
+.action-btn.sms  { background: var(--amber); color: #000; }
+.action-btn.copy { background: #1e2e24; color: var(--green); border: 1px solid var(--green); }
+.action-btn.edit { background: var(--card); color: var(--muted); border: 1px solid var(--border); font-size: 12px; }
+.action-btn.new  { background: var(--card); color: var(--muted); border: 1px solid var(--border); font-size: 12px; }
+
+.toast { position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%); background: var(--green); color: #000; padding: 12px 28px; border-radius: 30px; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 3px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; white-space: nowrap; }
+.toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="screen active" id="screen-select">
+  <div class="topbar">
+    <div><div class="topbar-title">KERNIUS RODŽER</div><div class="topbar-sub">📡 PASIRINK SITUACIJĄ</div></div>
+    <div class="clock" id="clock">00:00</div>
+  </div>
+  <div class="report-list">
+    <button class="rep-btn bl-red" onclick="startReport('contactrep')">
+      <div class="rep-icon ic-red">!</div>
+      <div class="rep-text"><div class="rep-code" style="color:var(--red)">CONTACTREP</div><div class="rep-desc">Kontaktas su priešu · pirmoji sekundė<br>Kryptis · Atstumas · Aprašymas</div></div>
+      <div class="rep-arrow">›</div>
+    </button>
+    <button class="rep-btn bl-amber" onclick="startReport('saluto')">
+      <div class="rep-icon ic-amber">S</div>
+      <div class="rep-text"><div class="rep-code" style="color:var(--amber)">SALUTO</div><div class="rep-desc">Priešo stebėjimas · žvalgyba<br>Dydis · Veikla · Vieta · Įranga</div></div>
+      <div class="rep-arrow">›</div>
+    </button>
+    <button class="rep-btn bl-green" onclick="startReport('lace')">
+      <div class="rep-icon ic-green">L</div>
+      <div class="rep-text"><div class="rep-code" style="color:var(--green)">LACE</div><div class="rep-desc">Savų resursai · po susirėmimo<br>Vanduo · Šaudmenys · Aukos · Įranga</div></div>
+      <div class="rep-arrow">›</div>
+    </button>
+    <button class="rep-btn bl-pink" onclick="startReport('medevac')">
+      <div class="rep-icon ic-pink">✚</div>
+      <div class="rep-text"><div class="rep-code" style="color:var(--pink)">MEDEVAC</div><div class="rep-desc">Medicininė evakuacija · 9 eilutės<br>Naudok kai yra sužeistų</div></div>
+      <div class="rep-arrow">›</div>
+    </button>
+    <button class="rep-btn bl-blue" onclick="startReport('sitrep')">
+      <div class="rep-icon ic-blue">≡</div>
+      <div class="rep-text"><div class="rep-code" style="color:var(--blue)">SITREP</div><div class="rep-desc">Situacijos ataskaita · periodiškai<br>Vieta · Nuveikta · Planas · Poreikiai</div></div>
+      <div class="rep-arrow">›</div>
+    </button>
+  </div>
+</div>
+
+<div class="screen" id="screen-form">
+  <div class="topbar">
+    <button class="back-btn" onclick="goTo('select')">‹</button>
+    <div><div class="topbar-title" id="form-title"></div><div class="topbar-sub" id="form-sub"></div></div>
+    <div class="clock" id="clock2">00:00</div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+    <div class="progress-label" id="prog-label"></div>
+  </div>
+  <div class="step-area" id="step-area"></div>
+  <div class="nav-bar">
+    <button class="btn-prev" id="btn-prev" onclick="prevStep()">‹</button>
+    <button class="btn-next" id="btn-next" onclick="nextStep()">TOLIAU ›</button>
+  </div>
+</div>
+
+<div class="screen" id="screen-preview">
+  <div class="topbar">
+    <button class="back-btn" onclick="goTo('form')">‹</button>
+    <div><div class="topbar-title">PRANEŠIMAS</div><div class="topbar-sub">PARUOŠTAS SIŲSTI</div></div>
+  </div>
+  <div class="preview-body">
+    <div class="preview-box" id="preview-box"></div>
+    <div class="preview-meta" id="preview-meta"></div>
+    <div class="action-grid">
+      <button class="action-btn sms"  onclick="sendSms()"><span class="icon">✉</span>SMS</button>
+      <button class="action-btn copy" onclick="copyMsg()"><span class="icon">⧉</span>KOPIJUOTI</button>
+      <button class="action-btn edit" onclick="goTo('form')"><span class="icon">✎</span>TAISYTI</button>
+      <button class="action-btn new"  onclick="goTo('select')"><span class="icon">+</span>NAUJA</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">NUKOPIJUOTA ✓</div>
+
+<script>
+const UNITS = ['CHARLI 1','CHARLI 2','CHARLI 3','DELTA 1','DELTA 2','DELTA 3'];
+
+const REPORTS = {
+  contactrep: {
+    title:'CONTACTREP', sub:'KONTAKTAS · 3D', color:'var(--red)',
+    fields:[
+      { key:'time',   letter:'⏱', label:'LAIKAS',        hint:'HH:MM', opts:['DABAR'], free:true },
+      { key:'unit',   letter:'◈', label:'MANO VIENETAS', hint:'', opts:UNITS, free:false, cols:2 },
+      { key:'dir',    letter:'K', label:'KRYPTIS',        hint:'', opts:['ŠIAURĖ','ŠR','RYTAI','PR','PIETŪS','PV','VAKARAI','ŠV'], free:true, cols:3 },
+      { key:'dist',   letter:'A', label:'ATSTUMAS',       hint:'pvz. 200m', opts:['50m','100m','200m','300m','500m','1km'], free:true, cols:3 },
+      { key:'desc',   letter:'A', label:'APRAŠYMAS',      hint:'pvz. 4 pėstininkų, auto. ugnis', opts:['Pėstininkai','Auto. ugnis','Snaiperis','Transportas','Neaiški ugnis','Iš pastato','Iš miškelio'], free:true, cols:2 },
+      { key:'action', letter:'▶', label:'MŪSŲ VEIKSMAS', hint:'', opts:['KOVOJAME','TRAUKIAMĖS','GYNYBOJE','PERSIGRUPUOJAME'], free:false, cols:2 },
+    ],
+    build: f=>`CONTACTREP · ${f.time||'?'} · ${f.unit||'?'}\nKRYPTIS: ${f.dir||'?'}\nASTUMAS: ${f.dist||'?'}\nPRIEŠAS: ${f.desc||'?'}\nVEIKSMAS: ${f.action||'?'}\nPABAIGA.`
+  },
+  saluto:{
+    title:'SALUTO', sub:'PRIEŠO ŽVALGYBA', color:'var(--amber)',
+    fields:[
+      { key:'time',     letter:'⏱', label:'LAIKAS',   hint:'HH:MM', opts:['DABAR'], free:true },
+      { key:'unit',     letter:'◈', label:'VIENETAS', hint:'', opts:UNITS, free:false, cols:2 },
+      { key:'size',     letter:'S', label:'DYDIS',    hint:'', opts:['1–2','3–5','6–10','10+','Su transportu','Su šarvuočiu'], free:true, cols:3 },
+      { key:'activity', letter:'A', label:'VEIKLA',   hint:'', opts:['Juda į priekį','Gynyboje','Stovi','Traukiasi','Stato blokpostą','Neaiški'], free:true, cols:2 },
+      { key:'loc',      letter:'L', label:'VIETA',    hint:'koordinatės / orientyras', opts:[], free:true, gps:true },
+      { key:'equip',    letter:'O', label:'GINKLAI',  hint:'', opts:['AK','PKM','SVD','RPG','UAZ','Šarvuotis','Nematyta'], free:true, cols:3 },
+      { key:'unit_e',   letter:'U', label:'PADALINYS',hint:'', opts:['Nežinoma','Be ženklų','Su uniforma','Civiliai'], free:false, cols:2 },
+    ],
+    build: f=>`SALUTO · ${f.time||'?'} · ${f.unit||'?'}\nDYDIS: ${f.size||'?'}\nVEIKLA: ${f.activity||'?'}\nVIETA: ${f.loc||'?'}\nĮRANGA: ${f.equip||'?'}\nPADALINYS: ${f.unit_e||'nežinoma'}\nPABAIGA.`
+  },
+  lace:{
+    title:'LACE', sub:'RESURSŲ ATASKAITA', color:'var(--green)',
+    fields:[
+      { key:'unit_t',     letter:'◈', label:'VIENETAS · LAIKAS', hint:'', opts:UNITS, free:true, cols:2 },
+      { key:'liquid',     letter:'L', label:'VANDUO',            hint:'', opts:['Pilnas ✓','75%','50%','25%','Kritiškai mažai'], free:false, cols:2 },
+      { key:'ammo',       letter:'A', label:'ŠAUDMENYS',         hint:'', opts:['Pilni ✓','75%','50%','25%','Kritiškai mažai'], free:false, cols:2 },
+      { key:'casualties', letter:'C', label:'AUKOS',             hint:'', opts:['NĖRA ✓','1×T1 (urgent)','1×T2 (priority)','1×T3 (routine)','2+ sužeistų'], free:false, cols:2 },
+      { key:'equip',      letter:'E', label:'ĮRANGA',            hint:'', opts:['Visa veikianti ✓','Radijas LIMA','PNV sugadintas','Transportas out','Kita'], free:true, cols:2 },
+    ],
+    build: f=>`LACE · ${f.unit_t||'?'}\nL – VANDUO: ${f.liquid||'?'}\nA – ŠAUDMENYS: ${f.ammo||'?'}\nC – AUKOS: ${f.casualties||'?'}\nE – ĮRANGA: ${f.equip||'?'}\nPABAIGA.`
+  },
+  medevac:{
+    title:'MEDEVAC', sub:'EVAKUACIJA · 9 EILUTĖS', color:'var(--pink)',
+    fields:[
+      { key:'unit_t',      letter:'◈', label:'VIENETAS · LAIKAS',       hint:'', opts:UNITS, free:true, cols:2 },
+      { key:'loc',         letter:'①', label:'VIETA (koordinatės)',      hint:'pvz. MB341289', opts:[], free:true, gps:true },
+      { key:'radio',       letter:'②', label:'RADIJAS + ŠAUKL. ŽENKLAS',hint:'pvz. 46.250 / ALFA', opts:[], free:true },
+      { key:'patients',    letter:'③', label:'PACIENTAI',               hint:'', opts:['1×A (urgent)','1×B (priority)','1×C (routine)','2×A','1×A 1×B'], free:true, cols:2 },
+      { key:'equip',       letter:'④', label:'SPEC. ĮRANGA',            hint:'', opts:['Nereikia','Neštuvai','Kab. neštuvos','Deguonis'], free:false, cols:2 },
+      { key:'mobility',    letter:'⑤', label:'PACIENTŲ JUDUMAS',        hint:'', opts:['Einantis (D)','Neštuvai (E)','1×D 1×E'], free:false, cols:2 },
+      { key:'security',    letter:'⑥', label:'SAUGUMAS VIETOJE',        hint:'', opts:['N – nėra priešo','P – galimas','X – aktyvi ugnis','K – nereikia eskortos'], free:false, cols:1 },
+      { key:'lz',          letter:'⑦', label:'LZ ŽYMĖJIMAS',            hint:'', opts:['Violetiniai dūmai','Raudoni dūmai','Žali dūmai','Strobe','VS-17'], free:false, cols:2 },
+      { key:'nationality', letter:'⑧', label:'PILIETYBĖ',               hint:'', opts:['A – savos','B – sąjungininkai','C – civiliai','D – priešo'], free:false, cols:2 },
+      { key:'injury',      letter:'⑨', label:'TRAUMA',                  hint:'pvz. GSW šlaunis', opts:['GSW','Sprogimo trauma','Lūžis','Nusvilimas','Alpimas/šokas'], free:true, cols:3 },
+    ],
+    build: f=>`MEDEVAC · ${f.unit_t||'?'}\n① LOC: ${f.loc||'?'}\n② R/S: ${f.radio||'?'}\n③ PACIENTAI: ${f.patients||'?'}\n④ ĮRANGA: ${f.equip||'?'}\n⑤ JUDUMAS: ${f.mobility||'?'}\n⑥ SAUGA: ${f.security||'?'}\n⑦ LZ: ${f.lz||'?'}\n⑧ PILIETYBĖ: ${f.nationality||'?'}\n⑨ TRAUMA: ${f.injury||'?'}\nPABAIGA.`
+  },
+  sitrep:{
+    title:'SITREP', sub:'SITUACIJOS ATASKAITA', color:'var(--blue)',
+    fields:[
+      { key:'unit_t',   letter:'◈', label:'VIENETAS · LAIKAS', hint:'', opts:UNITS, free:true, cols:2 },
+      { key:'loc',      letter:'L', label:'DABARTINĖ VIETA',   hint:'koordinatės / orientyras', opts:[], free:true, gps:true },
+      { key:'strength', letter:'S', label:'SUDĖTIS',           hint:'', opts:['Pilna, be nuostolių','1 sužeistas','2 sužeisti','Didelis nuostolis'], free:true, cols:2 },
+      { key:'done',     letter:'N', label:'NUVEIKTA',          hint:'kas atlikta', opts:['Užėmėme objektą','Neutralizavome priešą','Patruliavome','Pasiruošėme gynybai'], free:true, cols:2 },
+      { key:'enemy',    letter:'P', label:'PRIEŠO VEIKLA',     hint:'', opts:['Nesimato','Traukiasi','Puola','Gynyboje','Neaiški'], free:false, cols:2 },
+      { key:'plan',     letter:'T', label:'TOLIMESNIS PLANAS', hint:'', opts:['Laikome poziciją','Judame į RV','Persigrupuojame','Laukiame įsakymų'], free:true, cols:2 },
+      { key:'needs',    letter:'R', label:'POREIKIAI',         hint:'', opts:['Nėra','Šaudmenys','Mediko','Transporto','Evakuacijos'], free:false, cols:2 },
+    ],
+    build: f=>`SITREP · ${f.unit_t||'?'}\nLOC: ${f.loc||'?'}\nSUDĖTIS: ${f.strength||'?'}\nNUVEIKTA: ${f.done||'?'}\nPRIEŠAS: ${f.enemy||'?'}\nPLANAS: ${f.plan||'?'}\nPOREIKIAI: ${f.needs||'?'}\nPABAIGA.`
+  }
+};
+
+let currentId=null, currentStep=0, formData={}, accentColor='var(--green)';
+
+function goTo(s){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  document.getElementById('screen-'+s).classList.add('active');
+}
+
+function startReport(id){
+  currentId=id; currentStep=0; formData={};
+  const r=REPORTS[id]; accentColor=r.color;
+  document.getElementById('form-title').textContent=r.title;
+  document.getElementById('form-sub').textContent=r.sub;
+  const tf=r.fields.find(f=>f.key==='time');
+  if(tf) formData['time']=new Date().toTimeString().slice(0,5);
+  renderStep(); goTo('form');
+}
+
+function renderStep(){
+  const r=REPORTS[currentId], fields=r.fields, total=fields.length, i=currentStep, f=fields[i];
+
+  document.getElementById('prog-fill').style.width=((i+1)/total*100)+'%';
+  document.getElementById('prog-fill').style.background=accentColor;
+  document.getElementById('prog-label').textContent=(i+1)+' / '+total;
+
+  const prevBtn=document.getElementById('btn-prev'), nextBtn=document.getElementById('btn-next');
+  prevBtn.disabled=(i===0);
+  nextBtn.textContent=i===total-1?'GENERUOTI ›':'TOLIAU ›';
+  nextBtn.className=i===total-1?'btn-next last':'btn-next';
+
+  const area=document.getElementById('step-area');
+  area.innerHTML='';
+
+  if(i>0){
+    const sumDiv=document.createElement('div');
+    sumDiv.className='summary-list';
+    for(let j=0;j<i;j++){
+      const pf=fields[j], val=formData[pf.key];
+      const row=document.createElement('div');
+      row.className='sum-row';
+      row.innerHTML='<div class="sum-ltr" style="color:'+accentColor+'">'+pf.letter+'</div><div style="flex:1;min-width:0"><div class="sum-lbl">'+pf.label+'</div><div class="sum-val'+(val?'':' empty')+'">'+(val||'—')+'</div></div><div class="sum-edit">✎</div>';
+      row.onclick=()=>{currentStep=j;renderStep();};
+      sumDiv.appendChild(row);
+    }
+    area.appendChild(sumDiv);
+  }
+
+  const card=document.createElement('div');
+  card.className='step-card';
+  card.style.setProperty('--accent',accentColor);
+
+  const curVal=formData[f.key]||'';
+  const head=document.createElement('div');
+  head.className='step-card-head';
+  head.innerHTML='<div class="step-letter" style="color:'+accentColor+'">'+f.letter+'</div><div style="flex:1"><div class="step-label">'+f.label+'</div><div class="step-value'+(curVal?'':' empty')+'">'+(curVal||(f.hint||'Pasirink arba įvesk'))+'</div></div>';
+  card.appendChild(head);
+  const valDisplay=head.querySelector('.step-value');
+
+  function updateVal(v){
+    formData[f.key]=v;
+    valDisplay.textContent=v||(f.hint||'Pasirink arba įvesk');
+    valDisplay.classList.toggle('empty',!v);
+  }
+
+  // GPS
+  if(f.gps){
+    const gpsbtn=document.createElement('button');
+    gpsbtn.className='gps-btn';
+    gpsbtn.innerHTML='📍 GAUTI GPS KOORDINATES';
+    gpsbtn.onclick=()=>{
+      gpsbtn.innerHTML='⏳ NUSTATOMA...';
+      gpsbtn.classList.add('loading');
+      if(!navigator.geolocation){
+        gpsShowManual(gpsbtn,card,updateVal); return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        pos=>{
+          const lat=pos.coords.latitude.toFixed(5);
+          const lng=pos.coords.longitude.toFixed(5);
+          const acc=Math.round(pos.coords.accuracy);
+          const val=lat+', '+lng+' (±'+acc+'m)';
+          updateVal(val);
+          const fi=card.querySelector('.free-input');
+          if(fi) fi.value=val;
+          gpsbtn.className='gps-btn success';
+          gpsbtn.innerHTML='✓ '+lat+', '+lng;
+        },
+        ()=>{ gpsShowManual(gpsbtn,card,updateVal); },
+        {enableHighAccuracy:true,timeout:8000}
+      );
+    };
+    card.appendChild(gpsbtn);
+  }
+
+  // Options
+  if(f.opts&&f.opts.length){
+    const grid=document.createElement('div');
+    grid.className='opts-grid'+(f.cols===3?' cols3':f.cols===1?' cols1':'');
+    f.opts.forEach(opt=>{
+      const val=typeof opt==='object'?opt.value:opt;
+      const lbl=typeof opt==='object'?opt.label:opt;
+      const btn=document.createElement('button');
+      btn.className='opt-btn'+(formData[f.key]===val?' selected':'');
+      btn.style.color=accentColor;
+      btn.textContent=lbl;
+      btn.onclick=()=>{
+        let v=val;
+        if(f.key==='time'&&val==='DABAR') v=new Date().toTimeString().slice(0,5);
+        updateVal(v);
+        grid.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+        const fi=card.querySelector('.free-input');
+        if(fi) fi.value=v;
+        if(!f.free) setTimeout(()=>nextStep(),200);
+      };
+      grid.appendChild(btn);
+    });
+    card.appendChild(grid);
+  }
+
+  // Free input
+  if(f.free){
+    const wrap=document.createElement('div');
+    wrap.className='free-input-wrap';
+    const isArea=(f.key==='desc'||f.key==='done'||f.key==='injury');
+    const inp=isArea?document.createElement('textarea'):document.createElement('input');
+    inp.className='free-input';
+    if(isArea){inp.rows=2;inp.style.resize='none';}else inp.type='text';
+    inp.placeholder=f.hint||'Laisvas tekstas...';
+    inp.value=formData[f.key]||'';
+    inp.oninput=()=>{
+      updateVal(inp.value);
+      card.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+    };
+    wrap.appendChild(inp);
+    card.appendChild(wrap);
+  }
+
+  area.appendChild(card);
+  setTimeout(()=>{ area.scrollTop=area.scrollHeight; },50);
+}
+
+function gpsShowManual(btn,card,updateVal){
+  btn.className='gps-btn';
+  btn.style.background='rgba(255,171,0,0.15)';
+  btn.style.borderColor='var(--amber)';
+  btn.style.color='var(--amber)';
+  btn.innerHTML='📋 ĮKLIJUOK KOORDINATES ŽEMIAU';
+  if(!card.querySelector('.gps-helper')){
+    const h=document.createElement('div');
+    h.className='gps-helper';
+    h.style.cssText='padding:0 14px 10px;display:flex;flex-direction:column;gap:6px;';
+    h.innerHTML='<a href="https://maps.google.com" target="_blank" style="display:block;background:#1a2a3a;border:1px solid var(--blue);border-radius:10px;padding:12px;text-align:center;font-family:Oswald,sans-serif;font-size:13px;letter-spacing:2px;color:var(--blue);text-decoration:none;">🗺 ATIDARYTI GOOGLE MAPS</a><div style="font-size:10px;color:var(--muted);text-align:center;line-height:1.7;">Maps → laikyk nuspaudęs bet kurį tašką<br>→ nukopijuok koordinates viršuje → įklijuok žemiau</div>';
+    const fw=card.querySelector('.free-input-wrap');
+    if(fw) card.insertBefore(h,fw); else card.appendChild(h);
+  }
+}
+
+function nextStep(){
+  const r=REPORTS[currentId];
+  if(currentStep<r.fields.length-1){currentStep++;renderStep();}
+  else generate();
+}
+function prevStep(){ if(currentStep>0){currentStep--;renderStep();} }
+
+function generate(){
+  const r=REPORTS[currentId], text=r.build(formData);
+  document.getElementById('preview-box').textContent=text;
+  const chars=text.length, parts=Math.ceil(chars/160);
+  document.getElementById('preview-meta').textContent=chars+' simbolių · '+parts+' SMS'+(parts>1?' dalys':'');
+  goTo('preview');
+}
+
+function sendSms(){ window.location.href='sms:?body='+encodeURIComponent(document.getElementById('preview-box').textContent); }
+function copyMsg(){
+  navigator.clipboard.writeText(document.getElementById('preview-box').textContent).then(()=>{
+    const t=document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),1800);
+  });
+}
+
+function tick(){
+  const t=new Date().toTimeString().slice(0,5);
+  ['clock','clock2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t;});
+}
+tick(); setInterval(tick,10000);
+</script>
+
+<div id="install-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1c1c1e;border-top:1px solid #2c2c2e;padding:12px 16px;z-index:1000;display:flex;align-items:center;gap:12px;">
+  <div style="flex:1">
+    <div style="font-family:Oswald,sans-serif;font-size:14px;letter-spacing:2px;color:#fff;">KERNIUS RODŽER</div>
+    <div style="font-size:10px;color:#8e8e93;letter-spacing:1px;margin-top:2px;">Įdiegti kaip app į telefoną</div>
+  </div>
+  <button onclick="installApp()" style="background:#00e676;border:none;border-radius:8px;padding:10px 18px;font-family:Oswald,sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;color:#000;cursor:pointer;">DIEGTI</button>
+  <button onclick="document.getElementById('install-bar').style.display='none'" style="background:none;border:none;color:#8e8e93;font-size:20px;cursor:pointer;padding:4px;">×</button>
+</div>
+
+<div id="ios-hint" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1c1c1e;border-top:2px solid #00e676;padding:16px;z-index:1000;">
+  <div style="font-family:Oswald,sans-serif;font-size:13px;letter-spacing:2px;color:#00e676;margin-bottom:8px;">📲 ĮDIEGTI Į iPhone</div>
+  <div style="font-size:12px;color:#ccc;line-height:1.8;">
+    1. Spausk <strong style="color:#fff;">⬆ Dalintis</strong> (Share) apačioje<br>
+    2. Pasirink <strong style="color:#fff;">"Add to Home Screen"</strong><br>
+    3. Spausk <strong style="color:#fff;">Add</strong> – app atsiras ekrane!
+  </div>
+  <button onclick="document.getElementById('ios-hint').style.display='none'" style="margin-top:12px;width:100%;background:#2c2c2e;border:none;border-radius:8px;padding:10px;font-family:Oswald,sans-serif;font-size:13px;letter-spacing:2px;color:#fff;cursor:pointer;">SUPRATAU</button>
+</div>
+
+<script>
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('install-bar').style.display = 'flex';
+});
+
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      document.getElementById('install-bar').style.display = 'none';
+    });
+  }
+}
+
+// iOS detection - show manual instructions
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone = window.navigator.standalone;
+if (isIOS && !isStandalone) {
+  setTimeout(() => {
+    document.getElementById('ios-hint').style.display = 'block';
+  }, 1500);
+}
+
+// Service Worker for offline use
+if ('serviceWorker' in navigator) {
+  const sw = `
+    const CACHE = 'kr-v1';
+    const ASSETS = [location.href];
+    self.addEventListener('install', e => {
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+    });
+  `;
+  const blob = new Blob([sw], {type: 'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob), {scope: './'}).catch(()=>{});
+}
+</script>
+
+</body>
+</html>
