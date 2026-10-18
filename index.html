@@ -72,13 +72,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Share 
 .free-input::placeholder{color:#666;font-size:13px}
 
 .el-box{padding:0 14px 4px}
-.el-sec{padding:12px 0;border-bottom:1px solid var(--border)}
+.el-sec{padding:10px 0;border-bottom:1px solid var(--border)}
 .el-sec:last-child{border-bottom:none}
 .el-title{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:3px;color:var(--muted);margin-bottom:8px}
 .el-row{display:flex;align-items:center;gap:8px}
 .el-status{flex:1;font-size:13px;word-break:break-all;min-width:0}
 .el-mini{width:48px;height:48px;border-radius:10px;background:#252525;border:1px solid var(--border);color:var(--text);font-size:20px;cursor:pointer;flex-shrink:0}
-.el-heading{font-family:'Oswald',sans-serif;font-size:64px;font-weight:700;text-align:center;line-height:1.1;color:var(--accent,#fff)}
+.el-heading{font-family:'Oswald',sans-serif;font-size:52px;font-weight:700;text-align:center;line-height:1.1;color:var(--accent,#fff)}
 .el-acc{text-align:center;font-size:11px;color:var(--muted);min-height:16px}
 .el-big{width:100%;margin:8px 0 0;background:rgba(10,132,255,.15);border:1.5px solid var(--blue);border-radius:10px;padding:16px;font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;color:var(--blue);cursor:pointer}
 .el-big.lock{background:rgba(0,230,118,.15);border-color:var(--green);color:var(--green)}
@@ -89,6 +89,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Share 
 .el-lbl{font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:4px}
 .el-in{width:100%;background:#252525;border:1.5px solid var(--border);border-radius:10px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:16px;padding:12px;outline:none;min-height:50px}
 .el-in:focus{border-color:#666}
+
+.opts-grid.cols4{grid-template-columns:repeat(4,1fr)}
+.el-chips{padding:10px 0 0 !important;gap:6px !important}
+.el-chips .opt-btn{min-height:48px;font-size:13px;padding:6px 2px}
+.el-headwrap{flex:0 0 40%}
+.el-row .el-big{margin:0;flex:1;padding:14px 6px;font-size:14px}
+.el-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.el-grid3 .el-in{padding:12px 8px}
+.el-link{background:none;border:none;color:var(--blue);font-family:inherit;font-size:11px;text-decoration:underline;cursor:pointer;padding:6px 0}
 .el-result{margin-top:4px;padding:12px;border-radius:10px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.3);color:var(--green);font-size:14px;line-height:1.6;word-break:break-word}
 
 .nav-bar{padding:12px 16px calc(14px + env(safe-area-inset-bottom));display:flex;gap:10px;flex-shrink:0;background:var(--bg);border-top:1px solid var(--border)}
@@ -410,24 +419,27 @@ function buildEnemyLoc(card,updateVal){
   if(enemy.decl==null)enemy.decl=declAt(55.2,23.9);
   const box=document.createElement('div');box.className='el-box';
   box.innerHTML=
-   '<div class="el-sec"><div class="el-title">1 · MANO VIETA</div><div class="el-row"><div class="el-status" id="el-gps">⏳ Nustatoma GPS…</div><button class="el-mini" id="el-gps-btn">↻</button></div></div>'+
-   '<div class="el-sec"><div class="el-title">2 · AZIMUTAS Į PRIEŠĄ</div>'+
-     '<div class="el-heading" id="el-head">---°</div><div class="el-acc" id="el-acc"></div>'+
-     '<button class="el-big" id="el-perm" style="display:none">🧭 ĮJUNGTI KOMPASĄ</button>'+
-     '<button class="el-big lock" id="el-lock">🎯 FIKSUOTI AZIMUTĄ</button>'+
-     '<div class="el-hint">Laikyk telefoną horizontaliai, viršutinis kraštas į priešą. Kompasas ±5–10°, laikykis toliau nuo metalo.</div>'+
-     '<div class="el-warn" id="el-warn"></div>'+
-     '<div class="el-grid2"><div><div class="el-lbl">AZIMUTAS °</div><input class="el-in" id="el-az" type="number" inputmode="numeric" min="0" max="359" placeholder="0–359"></div>'+
-     '<div><div class="el-lbl">DEKLINACIJA °E</div><input class="el-in" id="el-decl" type="number" inputmode="decimal" step="0.1"></div></div></div>'+
-   '<div class="el-sec"><div class="el-title">3 · ATSTUMAS (m)</div><div class="opts-grid cols3" id="el-chips" style="padding:0 0 10px"></div>'+
-     '<input class="el-in" id="el-dist" type="number" inputmode="numeric" placeholder="pvz. 300"></div>'+
-   '<div class="el-sec"><div class="el-title">REZULTATAS</div><div class="el-result" id="el-res">Įvesk azimutą ir atstumą</div></div>';
+   '<div class="el-sec"><div class="el-row"><div class="el-title" style="margin:0">MANO VIETA</div><div class="el-status" id="el-gps">⏳ GPS…</div><button class="el-mini" id="el-gps-btn">↻</button></div></div>'+
+   '<div class="el-sec"><div class="el-title">AZIMUTAS Į PRIEŠĄ</div>'+
+     '<div class="el-row"><div class="el-headwrap"><div class="el-heading" id="el-head">---°</div><div class="el-acc" id="el-acc"></div></div>'+
+     '<button class="el-big lock" id="el-lock">🎯 FIKSUOTI</button></div>'+
+     '<button class="el-big" id="el-perm" style="display:none;margin-top:8px;width:100%">🧭 ĮJUNGTI KOMPASĄ</button>'+
+     '<div class="el-hint" style="margin:6px 0 0">Telefonas horizontaliai, viršutinis kraštas į priešą · kompasas ±5–10° <button class="el-link" id="el-manual">✎ MGRS ranka</button></div>'+
+     '<div class="el-warn" id="el-warn"></div></div>'+
+   '<div class="el-sec"><div class="el-grid3">'+
+     '<div><div class="el-lbl">AZIMUTAS °</div><input class="el-in" id="el-az" type="number" inputmode="numeric" min="0" max="359" placeholder="0–359"></div>'+
+     '<div><div class="el-lbl">DEKL. °E</div><input class="el-in" id="el-decl" type="number" inputmode="decimal" step="0.1"></div>'+
+     '<div><div class="el-lbl">ATSTUMAS m</div><input class="el-in" id="el-dist" type="number" inputmode="numeric" placeholder="300"></div></div>'+
+     '<div class="opts-grid cols4 el-chips" id="el-chips"></div></div>';
   card.appendChild(box);
   const $=function(s){return box.querySelector(s);};
-  const gpsSt=$('#el-gps'),gpsBtn=$('#el-gps-btn'),headEl=$('#el-head'),accEl=$('#el-acc'),permBtn=$('#el-perm'),lockBtn=$('#el-lock'),warnEl=$('#el-warn'),azIn=$('#el-az'),declIn=$('#el-decl'),distIn=$('#el-dist'),resEl=$('#el-res'),chipsEl=$('#el-chips');
+  const gpsSt=$('#el-gps'),gpsBtn=$('#el-gps-btn'),headEl=$('#el-head'),accEl=$('#el-acc'),permBtn=$('#el-perm'),lockBtn=$('#el-lock'),warnEl=$('#el-warn'),azIn=$('#el-az'),declIn=$('#el-decl'),distIn=$('#el-dist'),chipsEl=$('#el-chips'),manualBtn=$('#el-manual');
   azIn.value=enemy.az==null?'':enemy.az;declIn.value=enemy.decl;distIn.value=enemy.dist==null?'':enemy.dist;
+  if(enemy.az!=null)lockBtn.textContent='✓ '+enemy.az+'° · IŠ NAUJO';
   let magH=null,sx=null,sy=null,seen=false,lastDraw=0;
 
+  function manualWrap(){return card.querySelector('.free-input-wrap');}
+  function showManual(on){const w=manualWrap();if(w)w.style.display=on?'block':'none';}
   function showTrue(){
     if(magH==null){headEl.textContent='---°';return;}
     headEl.textContent=Math.round((magH+enemy.decl+360)%360)%360+'°';
@@ -436,25 +448,25 @@ function buildEnemyLoc(card,updateVal){
     chipsEl.querySelectorAll('.opt-btn').forEach(function(b){b.classList.toggle('selected',enemy.dist===parseInt(b.dataset.v,10));});
   }
   function compute(){
-    if(enemy.az==null||!(enemy.dist>0)){resEl.textContent='Įvesk azimutą ir atstumą';return;}
+    if(enemy.az==null||!(enemy.dist>0))return;
     let val;
     if(geo.lat!=null){
       const p=destPoint(geo.lat,geo.lon,enemy.az,enemy.dist);
       val=latLonToMGRS(p[0],p[1],4)+' (AZ '+enemy.az+'°, '+enemy.dist+'m)';
     }else val='AZ '+enemy.az+'°, '+enemy.dist+'m';
-    resEl.textContent=val;updateVal(val);
+    updateVal(val);
     const fi=card.querySelector('.free-input');if(fi)fi.value=val;
   }
   function gpsGo(){
-    gpsSt.textContent='⏳ Nustatoma GPS…';
-    if(!navigator.geolocation){gpsSt.textContent='⚠ GPS nepasiekiamas';return;}
+    gpsSt.textContent='⏳ GPS…';
+    if(!navigator.geolocation){gpsSt.textContent='⚠ GPS nepasiekiamas';showManual(true);return;}
     navigator.geolocation.getCurrentPosition(function(p){
       geo.lat=p.coords.latitude;geo.lon=p.coords.longitude;
       gpsSt.textContent='✓ '+latLonToMGRS(geo.lat,geo.lon,5);
       if(inLT(geo.lat,geo.lon)){enemy.decl=declAt(geo.lat,geo.lon);warnEl.textContent='';}
       else warnEl.textContent='⚠ Už Lietuvos ribų – patikrink deklinaciją';
       declIn.value=enemy.decl;showTrue();compute();
-    },function(){gpsSt.textContent='⚠ GPS nepavyko – patikrink leidimą ir spausk ↻';},{enableHighAccuracy:true,timeout:12000,maximumAge:0});
+    },function(){gpsSt.textContent='⚠ GPS nepavyko – leidimas? ↻';showManual(true);},{enableHighAccuracy:true,timeout:12000,maximumAge:0});
   }
   function onHeading(h,acc){
     seen=true;const r=h*Math.PI/180;
@@ -487,8 +499,9 @@ function buildEnemyLoc(card,updateVal){
   lockBtn.onclick=function(){
     if(magH==null){warnEl.textContent='⚠ Dar nėra kompaso rodmens – įvesk azimutą ranka';return;}
     enemy.az=Math.round((magH+enemy.decl+360)%360)%360;azIn.value=enemy.az;
-    lockBtn.textContent='✓ AZIMUTAS '+enemy.az+'° · FIKSUOTI IŠ NAUJO';compute();
+    lockBtn.textContent='✓ '+enemy.az+'° · IŠ NAUJO';compute();
   };
+  manualBtn.onclick=function(){const w=manualWrap();showManual(!w||w.style.display==='none');};
   permBtn.onclick=startC;
   gpsBtn.onclick=gpsGo;
   gpsGo();startC();
@@ -595,6 +608,7 @@ function renderStep(){
     inp.className='free-input';if(f.area)inp.rows=2;else inp.type='text';
     inp.placeholder=f.hint||'Laisvas tekstas…';inp.value=formData[f.key]||'';
     inp.oninput=function(){updateVal(inp.value);refreshSel();};
+    if(f.type==='enemyloc')wrap.style.display='none';
     wrap.appendChild(inp);card.appendChild(wrap);
   }
 
