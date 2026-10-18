@@ -121,6 +121,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Share 
 /* naktinis režimas: viskas tampa tik raudona, saugo nakties regą */
 #night-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#cc0000;mix-blend-mode:multiply;pointer-events:none;z-index:99999}
 body.night #night-overlay{display:block}
+/* filtras palieka tik raudoną kanalą, todėl žalią ir mėlyną perkeliam į raudonus atspalvius */
+body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
 </style>
 <script>
 // Lightweight WGS84 -> MGRS conversion
