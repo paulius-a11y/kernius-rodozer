@@ -2,121 +2,126 @@
 <html lang="lt">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Kernius Rodžer">
 <meta name="theme-color" content="#0e0e0e">
-<link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22Kernius%20Rod%C5%BEer%22%2C%22short_name%22%3A%22KR%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230e0e0e%22%2C%22theme_color%22%3A%22%230e0e0e%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%3D%2527http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%2527%2520viewBox%3D%25270%25200%2520100%2520100%2527%253E%253Crect%2520width%3D%2527100%2527%2520height%3D%2527100%2527%2520fill%3D%2527%25230e0e0e%2527%2F%253E%253Ctext%2520y%3D%2527.9em%2527%2520font-size%3D%252790%2527%253E%25F0%259F%2593%25A1%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22any%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Kernius Rodžer</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oswald:wght@500;700&display=swap');
+:root{--bg:#0e0e0e;--card:#1c1c1e;--border:#2c2c2e;--green:#00e676;--red:#ff453a;--amber:#ffd60a;--blue:#0a84ff;--pink:#ff375f;--orange:#ff9f0a;--text:#fff;--muted:#8e8e93;--r:14px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;overscroll-behavior:none}
+.screen{display:none;flex-direction:column;height:100%;overflow:hidden}
+.screen.active{display:flex}
 
-:root {
-  --bg: #0e0e0e; --card: #1c1c1e; --border: #2c2c2e;
-  --green: #00e676; --red: #ff453a; --amber: #ffd60a;
-  --blue: #0a84ff; --pink: #ff375f; --text: #ffffff;
-  --muted: #8e8e93; --r: 14px;
-}
+.topbar{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg)}
+.back-btn{width:42px;height:42px;border-radius:50%;background:var(--card);border:none;color:var(--text);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.back-btn:active{background:#333}
+.topbar-title{font-family:'Oswald',sans-serif;font-size:16px;letter-spacing:3px}
+.topbar-sub{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:1px}
+.top-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.clock{font-size:14px;color:var(--amber);font-family:'Oswald',sans-serif}
+.night-btn{width:42px;height:42px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:18px;cursor:pointer}
+.night-btn:active{background:#333}
 
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Share Tech Mono', monospace; overscroll-behavior: none; }
+.report-list{flex:1;overflow-y:auto;padding:12px 16px 32px;display:flex;flex-direction:column;gap:10px;min-height:0}
+.rep-btn{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:14px;width:100%;color:var(--text);font-family:inherit}
+.rep-btn:active{opacity:.7}
+.rep-icon{width:50px;height:50px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:22px;font-weight:700}
+.rep-text{flex:1}
+.rep-code{font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;margin-bottom:3px}
+.rep-desc{font-size:11px;color:var(--muted);line-height:1.6}
+.rep-arrow{color:var(--muted);font-size:20px}
+.ic-red{background:rgba(255,69,58,.18);color:var(--red)}.ic-amber{background:rgba(255,214,10,.15);color:var(--amber)}.ic-green{background:rgba(0,230,118,.15);color:var(--green)}.ic-pink{background:rgba(255,55,95,.18);color:var(--pink)}.ic-blue{background:rgba(10,132,255,.18);color:var(--blue)}.ic-orange{background:rgba(255,159,10,.18);color:var(--orange)}
+.bl-red{border-left:3px solid var(--red)}.bl-amber{border-left:3px solid var(--amber)}.bl-green{border-left:3px solid var(--green)}.bl-pink{border-left:3px solid var(--pink)}.bl-blue{border-left:3px solid var(--blue)}.bl-orange{border-left:3px solid var(--orange)}
 
-.screen { display: none; flex-direction: column; height: 100%; overflow: hidden; }
-.screen.active { display: flex; }
+.progress-wrap{padding:10px 16px 0;flex-shrink:0}
+.progress-track{height:3px;background:var(--border);border-radius:2px}
+.progress-fill{height:3px;border-radius:2px;transition:width .3s ease}
+.progress-label{font-size:10px;color:var(--muted);letter-spacing:2px;margin-top:5px;text-align:right}
 
-.topbar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; background: var(--bg); }
-.back-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--card); border: none; color: var(--text); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.back-btn:active { background: #333; }
-.topbar-title { font-family: 'Oswald', sans-serif; font-size: 16px; letter-spacing: 3px; }
-.topbar-sub { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-top: 1px; }
-.clock { margin-left: auto; font-size: 14px; color: var(--amber); flex-shrink: 0; font-family: 'Oswald', sans-serif; }
+.step-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px 20px;display:flex;flex-direction:column;gap:10px;min-height:0;position:relative}
+.step-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);flex-shrink:0}
+.step-card-head{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border)}
+.step-letter{font-family:'Oswald',sans-serif;font-size:28px;font-weight:700;width:36px;text-align:center;flex-shrink:0;line-height:1;margin-top:2px}
+.step-label{font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.step-value{font-size:15px;color:var(--text);word-break:break-word}
+.step-value.empty{color:var(--muted);font-size:13px}
+.step-legend{font-size:11px;color:var(--muted);padding:10px 16px 0;line-height:1.6}
 
-.report-list { flex: 1; overflow-y: auto; padding: 12px 16px 32px; display: flex; flex-direction: column; gap: 10px; }
-.rep-btn { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 14px; width: 100%; }
-.rep-btn:active { opacity: 0.7; }
-.rep-icon { width: 50px; height: 50px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; }
-.rep-text { flex: 1; }
-.rep-code { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: 2px; margin-bottom: 3px; }
-.rep-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
-.rep-arrow { color: var(--muted); font-size: 20px; }
-.ic-red   { background: rgba(255,69,58,.18);  color: var(--red); }
-.ic-amber { background: rgba(255,214,10,.15); color: var(--amber); }
-.ic-green { background: rgba(0,230,118,.15);  color: var(--green); }
-.ic-pink  { background: rgba(255,55,95,.18);  color: var(--pink); }
-.ic-blue  { background: rgba(10,132,255,.18); color: var(--blue); }
-.bl-red   { border-left: 3px solid var(--red); }
-.bl-amber { border-left: 3px solid var(--amber); }
-.bl-green { border-left: 3px solid var(--green); }
-.bl-pink  { border-left: 3px solid var(--pink); }
-.bl-blue  { border-left: 3px solid var(--blue); }
+.opts-grid{display:grid;gap:8px;padding:12px 14px 14px;grid-template-columns:1fr 1fr}
+.opts-grid.cols3{grid-template-columns:1fr 1fr 1fr}.opts-grid.cols1{grid-template-columns:1fr}
+.opt-btn{background:#252525;border:1.5px solid var(--border);border-radius:10px;padding:14px 8px;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--text);cursor:pointer;text-align:center;line-height:1.3;min-height:60px;display:flex;align-items:center;justify-content:center}
+.opt-btn:active{background:#333}
+.opt-btn.selected{border-color:var(--accent,#fff);background:rgba(255,255,255,.09)}
 
-.progress-wrap { padding: 10px 16px 0; flex-shrink: 0; }
-.progress-track { height: 3px; background: var(--border); border-radius: 2px; }
-.progress-fill  { height: 3px; border-radius: 2px; transition: width 0.3s ease; }
-.progress-label { font-size: 10px; color: var(--muted); letter-spacing: 2px; margin-top: 5px; text-align: right; }
+.gps-btn{margin:12px 14px 4px;width:calc(100% - 28px);background:rgba(10,132,255,.15);border:1.5px solid var(--blue);border-radius:10px;padding:16px;font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;color:var(--blue);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.gps-btn:active{background:rgba(10,132,255,.3)}
+.gps-btn.loading{opacity:.6}
+.gps-btn.success{background:rgba(0,230,118,.15);border-color:var(--green);color:var(--green);font-size:12px}
+.gps-msg{margin:0 14px 8px;font-size:11px;color:var(--amber);line-height:1.6}
 
-.step-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px 16px 20px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.free-input-wrap{padding:0 14px 14px}
+.free-input{width:100%;background:#252525;border:1.5px solid var(--border);border-radius:10px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:16px;padding:14px;outline:none;resize:none;min-height:54px}
+.free-input:focus{border-color:#666}
+.free-input::placeholder{color:#666;font-size:13px}
 
-.step-card { background: var(--card); border-radius: var(--r); border: 1px solid var(--border); flex-shrink: 0; }
-.step-card-head { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
-.step-letter { font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; width: 36px; text-align: center; flex-shrink: 0; line-height: 1; margin-top: 2px; }
-.step-label { font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
-.step-value { font-size: 15px; color: var(--text); word-break: break-word; }
-.step-value.empty { color: var(--muted); font-size: 13px; }
+.el-box{padding:0 14px 4px}
+.el-sec{padding:12px 0;border-bottom:1px solid var(--border)}
+.el-sec:last-child{border-bottom:none}
+.el-title{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:3px;color:var(--muted);margin-bottom:8px}
+.el-row{display:flex;align-items:center;gap:8px}
+.el-status{flex:1;font-size:13px;word-break:break-all;min-width:0}
+.el-mini{width:48px;height:48px;border-radius:10px;background:#252525;border:1px solid var(--border);color:var(--text);font-size:20px;cursor:pointer;flex-shrink:0}
+.el-heading{font-family:'Oswald',sans-serif;font-size:64px;font-weight:700;text-align:center;line-height:1.1;color:var(--accent,#fff)}
+.el-acc{text-align:center;font-size:11px;color:var(--muted);min-height:16px}
+.el-big{width:100%;margin:8px 0 0;background:rgba(10,132,255,.15);border:1.5px solid var(--blue);border-radius:10px;padding:16px;font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;color:var(--blue);cursor:pointer}
+.el-big.lock{background:rgba(0,230,118,.15);border-color:var(--green);color:var(--green)}
+.el-big:active{opacity:.7}
+.el-hint{font-size:11px;color:var(--muted);line-height:1.6;margin:8px 0}
+.el-warn{font-size:11px;color:var(--amber);line-height:1.6;min-height:14px}
+.el-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.el-lbl{font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:4px}
+.el-in{width:100%;background:#252525;border:1.5px solid var(--border);border-radius:10px;color:#fff;font-family:'Share Tech Mono',monospace;font-size:16px;padding:12px;outline:none;min-height:50px}
+.el-in:focus{border-color:#666}
+.el-result{margin-top:4px;padding:12px;border-radius:10px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.3);color:var(--green);font-size:14px;line-height:1.6;word-break:break-word}
 
-.opts-grid { display: grid; gap: 8px; padding: 12px 14px 14px; grid-template-columns: 1fr 1fr; }
-.opts-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
-.opts-grid.cols1 { grid-template-columns: 1fr; }
+.nav-bar{padding:12px 16px calc(14px + env(safe-area-inset-bottom));display:flex;gap:10px;flex-shrink:0;background:var(--bg);border-top:1px solid var(--border)}
+.btn-prev{width:58px;height:58px;border-radius:12px;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.btn-prev:active{background:#333}.btn-prev:disabled{opacity:.25}
+.btn-next{flex:1;height:58px;border-radius:12px;background:var(--green);border:none;font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;letter-spacing:3px;color:#000;cursor:pointer}
+.btn-next:active{opacity:.85}.btn-next.last{background:var(--amber)}
 
-.opt-btn { background: #252525; border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 8px; font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--text); cursor: pointer; text-align: center; line-height: 1.3; min-height: 50px; display: flex; align-items: center; justify-content: center; }
-.opt-btn:active { background: #333; }
-.opt-btn.selected { border-color: var(--accent, #fff); background: rgba(255,255,255,0.07); }
+.summary-list{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.sum-row{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:10px;padding:10px 14px;border:1px solid var(--border);cursor:pointer}
+.sum-row:active{background:#252525}
+.sum-ltr{font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;width:22px;flex-shrink:0;text-align:center}
+.sum-lbl{font-size:10px;color:var(--muted);letter-spacing:1px}
+.sum-val{font-size:12px;color:var(--text);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sum-val.empty{color:var(--muted);font-style:italic}
+.sum-edit{margin-left:auto;font-size:12px;color:var(--muted);flex-shrink:0}
 
-.gps-btn { margin: 0 14px 12px; width: calc(100% - 28px); background: rgba(10,132,255,0.15); border: 1.5px solid var(--blue); border-radius: 10px; padding: 14px; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 2px; color: var(--blue); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.gps-btn:active { background: rgba(10,132,255,0.3); }
-.gps-btn.loading { opacity: 0.6; }
-.gps-btn.success { background: rgba(0,230,118,0.15); border-color: var(--green); color: var(--green); font-size: 12px; }
+.preview-body{flex:1;overflow-y:auto;padding:16px;min-height:0}
+.preview-box{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:18px;font-size:15px;line-height:2;color:var(--green);white-space:pre-wrap;word-break:break-word;margin-bottom:10px}
+.preview-meta{font-size:11px;color:var(--muted);letter-spacing:2px;text-align:center;margin-bottom:16px}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.action-btn{border-radius:12px;padding:22px 10px;border:none;cursor:pointer;font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.action-btn:active{opacity:.8}.action-btn .icon{font-size:26px}
+.action-btn.sms{background:var(--amber);color:#000}
+.action-btn.copy{background:#1e2e24;color:var(--green);border:1px solid var(--green)}
+.action-btn.edit,.action-btn.new{background:var(--card);color:var(--muted);border:1px solid var(--border);font-size:12px}
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;padding:12px 28px;border-radius:30px;font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;letter-spacing:3px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1}
 
-.free-input-wrap { padding: 0 14px 14px; }
-.free-input { width: 100%; background: #252525; border: 1.5px solid var(--border); border-radius: 10px; color: #fff; font-family: 'Share Tech Mono', monospace; font-size: 15px; padding: 13px 14px; outline: none; resize: none; min-height: 50px; }
-.free-input:focus { border-color: #666; }
-.free-input::placeholder { color: #555; font-size: 13px; }
-
-.nav-bar { padding: 12px 16px 20px; display: flex; gap: 10px; flex-shrink: 0; background: var(--bg); border-top: 1px solid var(--border); }
-.btn-prev { width: 52px; height: 52px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); color: var(--text); font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.btn-prev:active { background: #333; }
-.btn-prev:disabled { opacity: 0.25; }
-.btn-next { flex: 1; height: 52px; border-radius: 12px; background: var(--green); border: none; font-family: 'Oswald', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 3px; color: #000; cursor: pointer; }
-.btn-next:active { opacity: 0.85; }
-.btn-next.last { background: var(--amber); color: #000; }
-
-.summary-list { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
-.sum-row { display: flex; align-items: center; gap: 10px; background: var(--card); border-radius: 10px; padding: 10px 14px; border: 1px solid var(--border); cursor: pointer; }
-.sum-row:active { background: #252525; }
-.sum-ltr { font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 700; width: 22px; flex-shrink: 0; }
-.sum-lbl { font-size: 10px; color: var(--muted); letter-spacing: 1px; }
-.sum-val { font-size: 12px; color: var(--text); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.sum-val.empty { color: var(--muted); font-style: italic; }
-.sum-edit { margin-left: auto; font-size: 12px; color: var(--muted); flex-shrink: 0; }
-
-.preview-body { flex: 1; overflow-y: auto; padding: 16px; }
-.preview-box { background: var(--card); border-radius: var(--r); border: 1px solid var(--border); padding: 18px; font-size: 15px; line-height: 2; color: var(--green); white-space: pre-wrap; margin-bottom: 10px; }
-.preview-meta { font-size: 11px; color: var(--muted); letter-spacing: 2px; text-align: center; margin-bottom: 16px; }
-.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.action-btn { border-radius: 12px; padding: 20px 10px; border: none; cursor: pointer; font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 2px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.action-btn:active { opacity: 0.8; }
-.action-btn .icon { font-size: 26px; }
-.action-btn.sms  { background: var(--amber); color: #000; }
-.action-btn.copy { background: #1e2e24; color: var(--green); border: 1px solid var(--green); }
-.action-btn.edit { background: var(--card); color: var(--muted); border: 1px solid var(--border); font-size: 12px; }
-.action-btn.new  { background: var(--card); color: var(--muted); border: 1px solid var(--border); font-size: 12px; }
-
-.toast { position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%); background: var(--green); color: #000; padding: 12px 28px; border-radius: 30px; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 3px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; white-space: nowrap; }
-.toast.show { opacity: 1; }
+/* naktinis režimas: viskas tampa tik raudona, saugo nakties regą */
+#night-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#cc0000;mix-blend-mode:multiply;pointer-events:none;z-index:99999}
+body.night #night-overlay{display:block}
 </style>
-
 <script>
 // Lightweight WGS84 -> MGRS conversion
 (function(global){
@@ -124,20 +129,22 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
   var A=65,I=73,O=79,V=86,Z=90;
   function get100kSetForZone(i){var s=i%NUM_100K_SETS;return s===0?NUM_100K_SETS:s;}
   function getLetter100kID(column,row,parm){
-    var index=parm-1,colInt=SET_ORIGIN_COLUMN_LETTERS.charCodeAt(index),rowInt=SET_ORIGIN_ROW_LETTERS.charCodeAt(index),colInt=colInt+column-1,roundUp=false;
-    if(colInt>Z){colInt=colInt-Z+A-1;roundUp=true;}
-    if(colInt===I||(colInt>I&&roundUp)){colInt++;}
-    if(colInt===O||(colInt>O&&roundUp)){colInt++;if(colInt===I)colInt++;}
+    var index=parm-1,colOrigin=SET_ORIGIN_COLUMN_LETTERS.charCodeAt(index),rowOrigin=SET_ORIGIN_ROW_LETTERS.charCodeAt(index);
+    var colInt=colOrigin+column-1,rowInt=rowOrigin+row,rollover=false;
+    if(colInt>Z){colInt=colInt-Z+A-1;rollover=true;}
+    if(colInt===I||(colOrigin<I&&colInt>I)||((colInt>I||colOrigin<I)&&rollover)){colInt++;}
+    if(colInt===O||(colOrigin<O&&colInt>O)||((colInt>O||colOrigin<O)&&rollover)){colInt++;if(colInt===I)colInt++;}
     if(colInt>Z){colInt=colInt-Z+A-1;}
-    var rowInt=rowInt+row;
-    while(rowInt>V){rowInt=rowInt-V+A-1;if(rowInt===I)rowInt++;if(rowInt===O)rowInt++;}
-    if(rowInt===I)rowInt++;if(rowInt===O)rowInt++;
+    if(rowInt>V){rowInt=rowInt-V+A-1;rollover=true;}else{rollover=false;}
+    if((rowInt===I)||((rowOrigin<I)&&(rowInt>I))||(((rowInt>I)||(rowOrigin<I))&&rollover)){rowInt++;}
+    if((rowInt===O)||((rowOrigin<O)&&(rowInt>O))||(((rowInt>O)||(rowOrigin<O))&&rollover)){rowInt++;if(rowInt===I)rowInt++;}
+    if(rowInt>V){rowInt=rowInt-V+A-1;}
     return String.fromCharCode(colInt)+String.fromCharCode(rowInt);
   }
   function encode(utm,accuracy){
     var seasting='00000'+utm.easting,snorthing='00000'+utm.northing;
     return utm.zoneNumber+utm.zoneLetter+getLetter100kID(
-      Math.floor(utm.easting/100000),Math.floor((utm.northing%2000000)/100000),
+      Math.floor(utm.easting/100000),Math.floor(utm.northing/100000)%20,
       get100kSetForZone(utm.zoneNumber)
     )+(seasting.substr(seasting.length-5)).substr(0,accuracy)+(snorthing.substr(snorthing.length-5)).substr(0,accuracy);
   }
@@ -159,7 +166,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
     var UTMNorthing=k0*(M+N*Math.tan(LatRad)*(A2*A2/2+(5-T+9*C+4*C*C)*A2*A2*A2*A2/24+(61-58*T+T*T+600*C-330*eccPrimeSquared)*A2*A2*A2*A2*A2*A2/720));
     if(Lat<0)UTMNorthing+=10000000.0;
     var ZoneLetter='CDEFGHJKLMNPQRSTUVWXX'.charAt(Math.floor((Lat+80)/8));
-    return{northing:Math.round(UTMNorthing),easting:Math.round(UTMEasting),zoneLetter:ZoneLetter,zoneNumber:ZoneNumber};
+    return{northing:Math.floor(UTMNorthing),easting:Math.floor(UTMEasting),zoneLetter:ZoneLetter,zoneNumber:ZoneNumber};
   }
   global.latLonToMGRS=function(lat,lon,precision){
     precision=precision||5;
@@ -173,34 +180,15 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 <div class="screen active" id="screen-select">
   <div class="topbar">
     <div><div class="topbar-title">KERNIUS RODŽER</div><div class="topbar-sub">📡 PASIRINK SITUACIJĄ</div></div>
-    <div class="clock" id="clock">00:00</div>
+    <div class="top-right"><button class="night-btn" onclick="toggleNight()">🌙</button><div class="clock" id="clock">00:00</div></div>
   </div>
   <div class="report-list">
-    <button class="rep-btn bl-red" onclick="startReport('contactrep')">
-      <div class="rep-icon ic-red">!</div>
-      <div class="rep-text"><div class="rep-code" style="color:var(--red)">CONTACTREP</div><div class="rep-desc">Kontaktas su priešu · pirmoji sekundė<br>Kryptis · Atstumas · Aprašymas</div></div>
-      <div class="rep-arrow">›</div>
-    </button>
-    <button class="rep-btn bl-amber" onclick="startReport('saluto')">
-      <div class="rep-icon ic-amber">S</div>
-      <div class="rep-text"><div class="rep-code" style="color:var(--amber)">SALUTO</div><div class="rep-desc">Priešo stebėjimas · žvalgyba<br>Dydis · Veikla · Vieta · Įranga</div></div>
-      <div class="rep-arrow">›</div>
-    </button>
-    <button class="rep-btn bl-green" onclick="startReport('lace')">
-      <div class="rep-icon ic-green">L</div>
-      <div class="rep-text"><div class="rep-code" style="color:var(--green)">LACE</div><div class="rep-desc">Savų resursai · po susirėmimo<br>Vanduo · Šaudmenys · Aukos · Įranga</div></div>
-      <div class="rep-arrow">›</div>
-    </button>
-    <button class="rep-btn bl-pink" onclick="startReport('medevac')">
-      <div class="rep-icon ic-pink">✚</div>
-      <div class="rep-text"><div class="rep-code" style="color:var(--pink)">MEDEVAC</div><div class="rep-desc">Medicininė evakuacija · 9 eilutės<br>Naudok kai yra sužeistų</div></div>
-      <div class="rep-arrow">›</div>
-    </button>
-    <button class="rep-btn bl-blue" onclick="startReport('sitrep')">
-      <div class="rep-icon ic-blue">≡</div>
-      <div class="rep-text"><div class="rep-code" style="color:var(--blue)">SITREP</div><div class="rep-desc">Situacijos ataskaita · periodiškai<br>Vieta · Nuveikta · Planas · Poreikiai</div></div>
-      <div class="rep-arrow">›</div>
-    </button>
+    <button class="rep-btn bl-red" onclick="startReport('contactrep')"><div class="rep-icon ic-red">!</div><div class="rep-text"><div class="rep-code" style="color:var(--red)">CONTACTREP</div><div class="rep-desc">Kontaktas su priešu · pirmoji sekundė<br>Kryptis · Atstumas · Aprašymas</div></div><div class="rep-arrow">›</div></button>
+    <button class="rep-btn bl-amber" onclick="startReport('saluto')"><div class="rep-icon ic-amber">S</div><div class="rep-text"><div class="rep-code" style="color:var(--amber)">SALUTO</div><div class="rep-desc">Priešo stebėjimas · žvalgyba<br>Dydis · Veikla · Vieta (kompasas) · Įranga</div></div><div class="rep-arrow">›</div></button>
+    <button class="rep-btn bl-green" onclick="startReport('lace')"><div class="rep-icon ic-green">L</div><div class="rep-text"><div class="rep-code" style="color:var(--green)">LACE</div><div class="rep-desc">Savų resursai · po susirėmimo<br>Vanduo · Šaudmenys · Aukos · Įranga</div></div><div class="rep-arrow">›</div></button>
+    <button class="rep-btn bl-pink" onclick="startReport('medevac')"><div class="rep-icon ic-pink">✚</div><div class="rep-text"><div class="rep-code" style="color:var(--pink)">MEDEVAC</div><div class="rep-desc">Medicininė evakuacija · 9 eilutės<br>Naudok kai yra sužeistų</div></div><div class="rep-arrow">›</div></button>
+    <button class="rep-btn bl-orange" onclick="startReport('mist')"><div class="rep-icon ic-orange">M</div><div class="rep-text"><div class="rep-code" style="color:var(--orange)">MIST</div><div class="rep-desc">Sužeistojo perdavimas<br>Mechanizmas · Sužeidimai · Požymiai · Gydymas</div></div><div class="rep-arrow">›</div></button>
+    <button class="rep-btn bl-blue" onclick="startReport('sitrep')"><div class="rep-icon ic-blue">≡</div><div class="rep-text"><div class="rep-code" style="color:var(--blue)">SITREP</div><div class="rep-desc">Situacijos ataskaita · periodiškai<br>Vieta · Nuveikta · Planas · Poreikiai</div></div><div class="rep-arrow">›</div></button>
   </div>
 </div>
 
@@ -208,296 +196,449 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
   <div class="topbar">
     <button class="back-btn" onclick="goTo('select')">‹</button>
     <div><div class="topbar-title" id="form-title"></div><div class="topbar-sub" id="form-sub"></div></div>
-    <div class="clock" id="clock2">00:00</div>
+    <div class="top-right"><button class="night-btn" onclick="toggleNight()">🌙</button><div class="clock" id="clock2">00:00</div></div>
   </div>
-  <div class="progress-wrap">
-    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
-    <div class="progress-label" id="prog-label"></div>
-  </div>
+  <div class="progress-wrap"><div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div><div class="progress-label" id="prog-label"></div></div>
   <div class="step-area" id="step-area"></div>
-  <div class="nav-bar">
-    <button class="btn-prev" id="btn-prev" onclick="prevStep()">‹</button>
-    <button class="btn-next" id="btn-next" onclick="nextStep()">TOLIAU ›</button>
-  </div>
+  <div class="nav-bar"><button class="btn-prev" id="btn-prev" onclick="prevStep()">‹</button><button class="btn-next" id="btn-next" onclick="nextStep()">TOLIAU ›</button></div>
 </div>
 
 <div class="screen" id="screen-preview">
   <div class="topbar">
     <button class="back-btn" onclick="goTo('form')">‹</button>
     <div><div class="topbar-title">PRANEŠIMAS</div><div class="topbar-sub">PARUOŠTAS SIŲSTI</div></div>
+    <div class="top-right"><button class="night-btn" onclick="toggleNight()">🌙</button></div>
   </div>
   <div class="preview-body">
     <div class="preview-box" id="preview-box"></div>
     <div class="preview-meta" id="preview-meta"></div>
     <div class="action-grid">
-      <button class="action-btn sms"  onclick="sendSms()"><span class="icon">✉</span>SMS</button>
+      <button class="action-btn sms" onclick="sendSms()"><span class="icon">✉</span>SMS</button>
       <button class="action-btn copy" onclick="copyMsg()"><span class="icon">⧉</span>KOPIJUOTI</button>
       <button class="action-btn edit" onclick="goTo('form')"><span class="icon">✎</span>TAISYTI</button>
-      <button class="action-btn new"  onclick="goTo('select')"><span class="icon">+</span>NAUJA</button>
+      <button class="action-btn new" onclick="goTo('select')"><span class="icon">+</span>NAUJA</button>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast">NUKOPIJUOTA ✓</div>
+<div id="night-overlay"></div>
 
 <script>
-const UNITS = ['CHARLI 1','CHARLI 2','CHARLI 3','DELTA 1','DELTA 2','DELTA 3'];
+/* ───────── pagalbinės ───────── */
+const UNITS=['CHARLI 1','CHARLI 2','CHARLI 3','DELTA 1','DELTA 2','DELTA 3'];
+const MON=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+function pad(n){return (n<10?'0':'')+n;}
 
-const REPORTS = {
-  contactrep: {
-    title:'CONTACTREP', sub:'KONTAKTAS · 3D', color:'var(--red)',
+/* DTG pagal NATO: DDHHMM + laiko juostos raidė + MMM YY (pvz. 181315C OCT 26) */
+function dtgNow(){
+  const d=new Date(),offMin=-d.getTimezoneOffset();
+  let L,Y,Mo,D,h,mi;
+  if(offMin%60===0&&offMin>=-720&&offMin<=720){
+    const off=offMin/60;
+    L=off>=0?'ZABCDEFGHIKLM'.charAt(off):'NOPQRSTUVWXY'.charAt(-off-1);
+    Y=d.getFullYear();Mo=d.getMonth();D=d.getDate();h=d.getHours();mi=d.getMinutes();
+  }else{
+    L='Z';Y=d.getUTCFullYear();Mo=d.getUTCMonth();D=d.getUTCDate();h=d.getUTCHours();mi=d.getUTCMinutes();
+  }
+  return pad(D)+pad(h)+pad(mi)+L+' '+MON[Mo]+' '+pad(Y%100);
+}
+
+/* magnetinė deklinacija Lietuvai (WMM2025, epocha 2026.8), bilinijinė interpoliacija */
+const DECL={lat0:53.8,dlat:0.7,lon0:20.8,dlon:1.5,v:[[7.33, 7.72, 8.09, 8.47, 8.83], [7.49, 7.89, 8.29, 8.67, 9.05], [7.66, 8.07, 8.49, 8.89, 9.29], [7.83, 8.26, 8.69, 9.11, 9.52], [8.0, 8.45, 8.9, 9.34, 9.77]]};
+function declAt(lat,lon){
+  const V=DECL.v,ny=V.length,nx=V[0].length;
+  const fy=Math.min(Math.max((lat-DECL.lat0)/DECL.dlat,0),ny-1),fx=Math.min(Math.max((lon-DECL.lon0)/DECL.dlon,0),nx-1);
+  const y0=Math.floor(fy),x0=Math.floor(fx),y1=Math.min(y0+1,ny-1),x1=Math.min(x0+1,nx-1),ty=fy-y0,tx=fx-x0;
+  const a=V[y0][x0]*(1-tx)+V[y0][x1]*tx,b=V[y1][x0]*(1-tx)+V[y1][x1]*tx;
+  return Math.round((a*(1-ty)+b*ty)*10)/10;
+}
+function inLT(lat,lon){return lat>=53.3&&lat<=57.1&&lon>=20.3&&lon<=27.5;}
+
+/* taško paieška pagal tikrąjį azimutą ir atstumą (metrais) */
+function destPoint(lat,lon,brg,dist){
+  /* WGS84 elipsoidas, vidurinės platumos kreivumo spinduliai (paklaida <0,1 m iki kelių km) */
+  const a=6378137.0,e2=0.00669437999014,b=brg*Math.PI/180,p1=lat*Math.PI/180;
+  let pm=p1,dlat=0,dlon=0;
+  for(let k=0;k<3;k++){
+    const s=Math.sin(pm),w=1-e2*s*s,M=a*(1-e2)/Math.pow(w,1.5),Nn=a/Math.sqrt(w);
+    dlat=dist*Math.cos(b)/M;dlon=dist*Math.sin(b)/(Nn*Math.cos(pm));pm=p1+dlat/2;
+  }
+  return [(p1+dlat)*180/Math.PI,((lon+dlon*180/Math.PI+540)%360)-180];
+}
+
+function smsInfo(t){
+  const gsm=/^[A-Za-z0-9 \r\n@£$¥èéùìòÇØøÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ!"#¤%&'()*+,\-.\/:;<=>?¡ÄÖÑÜ§¿äöñüà]*$/.test(t);
+  const n=t.length;let parts;
+  if(gsm)parts=n<=160?1:Math.ceil(n/153);else parts=n<=70?1:Math.ceil(n/67);
+  return {n:n,parts:parts,gsm:gsm};
+}
+
+/* ───────── pranešimų aprašai ───────── */
+const L=(label,value)=>({label:label,value:value});
+const REPORTS={
+  contactrep:{title:'CONTACTREP',sub:'KONTAKTAS · 3D',color:'var(--red)',
     fields:[
-      { key:'time',   letter:'⏱', label:'LAIKAS',        hint:'HH:MM', opts:['DABAR'], free:true },
-      { key:'unit',   letter:'◈', label:'MANO VIENETAS', hint:'', opts:UNITS, free:false, cols:2 },
-      { key:'dir',    letter:'K', label:'KRYPTIS',        hint:'', opts:['ŠIAURĖ','ŠR','RYTAI','PR','PIETŪS','PV','VAKARAI','ŠV'], free:true, cols:3 },
-      { key:'dist',   letter:'A', label:'ATSTUMAS',       hint:'pvz. 200m', opts:['50m','100m','200m','300m','500m','1km'], free:true, cols:3 },
-      { key:'desc',   letter:'A', label:'APRAŠYMAS',      hint:'pvz. 4 pėstininkų, auto. ugnis', opts:['Pėstininkai','Auto. ugnis','Snaiperis','Transportas','Neaiški ugnis','Iš pastato','Iš miškelio'], free:true, cols:2 },
-      { key:'action', letter:'▶', label:'MŪSŲ VEIKSMAS', hint:'', opts:['KOVOJAME','TRAUKIAMĖS','GYNYBOJE','PERSIGRUPUOJAME'], free:false, cols:2 },
+      {key:'time',letter:'⏱',label:'DTG (DATA-LAIKAS)',hint:'pvz. 181315C OCT 26',opts:['DABAR'],free:true},
+      {key:'unit',letter:'◈',label:'MANO VIENETAS',hint:'',opts:UNITS,free:false,cols:2},
+      {key:'dir',letter:'K',label:'KRYPTIS',hint:'',opts:['ŠIAURĖ','ŠR','RYTAI','PR','PIETŪS','PV','VAKARAI','ŠV'],free:true,cols:3},
+      {key:'dist',letter:'A',label:'ATSTUMAS',hint:'pvz. 200m',opts:['50m','100m','200m','300m','500m','1km'],free:true,cols:3},
+      {key:'desc',letter:'A',label:'APRAŠYMAS',hint:'pvz. 4 pėstininkai, auto. ugnis',opts:['Pėstininkai','Auto. ugnis','Snaiperis','Transportas','Neaiški ugnis','Iš pastato','Iš miškelio'],free:true,cols:2,area:true},
+      {key:'action',letter:'▶',label:'MŪSŲ VEIKSMAS',hint:'',opts:['KOVOJAME','TRAUKIAMĖS','GYNYBOJE','PERSIGRUPUOJAME'],free:false,cols:2}
     ],
-    build: f=>`CONTACTREP · ${f.time||'?'} · ${f.unit||'?'}\nKRYPTIS: ${f.dir||'?'}\nASTUMAS: ${f.dist||'?'}\nPRIEŠAS: ${f.desc||'?'}\nVEIKSMAS: ${f.action||'?'}\nPABAIGA.`
+    build:(f,d)=>'CONTACTREP · '+(f.time||d)+' · '+(f.unit||'?')+'\nKRYPTIS: '+(f.dir||'?')+'\nATSTUMAS: '+(f.dist||'?')+'\nPRIEŠAS: '+(f.desc||'?')+'\nVEIKSMAS: '+(f.action||'?')+'\nPABAIGA.'
   },
-  saluto:{
-    title:'SALUTO', sub:'PRIEŠO ŽVALGYBA', color:'var(--amber)',
+  saluto:{title:'SALUTO',sub:'PRIEŠO ŽVALGYBA',color:'var(--amber)',
     fields:[
-      { key:'time',     letter:'⏱', label:'LAIKAS',   hint:'HH:MM', opts:['DABAR'], free:true },
-      { key:'unit',     letter:'◈', label:'VIENETAS', hint:'', opts:UNITS, free:false, cols:2 },
-      { key:'size',     letter:'S', label:'DYDIS',    hint:'', opts:['1–2','3–5','6–10','10+','Su transportu','Su šarvuočiu'], free:true, cols:3 },
-      { key:'activity', letter:'A', label:'VEIKLA',   hint:'', opts:['Juda į priekį','Gynyboje','Stovi','Traukiasi','Stato blokpostą','Neaiški'], free:true, cols:2 },
-      { key:'loc',      letter:'L', label:'VIETA',    hint:'koordinatės / orientyras', opts:[], free:true, gps:true },
-      { key:'equip',    letter:'O', label:'GINKLAI',  hint:'', opts:['AK','PKM','SVD','RPG','UAZ','Šarvuotis','Nematyta'], free:true, cols:3 },
-      { key:'unit_e',   letter:'U', label:'PADALINYS',hint:'', opts:['Nežinoma','Be ženklų','Su uniforma','Civiliai'], free:false, cols:2 },
+      {key:'time',letter:'⏱',label:'DTG (STEBĖJIMO LAIKAS)',hint:'pvz. 181315C OCT 26',opts:['DABAR'],free:true},
+      {key:'unit',letter:'◈',label:'VIENETAS',hint:'',opts:UNITS,free:false,cols:2},
+      {key:'size',letter:'S',label:'DYDIS',hint:'',opts:['1–2','3–5','6–10','10+','Su transportu','Su šarvuočiu'],free:true,cols:3},
+      {key:'activity',letter:'A',label:'VEIKLA',hint:'',opts:['Juda į priekį','Gynyboje','Stovi','Traukiasi','Stato blokpostą','Neaiški'],free:true,cols:2},
+      {key:'loc',letter:'L',label:'VIETA (PRIEŠO)',hint:'arba įvesk ranka (MGRS)',type:'enemyloc',opts:[],free:true},
+      {key:'equip',letter:'E',label:'ĮRANGA / GINKLAI',hint:'',opts:['AK','PKM','SVD','RPG','UAZ','Šarvuotis','Nematyta'],free:true,cols:3,multi:true},
+      {key:'unit_e',letter:'U',label:'PADALINYS',hint:'',opts:['Nežinoma','Be ženklų','Su uniforma','Civiliai'],free:false,cols:2}
     ],
-    build: f=>`SALUTO · ${f.time||'?'} · ${f.unit||'?'}\nDYDIS: ${f.size||'?'}\nVEIKLA: ${f.activity||'?'}\nVIETA: ${f.loc||'?'}\nĮRANGA: ${f.equip||'?'}\nPADALINYS: ${f.unit_e||'nežinoma'}\nPABAIGA.`
+    build:(f,d)=>'SALUTO · '+(f.time||d)+' · '+(f.unit||'?')+'\nDYDIS: '+(f.size||'?')+'\nVEIKLA: '+(f.activity||'?')+'\nVIETA: '+(f.loc||'?')+'\nPADALINYS: '+(f.unit_e||'nežinoma')+'\nĮRANGA: '+(f.equip||'?')+'\nPABAIGA.'
   },
-  lace:{
-    title:'LACE', sub:'RESURSŲ ATASKAITA', color:'var(--green)',
+  lace:{title:'LACE',sub:'RESURSŲ ATASKAITA',color:'var(--green)',
     fields:[
-      { key:'unit_t',     letter:'◈', label:'VIENETAS · LAIKAS', hint:'', opts:UNITS, free:true, cols:2 },
-      { key:'liquid',     letter:'L', label:'VANDUO',            hint:'', opts:['Pilnas ✓','75%','50%','25%','Kritiškai mažai'], free:false, cols:2 },
-      { key:'ammo',       letter:'A', label:'ŠAUDMENYS',         hint:'', opts:['Pilni ✓','75%','50%','25%','Kritiškai mažai'], free:false, cols:2 },
-      { key:'casualties', letter:'C', label:'AUKOS',             hint:'', opts:['NĖRA ✓','1×T1 (urgent)','1×T2 (priority)','1×T3 (routine)','2+ sužeistų'], free:false, cols:2 },
-      { key:'equip',      letter:'E', label:'ĮRANGA',            hint:'', opts:['Visa veikianti ✓','Radijas LIMA','PNV sugadintas','Transportas out','Kita'], free:true, cols:2 },
+      {key:'unit',letter:'◈',label:'VIENETAS',hint:'',opts:UNITS,free:false,cols:2},
+      {key:'liquid',letter:'L',label:'VANDUO',hint:'',opts:['Pilnas','75%','50%','25%','Kritiškai mažai'],free:false,cols:2},
+      {key:'ammo',letter:'A',label:'ŠAUDMENYS',hint:'',opts:['Pilni','75%','50%','25%','Kritiškai mažai'],free:false,cols:2},
+      {key:'casualties',letter:'C',label:'AUKOS (TRIAŽAS)',legend:'T1 neatidėliotinas · T2 atidėtinas · T3 lengvas · T4 beviltiškas',hint:'pvz. 1xT1 2xT3',opts:['NĖRA','1xT1','2xT1','1xT2','2xT2','1xT3','2xT3','1xT4'],free:true,cols:3,multi:true},
+      {key:'equip',letter:'E',label:'ĮRANGA',hint:'',opts:['Visa veikianti','Radijas LIMA','PNV sugadintas','Transportas out','Kita'],free:true,cols:2}
     ],
-    build: f=>`LACE · ${f.unit_t||'?'}\nL – VANDUO: ${f.liquid||'?'}\nA – ŠAUDMENYS: ${f.ammo||'?'}\nC – AUKOS: ${f.casualties||'?'}\nE – ĮRANGA: ${f.equip||'?'}\nPABAIGA.`
+    build:(f,d)=>'LACE · '+(f.unit||'?')+' · '+d+'\nL – VANDUO: '+(f.liquid||'?')+'\nA – ŠAUDMENYS: '+(f.ammo||'?')+'\nC – AUKOS: '+(f.casualties||'?')+'\nE – ĮRANGA: '+(f.equip||'?')+'\nPABAIGA.'
   },
-  medevac:{
-    title:'MEDEVAC', sub:'EVAKUACIJA · 9 EILUTĖS', color:'var(--pink)',
+  medevac:{title:'MEDEVAC',sub:'EVAKUACIJA · 9 EILUTĖS',color:'var(--pink)',
     fields:[
-      { key:'unit_t',      letter:'◈', label:'VIENETAS · LAIKAS',       hint:'', opts:UNITS, free:true, cols:2 },
-      { key:'loc',         letter:'①', label:'VIETA (koordinatės)',      hint:'pvz. MB341289', opts:[], free:true, gps:true },
-      { key:'radio',       letter:'②', label:'RADIJAS + ŠAUKL. ŽENKLAS',hint:'pvz. 46.250 / ALFA', opts:[], free:true },
-      { key:'patients',    letter:'③', label:'PACIENTAI',               hint:'', opts:['1×A (urgent)','1×B (priority)','1×C (routine)','2×A','1×A 1×B'], free:true, cols:2 },
-      { key:'equip',       letter:'④', label:'SPEC. ĮRANGA',            hint:'', opts:['Nereikia','Neštuvai','Kab. neštuvos','Deguonis'], free:false, cols:2 },
-      { key:'mobility',    letter:'⑤', label:'PACIENTŲ JUDUMAS',        hint:'', opts:['Einantis (D)','Neštuvai (E)','1×D 1×E'], free:false, cols:2 },
-      { key:'security',    letter:'⑥', label:'SAUGUMAS VIETOJE',        hint:'', opts:['N – nėra priešo','P – galimas','X – aktyvi ugnis','K – nereikia eskortos'], free:false, cols:1 },
-      { key:'lz',          letter:'⑦', label:'LZ ŽYMĖJIMAS',            hint:'', opts:['Violetiniai dūmai','Raudoni dūmai','Žali dūmai','Strobe','VS-17'], free:false, cols:2 },
-      { key:'nationality', letter:'⑧', label:'PILIETYBĖ',               hint:'', opts:['A – savos','B – sąjungininkai','C – civiliai','D – priešo'], free:false, cols:2 },
-      { key:'injury',      letter:'⑨', label:'TRAUMA',                  hint:'pvz. GSW šlaunis', opts:['GSW','Sprogimo trauma','Lūžis','Nusvilimas','Alpimas/šokas'], free:true, cols:3 },
+      {key:'unit',letter:'◈',label:'VIENETAS (ŠAUKINYS)',hint:'',opts:UNITS,free:false,cols:2},
+      {key:'l1',letter:'1',label:'L1 · VIETA (MGRS)',hint:'pvz. 35ULA8910661342',opts:[],free:true,gps:true},
+      {key:'l2',letter:'2',label:'L2 · DAŽNIS, ŠAUKINYS, PRIEDAS',hint:'pvz. 46.250 / CHARLI 1',opts:[],free:true},
+      {key:'l3',letter:'3',label:'L3 · PACIENTAI PAGAL PIRMENYBĘ',legend:'A skubus · B skubus chirurginis · C pirmumo · D įprastas · E patogumo',hint:'pvz. 1xA 2xC',opts:['1xA','2xA','1xB','1xC','2xC','1xD'],free:true,cols:3,multi:true},
+      {key:'l4',letter:'4',label:'L4 · SPECIALI ĮRANGA',legend:'Gali būti keli pasirinkimai',hint:'',opts:[L('A · nereikia','A'),L('B · keltuvas','B'),L('C · ištraukimo įranga','C'),L('D · ventiliatorius','D')],free:true,cols:2,multi:true},
+      {key:'l5',letter:'5',label:'L5 · PACIENTAI PAGAL TIPĄ',legend:'L neštuvai · A vaikšto',hint:'pvz. 1xL 1xA',opts:['1xL','2xL','3xL','1xA','2xA','3xA'],free:true,cols:3,multi:true},
+      {key:'l6',letter:'6',label:'L6 · SAUGUMAS PAĖMIMO VIETOJE',hint:'',opts:[L('N · priešo nėra','N'),L('P · galimas priešas','P'),L('E · priešas rajone, atsargiai','E'),L('X · priešas rajone, reikia ginkluotos palydos','X')],free:false,cols:1},
+      {key:'l7',letter:'7',label:'L7 · PAĖMIMO VIETOS ŽYMĖJIMAS',hint:'',opts:[L('A · panelės','A'),L('B · pirotechnika','B'),L('C · dūmai','C'),L('D · nieko','D'),L('E · kita','E')],free:false,cols:2},
+      {key:'l8',letter:'8',label:'L8 · PACIENTO TAUTYBĖ IR STATUSAS',hint:'',opts:[L('A · sąjungininkų karys','A'),L('B · sąjungininkų civilis','B'),L('C · ne sąjungininkų saugumo pajėgos','C'),L('D · ne sąjungininkų civilis','D'),L('E · priešo pajėgos','E')],free:false,cols:1},
+      {key:'l9',letter:'9',label:'L9 · CBRN UŽTERŠTUMAS',legend:'Taikos metu čia rašomas paėmimo vietos reljefas',hint:'pvz. atvira pieva',opts:[L('Nėra','NĖRA'),L('N · branduolinis','N'),L('B · biologinis','B'),L('C · cheminis','C')],free:true,cols:2}
     ],
-    build: f=>`MEDEVAC · ${f.unit_t||'?'}\n① LOC: ${f.loc||'?'}\n② R/S: ${f.radio||'?'}\n③ PACIENTAI: ${f.patients||'?'}\n④ ĮRANGA: ${f.equip||'?'}\n⑤ JUDUMAS: ${f.mobility||'?'}\n⑥ SAUGA: ${f.security||'?'}\n⑦ LZ: ${f.lz||'?'}\n⑧ PILIETYBĖ: ${f.nationality||'?'}\n⑨ TRAUMA: ${f.injury||'?'}\nPABAIGA.`
+    build:(f,d)=>'MEDEVAC · '+(f.unit||'?')+' · '+d+'\nL1: '+(f.l1||'?')+'\nL2: '+(f.l2||'?')+'\nL3: '+(f.l3||'?')+'\nL4: '+(f.l4||'?')+'\nL5: '+(f.l5||'?')+'\nL6: '+(f.l6||'?')+'\nL7: '+(f.l7||'?')+'\nL8: '+(f.l8||'?')+'\nL9: '+(f.l9||'?')+'\nPABAIGA.'
   },
-  sitrep:{
-    title:'SITREP', sub:'SITUACIJOS ATASKAITA', color:'var(--blue)',
+  mist:{title:'MIST',sub:'SUŽEISTOJO PERDAVIMAS',color:'var(--orange)',
     fields:[
-      { key:'unit_t',   letter:'◈', label:'VIENETAS · LAIKAS', hint:'', opts:UNITS, free:true, cols:2 },
-      { key:'loc',      letter:'L', label:'DABARTINĖ VIETA',   hint:'koordinatės / orientyras', opts:[], free:true, gps:true },
-      { key:'strength', letter:'S', label:'SUDĖTIS',           hint:'', opts:['Pilna, be nuostolių','1 sužeistas','2 sužeisti','Didelis nuostolis'], free:true, cols:2 },
-      { key:'done',     letter:'N', label:'NUVEIKTA',          hint:'kas atlikta', opts:['Užėmėme objektą','Neutralizavome priešą','Patruliavome','Pasiruošėme gynybai'], free:true, cols:2 },
-      { key:'enemy',    letter:'P', label:'PRIEŠO VEIKLA',     hint:'', opts:['Nesimato','Traukiasi','Puola','Gynyboje','Neaiški'], free:false, cols:2 },
-      { key:'plan',     letter:'T', label:'TOLIMESNIS PLANAS', hint:'', opts:['Laikome poziciją','Judame į RV','Persigrupuojame','Laukiame įsakymų'], free:true, cols:2 },
-      { key:'needs',    letter:'R', label:'POREIKIAI',         hint:'', opts:['Nėra','Šaudmenys','Mediko','Transporto','Evakuacijos'], free:false, cols:2 },
+      {key:'unit',letter:'◈',label:'VIENETAS',hint:'',opts:UNITS,free:false,cols:2},
+      {key:'pt',letter:'#',label:'PACIENTO NR.',hint:'pvz. 1',opts:['1','2','3','4','5'],free:true,cols:3},
+      {key:'m',letter:'M',label:'MECHANIZMAS (KAIP SUŽEISTAS)',hint:'',opts:['Šaunamasis ginklas','Sprogimas / skeveldros','Transporto įvykis','Kritimas','Nudegimas','Sutraiškymas'],free:true,cols:2,multi:true},
+      {key:'i',letter:'I',label:'SUŽEIDIMAI (KUR)',hint:'',opts:['Galva','Kaklas','Krūtinė','Pilvas','Dubuo','Nugara','Dešinė ranka','Kairė ranka','Dešinė koja','Kairė koja'],free:true,cols:2,multi:true},
+      {key:'s',letter:'S',label:'POŽYMIAI (BŪKLĖ)',legend:'A sąmoningas · V reaguoja į balsą · P į skausmą · U nereaguoja',hint:'pvz. pulsas 110, kvėpavimas 24',opts:['A','V','P','U','Kvėpuoja','Nekvėpuoja','Pulsas yra','Pulso nėra','Stiprus kraujavimas'],free:true,cols:3,multi:true},
+      {key:'t',letter:'T',label:'GYDYMAS (KAS PADARYTA)',hint:'pvz. žnyplė dešinė koja 1315',opts:['Žnyplė','Spaudžiamasis tvarstis','Hemostatinis tvarstis','Kvėpavimo takų atvėrimas','Krūtinės plėvelė','Skysčiai','Nuskausminimas','Šildymas','Imobilizacija'],free:true,cols:2,multi:true}
     ],
-    build: f=>`SITREP · ${f.unit_t||'?'}\nLOC: ${f.loc||'?'}\nSUDĖTIS: ${f.strength||'?'}\nNUVEIKTA: ${f.done||'?'}\nPRIEŠAS: ${f.enemy||'?'}\nPLANAS: ${f.plan||'?'}\nPOREIKIAI: ${f.needs||'?'}\nPABAIGA.`
+    build:(f,d)=>'MIST · '+(f.unit||'?')+' · '+d+'\nPACIENTAS: '+(f.pt||'?')+'\nM: '+(f.m||'?')+'\nI: '+(f.i||'?')+'\nS: '+(f.s||'?')+'\nT: '+(f.t||'?')+'\nPABAIGA.'
+  },
+  sitrep:{title:'SITREP',sub:'SITUACIJOS ATASKAITA',color:'var(--blue)',
+    fields:[
+      {key:'unit',letter:'◈',label:'VIENETAS',hint:'',opts:UNITS,free:false,cols:2},
+      {key:'loc',letter:'L',label:'DABARTINĖ VIETA (MGRS)',hint:'koordinatės / orientyras',opts:[],free:true,gps:true},
+      {key:'strength',letter:'S',label:'SUDĖTIS',hint:'',opts:['Pilna, be nuostolių','1 sužeistas','2 sužeisti','Didelis nuostolis'],free:true,cols:2},
+      {key:'done',letter:'N',label:'NUVEIKTA',hint:'kas atlikta',opts:['Užėmėme objektą','Neutralizavome priešą','Patruliavome','Pasiruošėme gynybai'],free:true,cols:2,area:true},
+      {key:'enemy',letter:'P',label:'PRIEŠO VEIKLA',hint:'',opts:['Nesimato','Traukiasi','Puola','Gynyboje','Neaiški'],free:false,cols:2},
+      {key:'plan',letter:'T',label:'TOLIMESNIS PLANAS',hint:'',opts:['Laikome poziciją','Judame į RV','Persigrupuojame','Laukiame įsakymų'],free:true,cols:2},
+      {key:'needs',letter:'R',label:'POREIKIAI',hint:'',opts:['Nėra','Šaudmenys','Mediko','Transporto','Evakuacijos'],free:false,cols:2}
+    ],
+    build:(f,d)=>'SITREP · '+(f.unit||'?')+' · '+d+'\nLOC: '+(f.loc||'?')+'\nSUDĖTIS: '+(f.strength||'?')+'\nNUVEIKTA: '+(f.done||'?')+'\nPRIEŠAS: '+(f.enemy||'?')+'\nPLANAS: '+(f.plan||'?')+'\nPOREIKIAI: '+(f.needs||'?')+'\nPABAIGA.'
   }
 };
 
-let currentId=null, currentStep=0, formData={}, accentColor='var(--green)';
+/* ───────── būsena ───────── */
+let currentId=null,currentStep=0,formData={},accentColor='var(--green)';
+let geo={lat:null,lon:null},enemy={az:null,dist:null,decl:null};
 
 function goTo(s){
+  stopCompass();
   document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
   document.getElementById('screen-'+s).classList.add('active');
 }
-
 function startReport(id){
-  currentId=id; currentStep=0; formData={};
-  const r=REPORTS[id]; accentColor=r.color;
+  currentId=id;currentStep=0;formData={};geo={lat:null,lon:null};enemy={az:null,dist:null,decl:null};
+  const r=REPORTS[id];accentColor=r.color;
   document.getElementById('form-title').textContent=r.title;
   document.getElementById('form-sub').textContent=r.sub;
-  const tf=r.fields.find(f=>f.key==='time');
-  if(tf) formData['time']=new Date().toTimeString().slice(0,5);
-  renderStep(); goTo('form');
+  if(r.fields.some(f=>f.key==='time'))formData.time=dtgNow();
+  renderStep();goTo('form');
 }
 
+/* ───────── kompasas ───────── */
+let compassOff=null,compassTimer=null,compassGranted=false;
+function stopCompass(){
+  if(compassOff){compassOff();compassOff=null;}
+  if(compassTimer){clearTimeout(compassTimer);compassTimer=null;}
+}
+function compassStart(onHeading,onNeedPermission){
+  stopCompass();
+  const handler=function(e){
+    let h=null,acc=null;
+    if(typeof e.webkitCompassHeading==='number'&&!isNaN(e.webkitCompassHeading)){
+      h=e.webkitCompassHeading;
+      if(typeof e.webkitCompassAccuracy==='number'&&e.webkitCompassAccuracy>=0)acc=e.webkitCompassAccuracy;
+    }else if(e.alpha!=null&&(e.absolute===true||e.type==='deviceorientationabsolute')){
+      h=(360-e.alpha)%360;
+    }
+    if(h!=null)onHeading(h,acc);
+  };
+  const attach=function(){
+    window.addEventListener('deviceorientationabsolute',handler,true);
+    window.addEventListener('deviceorientation',handler,true);
+    compassOff=function(){
+      window.removeEventListener('deviceorientationabsolute',handler,true);
+      window.removeEventListener('deviceorientation',handler,true);
+    };
+  };
+  if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'&&!compassGranted){
+    try{
+      DeviceOrientationEvent.requestPermission().then(function(s){
+        if(s==='granted'){compassGranted=true;attach();}else onNeedPermission('denied');
+      }).catch(function(){onNeedPermission('gesture');});
+    }catch(e){onNeedPermission('gesture');}
+  }else attach();
+}
+
+/* ───────── priešo vieta: kompasas + atstumas ───────── */
+function buildEnemyLoc(card,updateVal){
+  if(enemy.decl==null)enemy.decl=declAt(55.2,23.9);
+  const box=document.createElement('div');box.className='el-box';
+  box.innerHTML=
+   '<div class="el-sec"><div class="el-title">1 · MANO VIETA</div><div class="el-row"><div class="el-status" id="el-gps">⏳ Nustatoma GPS…</div><button class="el-mini" id="el-gps-btn">↻</button></div></div>'+
+   '<div class="el-sec"><div class="el-title">2 · AZIMUTAS Į PRIEŠĄ</div>'+
+     '<div class="el-heading" id="el-head">---°</div><div class="el-acc" id="el-acc"></div>'+
+     '<button class="el-big" id="el-perm" style="display:none">🧭 ĮJUNGTI KOMPASĄ</button>'+
+     '<button class="el-big lock" id="el-lock">🎯 FIKSUOTI AZIMUTĄ</button>'+
+     '<div class="el-hint">Laikyk telefoną horizontaliai, viršutinis kraštas į priešą. Kompasas ±5–10°, laikykis toliau nuo metalo.</div>'+
+     '<div class="el-warn" id="el-warn"></div>'+
+     '<div class="el-grid2"><div><div class="el-lbl">AZIMUTAS °</div><input class="el-in" id="el-az" type="number" inputmode="numeric" min="0" max="359" placeholder="0–359"></div>'+
+     '<div><div class="el-lbl">DEKLINACIJA °E</div><input class="el-in" id="el-decl" type="number" inputmode="decimal" step="0.1"></div></div></div>'+
+   '<div class="el-sec"><div class="el-title">3 · ATSTUMAS (m)</div><div class="opts-grid cols3" id="el-chips" style="padding:0 0 10px"></div>'+
+     '<input class="el-in" id="el-dist" type="number" inputmode="numeric" placeholder="pvz. 300"></div>'+
+   '<div class="el-sec"><div class="el-title">REZULTATAS</div><div class="el-result" id="el-res">Įvesk azimutą ir atstumą</div></div>';
+  card.appendChild(box);
+  const $=function(s){return box.querySelector(s);};
+  const gpsSt=$('#el-gps'),gpsBtn=$('#el-gps-btn'),headEl=$('#el-head'),accEl=$('#el-acc'),permBtn=$('#el-perm'),lockBtn=$('#el-lock'),warnEl=$('#el-warn'),azIn=$('#el-az'),declIn=$('#el-decl'),distIn=$('#el-dist'),resEl=$('#el-res'),chipsEl=$('#el-chips');
+  azIn.value=enemy.az==null?'':enemy.az;declIn.value=enemy.decl;distIn.value=enemy.dist==null?'':enemy.dist;
+  let magH=null,sx=null,sy=null,seen=false,lastDraw=0;
+
+  function showTrue(){
+    if(magH==null){headEl.textContent='---°';return;}
+    headEl.textContent=Math.round((magH+enemy.decl+360)%360)%360+'°';
+  }
+  function refreshChips(){
+    chipsEl.querySelectorAll('.opt-btn').forEach(function(b){b.classList.toggle('selected',enemy.dist===parseInt(b.dataset.v,10));});
+  }
+  function compute(){
+    if(enemy.az==null||!(enemy.dist>0)){resEl.textContent='Įvesk azimutą ir atstumą';return;}
+    let val;
+    if(geo.lat!=null){
+      const p=destPoint(geo.lat,geo.lon,enemy.az,enemy.dist);
+      val=latLonToMGRS(p[0],p[1],4)+' (AZ '+enemy.az+'°, '+enemy.dist+'m)';
+    }else val='AZ '+enemy.az+'°, '+enemy.dist+'m';
+    resEl.textContent=val;updateVal(val);
+    const fi=card.querySelector('.free-input');if(fi)fi.value=val;
+  }
+  function gpsGo(){
+    gpsSt.textContent='⏳ Nustatoma GPS…';
+    if(!navigator.geolocation){gpsSt.textContent='⚠ GPS nepasiekiamas';return;}
+    navigator.geolocation.getCurrentPosition(function(p){
+      geo.lat=p.coords.latitude;geo.lon=p.coords.longitude;
+      gpsSt.textContent='✓ '+latLonToMGRS(geo.lat,geo.lon,5);
+      if(inLT(geo.lat,geo.lon)){enemy.decl=declAt(geo.lat,geo.lon);warnEl.textContent='';}
+      else warnEl.textContent='⚠ Už Lietuvos ribų – patikrink deklinaciją';
+      declIn.value=enemy.decl;showTrue();compute();
+    },function(){gpsSt.textContent='⚠ GPS nepavyko – patikrink leidimą ir spausk ↻';},{enableHighAccuracy:true,timeout:12000,maximumAge:0});
+  }
+  function onHeading(h,acc){
+    seen=true;const r=h*Math.PI/180;
+    if(sx==null){sx=Math.sin(r);sy=Math.cos(r);}else{sx=sx*0.85+Math.sin(r)*0.15;sy=sy*0.85+Math.cos(r)*0.15;}
+    magH=(Math.atan2(sx,sy)*180/Math.PI+360)%360;
+    const now=Date.now();
+    if(now-lastDraw>100){lastDraw=now;showTrue();accEl.textContent=acc!=null?'±'+Math.round(acc)+'°':'';}
+  }
+  function startC(){
+    permBtn.style.display='none';seen=false;sx=null;sy=null;
+    compassStart(onHeading,function(kind){
+      permBtn.style.display='block';
+      permBtn.textContent=kind==='denied'?'🧭 KOMPASAS UŽDRAUSTAS · BANDYTI DAR KARTĄ':'🧭 ĮJUNGTI KOMPASĄ';
+    });
+    if(compassTimer)clearTimeout(compassTimer);
+    compassTimer=setTimeout(function(){
+      if(!seen&&permBtn.style.display==='none')warnEl.textContent='⚠ Kompasas nepasiekiamas – įvesk azimutą ranka';
+    },3000);
+  }
+
+  [50,100,150,200,300,500,800,1000].forEach(function(m){
+    const b=document.createElement('button');b.className='opt-btn';b.style.color=accentColor;b.dataset.v=m;b.textContent=m+' m';
+    b.onclick=function(){enemy.dist=m;distIn.value=m;refreshChips();compute();};
+    chipsEl.appendChild(b);
+  });
+  refreshChips();
+  distIn.oninput=function(){const v=parseFloat(distIn.value);enemy.dist=v>0?Math.round(v):null;refreshChips();compute();};
+  azIn.oninput=function(){const v=parseFloat(azIn.value);enemy.az=isNaN(v)?null:((Math.round(v)%360)+360)%360;compute();};
+  declIn.oninput=function(){const v=parseFloat(declIn.value);enemy.decl=isNaN(v)?0:v;showTrue();};
+  lockBtn.onclick=function(){
+    if(magH==null){warnEl.textContent='⚠ Dar nėra kompaso rodmens – įvesk azimutą ranka';return;}
+    enemy.az=Math.round((magH+enemy.decl+360)%360)%360;azIn.value=enemy.az;
+    lockBtn.textContent='✓ AZIMUTAS '+enemy.az+'° · FIKSUOTI IŠ NAUJO';compute();
+  };
+  permBtn.onclick=startC;
+  gpsBtn.onclick=gpsGo;
+  gpsGo();startC();
+}
+
+/* ───────── žingsnių piešimas ───────── */
 function renderStep(){
-  const r=REPORTS[currentId], fields=r.fields, total=fields.length, i=currentStep, f=fields[i];
-
-  document.getElementById('prog-fill').style.width=((i+1)/total*100)+'%';
-  document.getElementById('prog-fill').style.background=accentColor;
+  stopCompass();
+  const r=REPORTS[currentId],fields=r.fields,total=fields.length,i=currentStep,f=fields[i];
+  const pf=document.getElementById('prog-fill');
+  pf.style.width=((i+1)/total*100)+'%';pf.style.background=accentColor;
   document.getElementById('prog-label').textContent=(i+1)+' / '+total;
+  document.getElementById('btn-prev').disabled=(i===0);
+  const nb=document.getElementById('btn-next');
+  nb.textContent=i===total-1?'GENERUOTI ›':'TOLIAU ›';
+  nb.className=i===total-1?'btn-next last':'btn-next';
 
-  const prevBtn=document.getElementById('btn-prev'), nextBtn=document.getElementById('btn-next');
-  prevBtn.disabled=(i===0);
-  nextBtn.textContent=i===total-1?'GENERUOTI ›':'TOLIAU ›';
-  nextBtn.className=i===total-1?'btn-next last':'btn-next';
-
-  const area=document.getElementById('step-area');
-  area.innerHTML='';
+  const area=document.getElementById('step-area');area.innerHTML='';
 
   if(i>0){
-    const sumDiv=document.createElement('div');
-    sumDiv.className='summary-list';
+    const sumDiv=document.createElement('div');sumDiv.className='summary-list';
     for(let j=0;j<i;j++){
-      const pf=fields[j], val=formData[pf.key];
-      const row=document.createElement('div');
-      row.className='sum-row';
-      row.innerHTML='<div class="sum-ltr" style="color:'+accentColor+'">'+pf.letter+'</div><div style="flex:1;min-width:0"><div class="sum-lbl">'+pf.label+'</div><div class="sum-val'+(val?'':' empty')+'">'+(val||'—')+'</div></div><div class="sum-edit">✎</div>';
-      row.onclick=()=>{currentStep=j;renderStep();};
+      const pj=fields[j],val=formData[pj.key];
+      const row=document.createElement('div');row.className='sum-row';
+      const ltr=document.createElement('div');ltr.className='sum-ltr';ltr.style.color=accentColor;ltr.textContent=pj.letter;
+      const mid=document.createElement('div');mid.style.cssText='flex:1;min-width:0';
+      const lb=document.createElement('div');lb.className='sum-lbl';lb.textContent=pj.label;
+      const vl=document.createElement('div');vl.className='sum-val'+(val?'':' empty');vl.textContent=val||'—';
+      mid.appendChild(lb);mid.appendChild(vl);
+      const ed=document.createElement('div');ed.className='sum-edit';ed.textContent='✎';
+      row.appendChild(ltr);row.appendChild(mid);row.appendChild(ed);
+      row.onclick=function(){currentStep=j;renderStep();};
       sumDiv.appendChild(row);
     }
     area.appendChild(sumDiv);
   }
 
-  const card=document.createElement('div');
-  card.className='step-card';
-  card.style.setProperty('--accent',accentColor);
+  const card=document.createElement('div');card.className='step-card';card.style.setProperty('--accent',accentColor);
+  const head=document.createElement('div');head.className='step-card-head';
+  head.innerHTML='<div class="step-letter"></div><div style="flex:1;min-width:0"><div class="step-label"></div><div class="step-value"></div></div>';
+  const letEl=head.querySelector('.step-letter');letEl.style.color=accentColor;letEl.textContent=f.letter;
+  head.querySelector('.step-label').textContent=f.label;
+  const valEl=head.querySelector('.step-value');
+  const hintTxt=f.hint||'Pasirink arba įvesk';
+  function paintVal(){const v=formData[f.key]||'';valEl.textContent=v||hintTxt;valEl.classList.toggle('empty',!v);}
+  paintVal();card.appendChild(head);
+  function updateVal(v){formData[f.key]=v;paintVal();}
 
-  const curVal=formData[f.key]||'';
-  const head=document.createElement('div');
-  head.className='step-card-head';
-  head.innerHTML='<div class="step-letter" style="color:'+accentColor+'">'+f.letter+'</div><div style="flex:1"><div class="step-label">'+f.label+'</div><div class="step-value'+(curVal?'':' empty')+'">'+(curVal||(f.hint||'Pasirink arba įvesk'))+'</div></div>';
-  card.appendChild(head);
-  const valDisplay=head.querySelector('.step-value');
+  if(f.legend){const lg=document.createElement('div');lg.className='step-legend';lg.textContent=f.legend;card.appendChild(lg);}
 
-  function updateVal(v){
-    formData[f.key]=v;
-    valDisplay.textContent=v||(f.hint||'Pasirink arba įvesk');
-    valDisplay.classList.toggle('empty',!v);
+  const chipBtns=[];
+  function tokens(){return (formData[f.key]||'').split(', ').filter(Boolean);}
+  function refreshSel(){
+    const tk=tokens();
+    chipBtns.forEach(function(c){c.btn.classList.toggle('selected',f.multi?tk.indexOf(c.val)>=0:formData[f.key]===c.val);});
   }
 
-  // GPS
-  if(f.gps){
-    const gpsbtn=document.createElement('button');
-    gpsbtn.className='gps-btn';
-    gpsbtn.innerHTML='📍 GAUTI GPS KOORDINATES';
-    gpsbtn.onclick=()=>{
-      gpsbtn.innerHTML='⏳ NUSTATOMA...';
-      gpsbtn.classList.add('loading');
-      if(!navigator.geolocation){
-        gpsShowManual(gpsbtn,card,updateVal); return;
-      }
-      navigator.geolocation.getCurrentPosition(
-        pos=>{
-          const lat=pos.coords.latitude;
-          const lng=pos.coords.longitude;
-          const acc=Math.round(pos.coords.accuracy);
-          const mgrs=latLonToMGRS(lat,lng,5);
-          const val=mgrs;
-          updateVal(val);
-          const fi=card.querySelector('.free-input');
-          if(fi) fi.value=val;
-          gpsbtn.className='gps-btn success';
-          gpsbtn.innerHTML='✓ MGRS: '+mgrs;
-        },
-        ()=>{ gpsShowManual(gpsbtn,card,updateVal); },
-        {enableHighAccuracy:true,timeout:8000}
-      );
-    };
-    card.appendChild(gpsbtn);
-  }
-
-  // Options
-  if(f.opts&&f.opts.length){
-    const grid=document.createElement('div');
-    grid.className='opts-grid'+(f.cols===3?' cols3':f.cols===1?' cols1':'');
-    f.opts.forEach(opt=>{
-      const val=typeof opt==='object'?opt.value:opt;
-      const lbl=typeof opt==='object'?opt.label:opt;
-      const btn=document.createElement('button');
-      btn.className='opt-btn'+(formData[f.key]===val?' selected':'');
-      btn.style.color=accentColor;
-      btn.textContent=lbl;
-      btn.onclick=()=>{
-        let v=val;
-        if(f.key==='time'&&val==='DABAR') v=new Date().toTimeString().slice(0,5);
-        updateVal(v);
-        grid.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
-        btn.classList.add('selected');
-        const fi=card.querySelector('.free-input');
-        if(fi) fi.value=v;
-        if(!f.free) setTimeout(()=>nextStep(),200);
+  if(f.type==='enemyloc'){
+    buildEnemyLoc(card,updateVal);
+  }else{
+    if(f.gps){
+      const gb=document.createElement('button');gb.className='gps-btn';gb.textContent='📍 GAUTI GPS KOORDINATES (MGRS)';
+      const msg=document.createElement('div');msg.className='gps-msg';
+      gb.onclick=function(){
+        gb.textContent='⏳ NUSTATOMA…';gb.classList.add('loading');msg.textContent='';
+        if(!navigator.geolocation){gb.classList.remove('loading');gb.textContent='📍 BANDYTI DAR KARTĄ';msg.textContent='⚠ GPS nepasiekiamas – įvesk MGRS ranka.';return;}
+        navigator.geolocation.getCurrentPosition(function(p){
+          const mg=latLonToMGRS(p.coords.latitude,p.coords.longitude,5);
+          updateVal(mg);const fi=card.querySelector('.free-input');if(fi)fi.value=mg;
+          gb.className='gps-btn success';gb.textContent='✓ '+mg;
+        },function(){
+          gb.classList.remove('loading');gb.textContent='📍 BANDYTI DAR KARTĄ';
+          msg.textContent='⚠ GPS nepavyko. Patikrink leidimą (Nustatymai → Safari → Vieta) arba įvesk MGRS ranka.';
+        },{enableHighAccuracy:true,timeout:12000,maximumAge:0});
       };
-      grid.appendChild(btn);
-    });
-    card.appendChild(grid);
+      card.appendChild(gb);card.appendChild(msg);
+    }
+    if(f.opts&&f.opts.length){
+      const grid=document.createElement('div');
+      grid.className='opts-grid'+(f.cols===3?' cols3':f.cols===1?' cols1':'');
+      f.opts.forEach(function(opt){
+        const val=typeof opt==='object'?opt.value:opt,lbl=typeof opt==='object'?opt.label:opt;
+        const btn=document.createElement('button');btn.className='opt-btn';btn.style.color=accentColor;btn.textContent=lbl;
+        btn.onclick=function(){
+          const fi=card.querySelector('.free-input');
+          if(f.multi){
+            const arr=tokens(),ix=arr.indexOf(val);
+            if(ix>=0)arr.splice(ix,1);else arr.push(val);
+            const v=arr.join(', ');updateVal(v);if(fi)fi.value=v;refreshSel();return;
+          }
+          let v=val;if(f.key==='time'&&val==='DABAR')v=dtgNow();
+          updateVal(v);if(fi)fi.value=v;refreshSel();
+          if(!f.free)setTimeout(function(){nextStep();},200);
+        };
+        chipBtns.push({btn:btn,val:val});grid.appendChild(btn);
+      });
+      card.appendChild(grid);refreshSel();
+    }
   }
 
-  // Free input
   if(f.free){
-    const wrap=document.createElement('div');
-    wrap.className='free-input-wrap';
-    const isArea=(f.key==='desc'||f.key==='done'||f.key==='injury');
-    const inp=isArea?document.createElement('textarea'):document.createElement('input');
-    inp.className='free-input';
-    if(isArea){inp.rows=2;inp.style.resize='none';}else inp.type='text';
-    inp.placeholder=f.hint||'Laisvas tekstas...';
-    inp.value=formData[f.key]||'';
-    inp.oninput=()=>{
-      updateVal(inp.value);
-      card.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
-    };
-    wrap.appendChild(inp);
-    card.appendChild(wrap);
+    const wrap=document.createElement('div');wrap.className='free-input-wrap';
+    const inp=f.area?document.createElement('textarea'):document.createElement('input');
+    inp.className='free-input';if(f.area)inp.rows=2;else inp.type='text';
+    inp.placeholder=f.hint||'Laisvas tekstas…';inp.value=formData[f.key]||'';
+    inp.oninput=function(){updateVal(inp.value);refreshSel();};
+    wrap.appendChild(inp);card.appendChild(wrap);
   }
 
   area.appendChild(card);
-  setTimeout(()=>{ area.scrollTop=area.scrollHeight; },50);
-}
-
-function gpsShowManual(btn,card,updateVal){
-  btn.className='gps-btn';
-  btn.style.background='rgba(255,171,0,0.15)';
-  btn.style.borderColor='var(--amber)';
-  btn.style.color='var(--amber)';
-  btn.innerHTML='📋 ĮKLIJUOK KOORDINATES ŽEMIAU';
-  if(!card.querySelector('.gps-helper')){
-    const h=document.createElement('div');
-    h.className='gps-helper';
-    h.style.cssText='padding:0 14px 10px;display:flex;flex-direction:column;gap:6px;';
-    h.innerHTML='<a href="https://maps.google.com" target="_blank" style="display:block;background:#1a2a3a;border:1px solid var(--blue);border-radius:10px;padding:12px;text-align:center;font-family:Oswald,sans-serif;font-size:13px;letter-spacing:2px;color:var(--blue);text-decoration:none;">🗺 ATIDARYTI GOOGLE MAPS</a><div style="font-size:10px;color:var(--muted);text-align:center;line-height:1.7;">Maps → laikyk nuspaudęs bet kurį tašką<br>→ nukopijuok koordinates viršuje → įklijuok žemiau</div>';
-    const fw=card.querySelector('.free-input-wrap');
-    if(fw) card.insertBefore(h,fw); else card.appendChild(h);
-  }
+  setTimeout(function(){
+    if(card.offsetHeight>area.clientHeight*0.7)area.scrollTop=Math.max(card.offsetTop-10,0);
+    else area.scrollTop=area.scrollHeight;
+  },50);
 }
 
 function nextStep(){
   const r=REPORTS[currentId];
-  if(currentStep<r.fields.length-1){currentStep++;renderStep();}
-  else generate();
+  if(currentStep<r.fields.length-1){currentStep++;renderStep();}else generate();
 }
-function prevStep(){ if(currentStep>0){currentStep--;renderStep();} }
+function prevStep(){if(currentStep>0){currentStep--;renderStep();}}
 
 function generate(){
-  const r=REPORTS[currentId], text=r.build(formData);
+  const r=REPORTS[currentId],text=r.build(formData,dtgNow());
   document.getElementById('preview-box').textContent=text;
-  const chars=text.length, parts=Math.ceil(chars/160);
-  document.getElementById('preview-meta').textContent=chars+' simbolių · '+parts+' SMS'+(parts>1?' dalys':'');
+  const s=smsInfo(text);
+  document.getElementById('preview-meta').textContent=s.n+' simbolių · '+s.parts+' SMS'+(s.gsm?'':' (Unicode)');
   goTo('preview');
 }
-
-function sendSms(){ window.location.href='sms:?body='+encodeURIComponent(document.getElementById('preview-box').textContent); }
+function sendSms(){window.location.href='sms:?body='+encodeURIComponent(document.getElementById('preview-box').textContent);}
 function copyMsg(){
-  navigator.clipboard.writeText(document.getElementById('preview-box').textContent).then(()=>{
-    const t=document.getElementById('toast');
-    t.classList.add('show');
-    setTimeout(()=>t.classList.remove('show'),1800);
+  navigator.clipboard.writeText(document.getElementById('preview-box').textContent).then(function(){
+    const t=document.getElementById('toast');t.classList.add('show');setTimeout(function(){t.classList.remove('show');},1800);
   });
 }
 
+/* ───────── naktinis režimas, laikrodis, offline ───────── */
+function toggleNight(){
+  const on=document.body.classList.toggle('night');
+  try{localStorage.setItem('kr_night',on?'1':'0');}catch(e){}
+}
+try{if(localStorage.getItem('kr_night')==='1')document.body.classList.add('night');}catch(e){}
+
 function tick(){
   const t=new Date().toTimeString().slice(0,5);
-  ['clock','clock2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t;});
+  ['clock','clock2'].forEach(function(id){const el=document.getElementById(id);if(el)el.textContent=t;});
 }
-tick(); setInterval(tick,10000);
+tick();setInterval(tick,10000);
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});
+}
 </script>
 </body>
 </html>
