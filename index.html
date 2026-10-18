@@ -181,6 +181,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Share 
 .tl-row.live.overdue .tl-dot{border-color:var(--red)}
 .tl-now{display:flex;align-items:center;gap:8px;margin:2px 0 10px 54px;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:3px;color:var(--green)}
 .tl-now:before,.tl-now:after{content:'';flex:1;height:1px;background:var(--green);opacity:.5}
+a.m-btn,a.action-btn{display:flex;align-items:center;justify-content:center;text-decoration:none}
+.action-btn.signal{background:#3a76f0;color:#fff;grid-column:1/-1;flex-direction:row;gap:10px;padding:20px 10px}
+.sig-hint{grid-column:1/-1;margin:-2px 0 6px;font-size:11px;color:var(--muted);text-align:center;line-height:1.6}
+.sig-hint a{color:var(--blue);text-decoration:underline}
+body.night .action-btn.signal{background:#ff7a6b;color:#000}
 
 /* naktinis režimas: viskas tampa tik raudona, saugo nakties regą */
 #night-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#cc0000;mix-blend-mode:multiply;pointer-events:none;z-index:99999}
@@ -281,6 +286,8 @@ body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
     <div class="preview-meta" id="preview-meta"></div>
     <div class="preview-meta" id="preview-to" style="margin-top:-8px;color:var(--amber)"></div>
     <div class="action-grid">
+      <a class="action-btn signal" id="btn-signal" href="#" onclick="return onSignal(event)"><span class="icon">➤</span>SIGNAL</a>
+      <div class="sig-hint" id="signal-hint"></div>
       <button class="action-btn sms" onclick="sendSms()"><span class="icon">✉</span>SMS</button>
       <button class="action-btn copy" onclick="copyMsg()"><span class="icon">⧉</span>KOPIJUOTI</button>
       <button class="action-btn edit" onclick="goTo('form')"><span class="icon">✎</span>TAISYTI</button>
@@ -732,6 +739,9 @@ function generate(){
   document.getElementById('preview-meta').textContent=s.n+' simbolių · '+s.parts+' SMS'+(s.gsm?'':' (Unicode)');
   const n=hqNums();
   document.getElementById('preview-to').textContent=n?('GAVĖJAI: '+n.replace(/,/g,', ')):'';
+  const sig=signalLink(),sb=document.getElementById('btn-signal');
+  sb.setAttribute('href',sig||'#');
+  document.getElementById('signal-hint').innerHTML=sig?('Atsidarys kanalas · palaikyk žinutės lauke → <b style="color:var(--text)">Įklijuoti</b> → siųsti<br><a href="'+signalAlt(sig)+'" onclick="copyPreview()">neatsidaro? bandyti kitą nuorodą</a>'):'Kanalas nenustatytas · spausk ir pasirink Signal per „Dalintis“';
   lastLogged=null;
   goTo('preview');
 }
@@ -762,6 +772,35 @@ function hhmm(ms){const d=new Date(ms);return pad(d.getHours())+':'+pad(d.getMin
 function fmtMS(ms){ms=Math.max(0,Math.floor(ms/1000));const h=Math.floor(ms/3600),m=Math.floor(ms%3600/60),s=ms%60;return h>0?h+':'+pad(m)+':'+pad(s):pad(m)+':'+pad(s);}
 function fmtHMS(ms){ms=Math.max(0,Math.floor(ms/1000));return pad(Math.floor(ms/3600))+':'+pad(Math.floor(ms%3600/60))+':'+pad(ms%60);}
 function fmtCd(ms){return ms<0?'-'+fmtMS(-ms):fmtMS(ms);}
+
+
+/* ───── Signal: kanalo nuoroda + kopijavimas ───── */
+function signalLink(){
+  const raw=String((missionUsable()&&mission.hq&&mission.hq.signal)||'').trim();
+  if(!raw)return '';
+  if(/^https:\/\/signal\.(group|me)\/#/i.test(raw))return raw;
+  if(/^sgnl:\/\/signal\.(group|me)\/#/i.test(raw))return raw.replace(/^sgnl:\/\//i,'https://');
+  const num=raw.replace(/[^0-9+]/g,'');
+  if(/^\+\d{7,15}$/.test(num))return 'https://signal.me/#p/'+num;
+  return '';
+}
+function signalAlt(l){return l.replace(/^https:\/\//,'sgnl://');}
+function copySync(t){
+  try{const ta=document.createElement('textarea');ta.value=t;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,t.length);document.execCommand('copy');ta.remove();}catch(e){}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).catch(function(){});}catch(e){}
+}
+function shareOrCopy(t){
+  if(navigator.share){navigator.share({text:t}).catch(function(){});}
+  else{copySync(t);const el=document.getElementById('toast');el.classList.add('show');setTimeout(function(){el.classList.remove('show');},1800);}
+}
+function copyPreview(){copySync(document.getElementById('preview-box').textContent);}
+function onSignal(ev){
+  const text=document.getElementById('preview-box').textContent,link=signalLink();
+  logMessage();
+  if(!link){ev.preventDefault();shareOrCopy(text);return false;}
+  copySync(text);
+  return true;
+}
 
 function loadMission(){
   try{const s=localStorage.getItem(MKEY);mission=s?JSON.parse(s):null;}catch(e){mission=null;}
@@ -851,7 +890,7 @@ function renderMission(){
   if(!mission){root.innerHTML='<div class="mcard">Misijos nėra.</div>';return;}
   const now=nowMs(),st=mission.status,b=stateBadge(st);
   let h='<div class="mcard"><div class="row-between"><div class="m-title">'+esc(mission.name)+'</div><span class="chip-status" style="color:'+b[1]+'">'+b[0]+'</span></div>'+
-    '<div class="m-sub">Mano skyrius: <b style="color:var(--text)">'+esc(unitText(mission.me))+'</b> · skyrių: '+mission.units.length+(mission.hq&&mission.hq.callsign?' · štabas: <b style="color:var(--text)">'+esc(mission.hq.callsign)+'</b>':'')+(mission.hq&&mission.hq.freq?' · '+esc(mission.hq.freq):'')+'</div>';
+    '<div class="m-sub">Mano skyrius: <b style="color:var(--text)">'+esc(unitText(mission.me))+'</b> · skyrių: '+mission.units.length+(mission.hq&&mission.hq.callsign?' · štabas: <b style="color:var(--text)">'+esc(mission.hq.callsign)+'</b>':'')+(mission.hq&&mission.hq.freq?' · '+esc(mission.hq.freq):'')+(signalLink()?' · Signal ✓':'')+'</div>';
   if(st==='active')h+='<div class="m-elapsed" id="mi-elapsed">T+'+fmtHMS(now-mission.startedAt)+'</div>';
   if(st==='ended'&&mission.endedAt)h+='<div class="m-sub">Trukmė: '+fmtHMS(mission.endedAt-mission.startedAt)+'</div>';
   h+='</div>';
@@ -895,7 +934,7 @@ function renderMission(){
       }else{
         const e=x.e,isMsg=e.kind==='msg',col=typeColor(e.type);
         h+='<div class="tl-row" data-act="tl" data-v="'+e.id+'"><div class="tl-time">'+hhmm(e.ts)+'</div><div class="tl-rail"><div class="tl-dot" style="background:'+col+'"></div></div><div class="tl-main"><div class="tl-title">'+(isMsg?esc(REPORTS[e.type].title)+' · '+esc(uT(e.unit)):esc(e.label)+' · padaryta')+'</div><div class="tl-sub">'+(isMsg?'išsiųsta':'atlikta')+(e.routineKey?' · ↻ rutina':'')+'</div>'+
-          (isMsg?'<div class="tl-text" id="tt-'+e.id+'">'+esc(e.text)+'</div><div class="tl-act" id="ta-'+e.id+'"><button class="m-btn sm" data-act="tcopy" data-v="'+e.id+'">⧉ KOPIJUOTI</button><button class="m-btn sm" data-act="tsms" data-v="'+e.id+'">✉ SMS</button></div>':'')+'</div></div>';
+          (isMsg?'<div class="tl-text" id="tt-'+e.id+'">'+esc(e.text)+'</div><div class="tl-act" id="ta-'+e.id+'"><button class="m-btn sm" data-act="tcopy" data-v="'+e.id+'">⧉ KOPIJUOTI</button><button class="m-btn sm" data-act="tsms" data-v="'+e.id+'">✉ SMS</button><a class="m-btn sm" data-act="tsig" data-v="'+e.id+'" href="'+esc(signalLink()||'#')+'">➤ SIGNAL</a></div>':'')+'</div></div>';
       }
     });
     if(!nowDrawn)drawNow();
@@ -913,15 +952,16 @@ function renderMission(){
   }
   if(mission.notes)h+='<div class="mcard"><div class="el-title">PASTABOS</div><div class="m-note">'+esc(mission.notes)+'</div></div>';
   root.innerHTML=h;root.scrollTop=sc;
-  root.querySelectorAll('[data-act]').forEach(function(el){el.onclick=function(ev){ev.stopPropagation();missionAct(el.dataset.act,el.dataset.v);};});
+  root.querySelectorAll('[data-act]').forEach(function(el){el.onclick=function(ev){ev.stopPropagation();missionAct(el.dataset.act,el.dataset.v,ev);};});
 }
 function arm(k){armed[k]=true;renderMission();setTimeout(function(){armed[k]=false;if(curScreen==='mission')renderMission();},3000);}
-function missionAct(a,v){
+function missionAct(a,v,ev){
   if(a==='start'){mission.status='active';mission.startedAt=nowMs();mission.endedAt=null;mission.log=[];saveMission();lastSig='';renderMission();}
   else if(a==='edit')openSetup(false);
   else if(a==='del'){if(!armed.del){arm('del');return;}armed.del=false;mission=null;saveMission();goTo('select');}
   else if(a==='end'){if(!armed.end){arm('end');return;}armed.end=false;mission.status='ended';mission.endedAt=nowMs();saveMission();lastSig='';renderMission();}
   else if(a==='newm')openSetup(true);
+  else if(a==='tsig'){const e=mission.log.find(function(x){return x.id===v;});if(!e)return;if(!signalLink()){if(ev)ev.preventDefault();shareOrCopy(e.text);}else copySync(e.text);}
   else if(a==='q')startReport(v,{from:'mission'});
   else if(a==='go')goRoutine(v);
   else if(a==='tl'){const t=document.getElementById('tt-'+v),c=document.getElementById('ta-'+v);if(t){t.classList.toggle('open');c.classList.toggle('open');}}
@@ -951,7 +991,7 @@ function logText(){
 function defaultMission(){
   return {id:uid(),name:'',status:'planned',createdAt:nowMs(),startedAt:null,endedAt:null,me:'CHARLI 1',
     units:PRESET_UNITS.map(function(n){return {name:n,callsign:'',phone:''};}),
-    hq:{callsign:'',freq:'',phones:''},routines:[{id:uid(),type:'sitrep',label:'',every:60,first:60,on:true}],notes:'',log:[]};
+    hq:{callsign:'',freq:'',phones:'',signal:''},routines:[{id:uid(),type:'sitrep',label:'',every:60,first:60,on:true}],notes:'',log:[]};
 }
 function openSetup(isNew){
   draftNew=!!isNew||!mission;
@@ -977,7 +1017,9 @@ function renderSetup(){
 
   h+='<div class="mcard"><div class="el-title">ŠTABAS / GAVĖJAS</div>'+
     '<div class="el-grid2"><div><div class="el-lbl">ŠAUKINYS</div><input class="el-in" data-bind="hq.callsign" value="'+esc(d.hq.callsign)+'"></div><div><div class="el-lbl">DAŽNIS / KANALAS</div><input class="el-in" data-bind="hq.freq" placeholder="pvz. 46.250" value="'+esc(d.hq.freq)+'"></div></div>'+
-    '<div class="el-lbl" style="margin-top:10px">SMS NUMERIAI (per kablelį)</div><input class="el-in" data-bind="hq.phones" inputmode="tel" placeholder="+37060000000, +37061111111" value="'+esc(d.hq.phones)+'"></div>';
+    '<div class="el-lbl" style="margin-top:10px">SMS NUMERIAI (per kablelį)</div><input class="el-in" data-bind="hq.phones" inputmode="tel" placeholder="+37060000000, +37061111111" value="'+esc(d.hq.phones)+'">'+
+    '<div class="el-lbl" style="margin-top:10px">SIGNAL KANALAS (grupės nuoroda arba numeris)</div><input class="el-in" data-bind="hq.signal" id="sf-signal" placeholder="https://signal.group/#… arba +370…" value="'+esc(d.hq.signal||'')+'">'+
+    '<div class="m-sub" id="sf-signal-hint" style="margin-top:6px">Signal → grupė → pavadinimas → <b style="color:var(--text)">Grupės nuoroda</b> → įjungti → Dalintis → Kopijuoti. Nuorodą gali įjungti tik grupės administratorius.</div></div>';
 
   h+='<div class="mcard"><div class="el-title">RUTINA (priminimai)</div>';
   d.routines.forEach(function(r){
@@ -992,10 +1034,16 @@ function renderSetup(){
   h+='<div class="mcard"><div class="el-title">PASTABOS</div><textarea class="free-input" data-bind="notes" rows="3" placeholder="RV, kodiniai žodžiai, kita svarbi informacija…">'+esc(d.notes)+'</textarea></div>';
   root.innerHTML=h;root.scrollTop=sc;
 
-  root.querySelectorAll('[data-bind]').forEach(function(el){el.oninput=function(){setPath(d,el.dataset.bind,el.value);};});
+  root.querySelectorAll('[data-bind]').forEach(function(el){el.oninput=function(){setPath(d,el.dataset.bind,el.value);if(el.dataset.bind==='hq.signal')checkSignalField(el.value);};});
+  if(d.hq.signal)checkSignalField(d.hq.signal);
   root.querySelectorAll('[data-unit]').forEach(function(el){el.oninput=function(){const u=d.units.find(function(x){return x.name===el.dataset.unit;});if(u)u[el.dataset.f]=el.value;};});
   root.querySelectorAll('[data-rf]').forEach(function(el){el.oninput=function(){const r=d.routines.find(function(x){return x.id===el.dataset.r;});if(!r)return;const f=el.dataset.rf;r[f]=(f==='label')?el.value:Math.max(0,parseInt(el.value,10)||0);};});
   root.querySelectorAll('[data-act]').forEach(function(el){el.onclick=function(){setupAct(el.dataset.act,el.dataset.v,el.dataset.r);};});
+}
+function checkSignalField(v){
+  const h=document.getElementById('sf-signal-hint');if(!h)return;
+  const raw=String(v||'').trim();let ok=!raw||/^https:\/\/signal\.(group|me)\/#/i.test(raw)||/^sgnl:\/\/signal\.(group|me)\/#/i.test(raw)||/^\+\d{7,15}$/.test(raw.replace(/[^0-9+]/g,''));
+  h.innerHTML=raw&&!ok?'<span style="color:var(--amber)">⚠ Nuoroda neatpažinta. Turi prasidėti https://signal.group/# arba https://signal.me/#, arba būti telefono numeris.</span>':(raw?'<span style="color:var(--green)">✓ Atpažinta</span>':'Signal → grupė → pavadinimas → <b style="color:var(--text)">Grupės nuoroda</b> → įjungti → Dalintis → Kopijuoti. Nuorodą gali įjungti tik grupės administratorius.');
 }
 function setupAct(a,v,rid){
   const d=draft,r=rid?d.routines.find(function(x){return x.id===rid;}):null;
