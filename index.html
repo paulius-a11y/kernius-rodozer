@@ -127,6 +127,61 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Share 
 .toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;padding:12px 28px;border-radius:30px;font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;letter-spacing:3px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap}
 .toast.show{opacity:1}
 
+/* ───── misija ───── */
+.mcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;flex-shrink:0}
+.row-between{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.m-title{font-family:'Oswald',sans-serif;font-size:20px;letter-spacing:2px;word-break:break-word}
+.m-sub{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6}
+.m-elapsed{font-family:'Oswald',sans-serif;font-size:34px;font-weight:700;color:var(--green);margin-top:8px;letter-spacing:2px}
+.chip-status{display:inline-block;font-size:10px;letter-spacing:2px;padding:4px 10px;border-radius:20px;border:1px solid currentColor;flex-shrink:0}
+.m-big{width:100%;min-height:62px;border-radius:12px;border:none;font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;letter-spacing:3px;cursor:pointer;margin-bottom:10px;flex-shrink:0}
+.m-big:active{opacity:.85}
+.m-big.go{background:var(--green);color:#000}
+.m-big.stop{background:#2a1a1a;color:var(--red);border:1px solid var(--red)}
+.m-row{display:flex;gap:8px;margin-bottom:10px;flex-shrink:0}
+.m-btn{flex:1;min-height:52px;border-radius:10px;background:#252525;border:1.5px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:12px;cursor:pointer;padding:6px}
+.m-btn:active{background:#333}
+.m-btn.on{border-color:var(--green);color:var(--green)}
+.m-btn.sm{flex:0 0 auto;min-height:40px;padding:6px 12px;font-size:11px}
+.m-btn.danger{color:var(--red);border-color:var(--red)}
+.opt-btn.sm{min-height:44px;font-size:12px;padding:6px 4px}
+.nx-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:10px;flex-shrink:0}
+.nx-card.overdue{border-color:var(--red);background:#2a1414}
+.nx-top{display:flex;justify-content:space-between;font-family:'Oswald',sans-serif;letter-spacing:2px;font-size:14px}
+.nx-count{font-family:'Oswald',sans-serif;font-size:46px;font-weight:700;text-align:center;line-height:1.15;margin:4px 0}
+.nx-card.overdue .nx-count{color:var(--red)}
+.nx-sub{text-align:center;font-size:11px;color:var(--muted);letter-spacing:2px}
+.nx-go{width:100%;margin-top:10px;min-height:52px;border-radius:10px;border:1.5px solid var(--green);background:rgba(0,230,118,.12);color:var(--green);font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;cursor:pointer}
+.nx-card.overdue .nx-go{border-color:var(--red);background:rgba(255,69,58,.15);color:var(--red)}
+.qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.qbtn{min-height:56px;border-radius:10px;background:#252525;border:1.5px solid var(--border);font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:1px;cursor:pointer}
+.qbtn:active{background:#333}
+.sec-title{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:3px;color:var(--muted);margin:6px 2px 8px}
+.tl-row{display:flex;gap:8px;cursor:pointer}
+.tl-time{width:46px;font-size:12px;color:var(--muted);padding-top:3px;flex-shrink:0}
+.tl-rail{width:16px;position:relative;flex-shrink:0}
+.tl-rail:before{content:'';position:absolute;left:7px;top:0;bottom:-2px;width:2px;background:var(--border)}
+.tl-dot{position:absolute;left:3px;top:6px;width:10px;height:10px;border-radius:50%}
+.tl-main{flex:1;padding-bottom:14px;min-width:0}
+.tl-title{font-size:13px;word-break:break-word}
+.tl-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.tl-row.missed .tl-title{color:var(--red)}
+.tl-text{display:none;white-space:pre-wrap;word-break:break-word;background:#141414;border:1px solid var(--border);border-radius:8px;padding:10px;margin-top:6px;font-size:12px;color:var(--green);line-height:1.7}
+.tl-text.open{display:block}
+.tl-act{display:none;gap:8px;margin-top:6px}
+.tl-act.open{display:flex}
+.u-row{border-top:1px solid var(--border);padding:10px 0}
+.u-name{flex:1;font-family:'Oswald',sans-serif;font-size:15px;letter-spacing:2px}
+.m-note{font-size:12px;color:var(--text);white-space:pre-wrap;word-break:break-word;line-height:1.7}
+.setup-bar{padding:12px 16px calc(14px + env(safe-area-inset-bottom));display:flex;gap:10px;flex-shrink:0;background:var(--bg);border-top:1px solid var(--border)}
+.setup-msg{font-size:12px;color:var(--amber);padding:0 16px 6px;min-height:16px}
+.tl-row.live .tl-dot{background:var(--bg);border:2px solid var(--muted)}
+.tl-row.live .tl-title{color:var(--text)}
+.tl-row.live.overdue .tl-title,.tl-row.live.overdue .tl-sub{color:var(--red)}
+.tl-row.live.overdue .tl-dot{border-color:var(--red)}
+.tl-now{display:flex;align-items:center;gap:8px;margin:2px 0 10px 54px;font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:3px;color:var(--green)}
+.tl-now:before,.tl-now:after{content:'';flex:1;height:1px;background:var(--green);opacity:.5}
+
 /* naktinis režimas: viskas tampa tik raudona, saugo nakties regą */
 #night-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#cc0000;mix-blend-mode:multiply;pointer-events:none;z-index:99999}
 body.night #night-overlay{display:block}
@@ -194,6 +249,7 @@ body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
     <div class="top-right"><button class="night-btn" onclick="toggleNight()">🌙</button><div class="clock" id="clock">00:00</div></div>
   </div>
   <div class="report-list">
+    <div id="home-mission"></div>
     <button class="rep-btn bl-red" onclick="startReport('contactrep')"><div class="rep-icon ic-red">!</div><div class="rep-text"><div class="rep-code" style="color:var(--red)">CONTACTREP</div><div class="rep-desc">Kontaktas su priešu · pirmoji sekundė<br>Kryptis · Atstumas · Aprašymas</div></div><div class="rep-arrow">›</div></button>
     <button class="rep-btn bl-amber" onclick="startReport('saluto')"><div class="rep-icon ic-amber">S</div><div class="rep-text"><div class="rep-code" style="color:var(--amber)">SALUTO</div><div class="rep-desc">Priešo stebėjimas · žvalgyba<br>Dydis · Veikla · Vieta (kompasas) · Įranga</div></div><div class="rep-arrow">›</div></button>
     <button class="rep-btn bl-green" onclick="startReport('lace')"><div class="rep-icon ic-green">L</div><div class="rep-text"><div class="rep-code" style="color:var(--green)">LACE</div><div class="rep-desc">Savų resursai · po susirėmimo<br>Vanduo · Šaudmenys · Aukos · Įranga</div></div><div class="rep-arrow">›</div></button>
@@ -205,7 +261,7 @@ body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
 
 <div class="screen" id="screen-form">
   <div class="topbar">
-    <button class="back-btn" onclick="goTo('select')">‹</button>
+    <button class="back-btn" onclick="goTo(returnScreen)">‹</button>
     <div><div class="topbar-title" id="form-title"></div><div class="topbar-sub" id="form-sub"></div></div>
     <div class="top-right"><button class="night-btn" onclick="toggleNight()">🌙</button><div class="clock" id="clock2">00:00</div></div>
   </div>
@@ -223,13 +279,34 @@ body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
   <div class="preview-body">
     <div class="preview-box" id="preview-box"></div>
     <div class="preview-meta" id="preview-meta"></div>
+    <div class="preview-meta" id="preview-to" style="margin-top:-8px;color:var(--amber)"></div>
     <div class="action-grid">
       <button class="action-btn sms" onclick="sendSms()"><span class="icon">✉</span>SMS</button>
       <button class="action-btn copy" onclick="copyMsg()"><span class="icon">⧉</span>KOPIJUOTI</button>
       <button class="action-btn edit" onclick="goTo('form')"><span class="icon">✎</span>TAISYTI</button>
-      <button class="action-btn new" onclick="goTo('select')"><span class="icon">+</span>NAUJA</button>
+      <button class="action-btn new" onclick="goTo(returnScreen)"><span class="icon">+</span>NAUJA</button>
     </div>
   </div>
+</div>
+
+<div class="screen" id="screen-mission">
+  <div class="topbar">
+    <button class="back-btn" onclick="goTo('select')">‹</button>
+    <div><div class="topbar-title" id="mission-title">MISIJA</div><div class="topbar-sub">MISIJOS VALDYMAS</div></div>
+    <div class="top-right"><button class="night-btn" onclick="toggleNight()">🌙</button><div class="clock" id="clock3">00:00</div></div>
+  </div>
+  <div class="step-area" id="mission-body"></div>
+</div>
+
+<div class="screen" id="screen-msetup">
+  <div class="topbar">
+    <button class="back-btn" data-act="cancel" id="setup-back">‹</button>
+    <div><div class="topbar-title">MISIJOS DUOMENYS</div><div class="topbar-sub">SUVEDI VIENĄ KARTĄ</div></div>
+    <div class="top-right"><button class="night-btn" onclick="toggleNight()">🌙</button></div>
+  </div>
+  <div class="step-area" id="setup-body"></div>
+  <div class="setup-msg" id="setup-msg"></div>
+  <div class="setup-bar"><button class="m-btn" id="setup-cancel" style="flex:0 0 38%">ATŠAUKTI</button><button class="m-big go" id="setup-save" style="margin:0;flex:1">SAUGOTI</button></div>
 </div>
 
 <div class="toast" id="toast">NUKOPIJUOTA ✓</div>
@@ -242,8 +319,9 @@ const MON=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DE
 function pad(n){return (n<10?'0':'')+n;}
 
 /* DTG pagal NATO: DDHHMM + laiko juostos raidė + MMM YY (pvz. 181315C OCT 26) */
-function dtgNow(){
-  const d=new Date(),offMin=-d.getTimezoneOffset();
+function dtgNow(){return dtgOf(new Date(nowMs()));}
+function dtgOf(d){
+  const offMin=-d.getTimezoneOffset();
   let L,Y,Mo,D,h,mi;
   if(offMin%60===0&&offMin>=-720&&offMin<=720){
     const off=offMin/60;
@@ -297,7 +375,7 @@ const REPORTS={
       {key:'desc',letter:'A',label:'APRAŠYMAS',hint:'pvz. 4 pėstininkai, auto. ugnis',opts:['Pėstininkai','Auto. ugnis','Snaiperis','Transportas','Neaiški ugnis','Iš pastato','Iš miškelio'],free:true,cols:2,area:true},
       {key:'action',letter:'▶',label:'MŪSŲ VEIKSMAS',hint:'',opts:['KOVOJAME','TRAUKIAMĖS','GYNYBOJE','PERSIGRUPUOJAME'],free:false,cols:2}
     ],
-    build:(f,d)=>'CONTACTREP · '+(f.time||d)+' · '+(f.unit||'?')+'\nKRYPTIS: '+(f.dir||'?')+'\nATSTUMAS: '+(f.dist||'?')+'\nPRIEŠAS: '+(f.desc||'?')+'\nVEIKSMAS: '+(f.action||'?')+'\nPABAIGA.'
+    build:(f,d)=>'CONTACTREP · '+(f.time||d)+' · '+uT(f.unit)+'\nKRYPTIS: '+(f.dir||'?')+'\nATSTUMAS: '+(f.dist||'?')+'\nPRIEŠAS: '+(f.desc||'?')+'\nVEIKSMAS: '+(f.action||'?')+'\nPABAIGA.'
   },
   saluto:{title:'SALUTO',sub:'PRIEŠO ŽVALGYBA',color:'var(--amber)',
     fields:[
@@ -309,7 +387,7 @@ const REPORTS={
       {key:'equip',letter:'E',label:'ĮRANGA / GINKLAI',hint:'',opts:['AK','PKM','SVD','RPG','UAZ','Šarvuotis','Nematyta'],free:true,cols:3,multi:true},
       {key:'unit_e',letter:'U',label:'PADALINYS',hint:'',opts:['Nežinoma','Be ženklų','Su uniforma','Civiliai'],free:false,cols:2}
     ],
-    build:(f,d)=>'SALUTO · '+(f.time||d)+' · '+(f.unit||'?')+'\nDYDIS: '+(f.size||'?')+'\nVEIKLA: '+(f.activity||'?')+'\nVIETA: '+(f.loc||'?')+'\nPADALINYS: '+(f.unit_e||'nežinoma')+'\nĮRANGA: '+(f.equip||'?')+'\nPABAIGA.'
+    build:(f,d)=>'SALUTO · '+(f.time||d)+' · '+uT(f.unit)+'\nDYDIS: '+(f.size||'?')+'\nVEIKLA: '+(f.activity||'?')+'\nVIETA: '+(f.loc||'?')+'\nPADALINYS: '+(f.unit_e||'nežinoma')+'\nĮRANGA: '+(f.equip||'?')+'\nPABAIGA.'
   },
   lace:{title:'LACE',sub:'RESURSŲ ATASKAITA',color:'var(--green)',
     fields:[
@@ -319,7 +397,7 @@ const REPORTS={
       {key:'casualties',letter:'C',label:'AUKOS (TRIAŽAS)',legend:'T1 neatidėliotinas · T2 atidėtinas · T3 lengvas · T4 beviltiškas',hint:'pvz. 1xT1 2xT3',opts:['NĖRA','1xT1','2xT1','1xT2','2xT2','1xT3','2xT3','1xT4'],free:true,cols:3,multi:true},
       {key:'equip',letter:'E',label:'ĮRANGA',hint:'',opts:['Visa veikianti','Radijas LIMA','PNV sugadintas','Transportas out','Kita'],free:true,cols:2}
     ],
-    build:(f,d)=>'LACE · '+(f.unit||'?')+' · '+d+'\nL – VANDUO: '+(f.liquid||'?')+'\nA – ŠAUDMENYS: '+(f.ammo||'?')+'\nC – AUKOS: '+(f.casualties||'?')+'\nE – ĮRANGA: '+(f.equip||'?')+'\nPABAIGA.'
+    build:(f,d)=>'LACE · '+uT(f.unit)+' · '+d+'\nL – VANDUO: '+(f.liquid||'?')+'\nA – ŠAUDMENYS: '+(f.ammo||'?')+'\nC – AUKOS: '+(f.casualties||'?')+'\nE – ĮRANGA: '+(f.equip||'?')+'\nPABAIGA.'
   },
   medevac:{title:'MEDEVAC',sub:'EVAKUACIJA · 9 EILUTĖS',color:'var(--pink)',
     fields:[
@@ -334,7 +412,7 @@ const REPORTS={
       {key:'l8',letter:'8',label:'L8 · PACIENTO TAUTYBĖ IR STATUSAS',hint:'',opts:[L('A · sąjungininkų karys','A'),L('B · sąjungininkų civilis','B'),L('C · ne sąjungininkų saugumo pajėgos','C'),L('D · ne sąjungininkų civilis','D'),L('E · priešo pajėgos','E')],free:false,cols:1},
       {key:'l9',letter:'9',label:'L9 · CBRN UŽTERŠTUMAS',legend:'Taikos metu čia rašomas paėmimo vietos reljefas',hint:'pvz. atvira pieva',opts:[L('Nėra','NĖRA'),L('N · branduolinis','N'),L('B · biologinis','B'),L('C · cheminis','C')],free:true,cols:2}
     ],
-    build:(f,d)=>'MEDEVAC · '+(f.unit||'?')+' · '+d+'\nL1: '+(f.l1||'?')+'\nL2: '+(f.l2||'?')+'\nL3: '+(f.l3||'?')+'\nL4: '+(f.l4||'?')+'\nL5: '+(f.l5||'?')+'\nL6: '+(f.l6||'?')+'\nL7: '+(f.l7||'?')+'\nL8: '+(f.l8||'?')+'\nL9: '+(f.l9||'?')+'\nPABAIGA.'
+    build:(f,d)=>'MEDEVAC · '+uT(f.unit)+' · '+d+'\nL1: '+(f.l1||'?')+'\nL2: '+(f.l2||'?')+'\nL3: '+(f.l3||'?')+'\nL4: '+(f.l4||'?')+'\nL5: '+(f.l5||'?')+'\nL6: '+(f.l6||'?')+'\nL7: '+(f.l7||'?')+'\nL8: '+(f.l8||'?')+'\nL9: '+(f.l9||'?')+'\nPABAIGA.'
   },
   mist:{title:'MIST',sub:'SUŽEISTOJO PERDAVIMAS',color:'var(--orange)',
     fields:[
@@ -345,7 +423,7 @@ const REPORTS={
       {key:'s',letter:'S',label:'POŽYMIAI (BŪKLĖ)',legend:'A sąmoningas · V reaguoja į balsą · P į skausmą · U nereaguoja',hint:'pvz. pulsas 110, kvėpavimas 24',opts:['A','V','P','U','Kvėpuoja','Nekvėpuoja','Pulsas yra','Pulso nėra','Stiprus kraujavimas'],free:true,cols:3,multi:true},
       {key:'t',letter:'T',label:'GYDYMAS (KAS PADARYTA)',hint:'pvz. žnyplė dešinė koja 1315',opts:['Žnyplė','Spaudžiamasis tvarstis','Hemostatinis tvarstis','Kvėpavimo takų atvėrimas','Krūtinės plėvelė','Skysčiai','Nuskausminimas','Šildymas','Imobilizacija'],free:true,cols:2,multi:true}
     ],
-    build:(f,d)=>'MIST · '+(f.unit||'?')+' · '+d+'\nPACIENTAS: '+(f.pt||'?')+'\nM: '+(f.m||'?')+'\nI: '+(f.i||'?')+'\nS: '+(f.s||'?')+'\nT: '+(f.t||'?')+'\nPABAIGA.'
+    build:(f,d)=>'MIST · '+uT(f.unit)+' · '+d+'\nPACIENTAS: '+(f.pt||'?')+'\nM: '+(f.m||'?')+'\nI: '+(f.i||'?')+'\nS: '+(f.s||'?')+'\nT: '+(f.t||'?')+'\nPABAIGA.'
   },
   sitrep:{title:'SITREP',sub:'SITUACIJOS ATASKAITA',color:'var(--blue)',
     fields:[
@@ -357,7 +435,7 @@ const REPORTS={
       {key:'plan',letter:'T',label:'TOLIMESNIS PLANAS',hint:'',opts:['Laikome poziciją','Judame į RV','Persigrupuojame','Laukiame įsakymų'],free:true,cols:2},
       {key:'needs',letter:'R',label:'POREIKIAI',hint:'',opts:['Nėra','Šaudmenys','Mediko','Transporto','Evakuacijos'],free:false,cols:2}
     ],
-    build:(f,d)=>'SITREP · '+(f.unit||'?')+' · '+d+'\nLOC: '+(f.loc||'?')+'\nSUDĖTIS: '+(f.strength||'?')+'\nNUVEIKTA: '+(f.done||'?')+'\nPRIEŠAS: '+(f.enemy||'?')+'\nPLANAS: '+(f.plan||'?')+'\nPOREIKIAI: '+(f.needs||'?')+'\nPABAIGA.'
+    build:(f,d)=>'SITREP · '+uT(f.unit)+' · '+d+'\nLOC: '+(f.loc||'?')+'\nSUDĖTIS: '+(f.strength||'?')+'\nNUVEIKTA: '+(f.done||'?')+'\nPRIEŠAS: '+(f.enemy||'?')+'\nPLANAS: '+(f.plan||'?')+'\nPOREIKIAI: '+(f.needs||'?')+'\nPABAIGA.'
   }
 };
 
@@ -365,17 +443,29 @@ const REPORTS={
 let currentId=null,currentStep=0,formData={},accentColor='var(--green)';
 let geo={lat:null,lon:null},enemy={az:null,dist:null,decl:null};
 
+let returnScreen='select',routineKeyCtx=null,forceUnitEdit=false;
 function goTo(s){
   stopCompass();
   document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
   document.getElementById('screen-'+s).classList.add('active');
+  curScreen=s;
+  if(s==='select')renderHomeMission();
+  if(s==='mission')renderMission();
 }
-function startReport(id){
-  currentId=id;currentStep=0;formData={};geo={lat:null,lon:null};enemy={az:null,dist:null,decl:null};
+function isSkip(i){const f=REPORTS[currentId].fields[i];return missionUsable()&&f&&f.key==='unit'&&!!formData.unit&&!forceUnitEdit;}
+function startReport(id,opts){
+  opts=opts||{};
+  returnScreen=opts.from||'select';routineKeyCtx=opts.routineKey||null;
+  currentId=id;currentStep=0;formData={};geo={lat:null,lon:null};enemy={az:null,dist:null,decl:null};forceUnitEdit=false;lastLogged=null;
   const r=REPORTS[id];accentColor=r.color;
   document.getElementById('form-title').textContent=r.title;
-  document.getElementById('form-sub').textContent=r.sub;
+  document.getElementById('form-sub').textContent=r.sub+(missionUsable()?' · '+unitText(mission.me):'');
   if(r.fields.some(f=>f.key==='time'))formData.time=dtgNow();
+  if(missionUsable()){
+    formData.unit=mission.me;
+    if(id==='medevac'&&mission.hq&&mission.hq.freq)formData.l2=mission.hq.freq+' / '+unitText(mission.me);
+    while(currentStep<r.fields.length-1&&isSkip(currentStep))currentStep++;
+  }
   renderStep();goTo('form');
 }
 
@@ -512,8 +602,9 @@ function renderStep(){
   stopCompass();
   const r=REPORTS[currentId],fields=r.fields,total=fields.length,i=currentStep,f=fields[i];
   const pf=document.getElementById('prog-fill');
-  pf.style.width=((i+1)/total*100)+'%';pf.style.background=accentColor;
-  document.getElementById('prog-label').textContent=(i+1)+' / '+total;
+  const vis=fields.map(function(_,ix){return ix;}).filter(function(ix){return !isSkip(ix)||ix===i;});
+  pf.style.width=((vis.indexOf(i)+1)/vis.length*100)+'%';pf.style.background=accentColor;
+  document.getElementById('prog-label').textContent=(vis.indexOf(i)+1)+' / '+vis.length;
   document.getElementById('btn-prev').disabled=(i===0);
   const nb=document.getElementById('btn-next');
   nb.textContent=i===total-1?'GENERUOTI ›':'TOLIAU ›';
@@ -533,7 +624,7 @@ function renderStep(){
       mid.appendChild(lb);mid.appendChild(vl);
       const ed=document.createElement('div');ed.className='sum-edit';ed.textContent='✎';
       row.appendChild(ltr);row.appendChild(mid);row.appendChild(ed);
-      row.onclick=function(){currentStep=j;renderStep();};
+      row.onclick=function(){currentStep=j;if(pj.key==='unit')forceUnitEdit=true;renderStep();};
       sumDiv.appendChild(row);
     }
     area.appendChild(sumDiv);
@@ -552,6 +643,7 @@ function renderStep(){
 
   if(f.legend){const lg=document.createElement('div');lg.className='step-legend';lg.textContent=f.legend;card.appendChild(lg);}
 
+  const fopts=fieldOpts(f);
   const chipBtns=[];
   function tokens(){return (formData[f.key]||'').split(', ').filter(Boolean);}
   function refreshSel(){
@@ -579,10 +671,10 @@ function renderStep(){
       };
       card.appendChild(gb);card.appendChild(msg);
     }
-    if(f.opts&&f.opts.length){
+    if(fopts&&fopts.length){
       const grid=document.createElement('div');
       grid.className='opts-grid'+(f.cols===3?' cols3':f.cols===1?' cols1':'');
-      f.opts.forEach(function(opt){
+      fopts.forEach(function(opt){
         const val=typeof opt==='object'?opt.value:opt,lbl=typeof opt==='object'?opt.label:opt;
         const btn=document.createElement('button');btn.className='opt-btn';btn.style.color=accentColor;btn.textContent=lbl;
         btn.onclick=function(){
@@ -620,23 +712,325 @@ function renderStep(){
 }
 
 function nextStep(){
-  const r=REPORTS[currentId];
-  if(currentStep<r.fields.length-1){currentStep++;renderStep();}else generate();
+  const last=REPORTS[currentId].fields.length-1;
+  forceUnitEdit=false;
+  if(currentStep>=last){generate();return;}
+  currentStep++;
+  while(currentStep<last&&isSkip(currentStep))currentStep++;
+  renderStep();
 }
-function prevStep(){if(currentStep>0){currentStep--;renderStep();}}
+function prevStep(){
+  let s=currentStep-1;
+  while(s>=0&&isSkip(s))s--;
+  if(s>=0){currentStep=s;forceUnitEdit=false;renderStep();}
+}
 
 function generate(){
   const r=REPORTS[currentId],text=r.build(formData,dtgNow());
   document.getElementById('preview-box').textContent=text;
   const s=smsInfo(text);
   document.getElementById('preview-meta').textContent=s.n+' simbolių · '+s.parts+' SMS'+(s.gsm?'':' (Unicode)');
+  const n=hqNums();
+  document.getElementById('preview-to').textContent=n?('GAVĖJAI: '+n.replace(/,/g,', ')):'';
+  lastLogged=null;
   goTo('preview');
 }
-function sendSms(){window.location.href='sms:?body='+encodeURIComponent(document.getElementById('preview-box').textContent);}
+function sendSms(){
+  const text=document.getElementById('preview-box').textContent,n=hqNums();
+  logMessage();
+  openUrl('sms:'+n+(n?'?&body=':'?body=')+encodeURIComponent(text));
+}
+function openUrl(u){window.location.href=u;}
 function copyMsg(){
+  logMessage();
   navigator.clipboard.writeText(document.getElementById('preview-box').textContent).then(function(){
     const t=document.getElementById('toast');t.classList.add('show');setTimeout(function(){t.classList.remove('show');},1800);
   });
+}
+
+/* ═════════ MISIJA ═════════ */
+const MKEY='kr_mission_v1';
+const PRESET_UNITS=['CHARLI 1','CHARLI 2','CHARLI 3','DELTA 1','DELTA 2','DELTA 3'];
+const RTYPES={sitrep:{label:'SITREP',report:'sitrep'},lace:{label:'LACE',report:'lace'},check:{label:'RYŠIO PATIKRA',report:null},custom:{label:'KITA',report:null}};
+let mission=null,draft=null,draftNew=true,curScreen='select',lastSig='',lastLogged=null;
+const armed={};
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function uid(){return Math.random().toString(36).slice(2,9);}
+function nowMs(){return Date.now();}
+function hhmm(ms){const d=new Date(ms);return pad(d.getHours())+':'+pad(d.getMinutes());}
+function fmtMS(ms){ms=Math.max(0,Math.floor(ms/1000));const h=Math.floor(ms/3600),m=Math.floor(ms%3600/60),s=ms%60;return h>0?h+':'+pad(m)+':'+pad(s):pad(m)+':'+pad(s);}
+function fmtHMS(ms){ms=Math.max(0,Math.floor(ms/1000));return pad(Math.floor(ms/3600))+':'+pad(Math.floor(ms%3600/60))+':'+pad(ms%60);}
+function fmtCd(ms){return ms<0?'-'+fmtMS(-ms):fmtMS(ms);}
+
+function loadMission(){
+  try{const s=localStorage.getItem(MKEY);mission=s?JSON.parse(s):null;}catch(e){mission=null;}
+}
+function saveMission(){try{if(mission)localStorage.setItem(MKEY,JSON.stringify(mission));else localStorage.removeItem(MKEY);}catch(e){}}
+function missionUsable(){return !!mission&&mission.status!=='ended';}
+function mUnit(n){return mission?mission.units.find(function(u){return u.name===n;}):null;}
+function unitText(n){const u=mUnit(n);return u&&u.callsign?u.callsign:n;}
+function uT(n){return n?(missionUsable()?unitText(n):n):'?';}
+function hqNums(){return missionUsable()&&mission.hq&&mission.hq.phones?String(mission.hq.phones).replace(/[^0-9+,;]/g,'').replace(/;/g,','):'';}
+function rLabel(r){return r.type==='custom'?(r.label||'KITA'):RTYPES[r.type].label;}
+function typeColor(t){return REPORTS[t]?REPORTS[t].color:(t==='check'?'var(--amber)':'var(--orange)');}
+function fieldOpts(f){
+  if(f.opts===UNITS&&missionUsable())return mission.units.map(function(u){return L(u.callsign?(u.callsign+' · '+u.name):u.name,u.name);});
+  return f.opts;
+}
+
+/* ───── rutinos: kada ką siųsti ───── */
+function routineItems(now){
+  const m=mission;
+  if(!m||!m.startedAt||m.status==='planned')return [];
+  if(m.status==='ended'&&m.endedAt)now=Math.min(now,m.endedAt);
+  const out=[];
+  m.routines.forEach(function(r){
+    if(!r.on)return;
+    let ups=0;
+    for(let k=0;k<2000;k++){
+      const t=m.startedAt+(r.first+k*r.every)*60000;
+      if(m.endedAt&&t>m.endedAt)break;
+      const key=r.id+':'+k;
+      const done=m.log.find(function(l){return l.routineKey===key;});
+      let state;
+      if(done)state='done';else if(now<t)state='upcoming';else if(now-t>=r.every*60000)state='missed';else state='overdue';
+      if(state==='upcoming'){out.push({r:r,k:k,key:key,t:t,state:state});if(++ups>=3)break;continue;}
+      out.push({r:r,k:k,key:key,t:t,state:state,entry:done});
+    }
+  });
+  return out.sort(function(a,b){return a.t-b.t;});
+}
+function nextItem(now){
+  const it=routineItems(now).filter(function(o){return o.state==='overdue'||o.state==='upcoming';});
+  const od=it.filter(function(o){return o.state==='overdue';});
+  return od.length?od[0]:(it[0]||null);
+}
+function matchRoutine(type,ts){
+  const c=routineItems(ts).filter(function(o){return RTYPES[o.r.type].report===type&&(o.state==='overdue'||(o.state==='upcoming'&&o.t-ts<=10*60000));});
+  return c.length?c[0].key:null;
+}
+function logMessage(){
+  if(!mission||mission.status!=='active')return;
+  const text=document.getElementById('preview-box').textContent;
+  if(lastLogged===text)return;lastLogged=text;
+  const ts=nowMs();
+  mission.log.push({id:uid(),ts:ts,kind:'msg',type:currentId,unit:formData.unit||mission.me,text:text,routineKey:routineKeyCtx||matchRoutine(currentId,ts)||null});
+  saveMission();lastSig='';
+}
+function goRoutine(key){
+  const it=routineItems(nowMs()).find(function(o){return o.key===key;});
+  if(!it)return;
+  const rep=RTYPES[it.r.type].report;
+  if(rep){startReport(rep,{from:'mission',routineKey:key});}
+  else{mission.log.push({id:uid(),ts:nowMs(),kind:'check',type:it.r.type,label:rLabel(it.r),routineKey:key});saveMission();lastSig='';missionTick();}
+}
+
+/* ───── pradinis ekranas: misijos kortelė ───── */
+function renderHomeMission(){
+  const el=document.getElementById('home-mission');if(!el)return;
+  let h;
+  if(!mission){
+    h='<button class="rep-btn bl-green" data-act="hm-new"><div class="rep-icon ic-green">＋</div><div class="rep-text"><div class="rep-code" style="color:var(--green)">NAUJA MISIJA</div><div class="rep-desc">Skyriai, šaukiniai, štabas, rutina – suvedi vieną kartą</div></div><div class="rep-arrow">›</div></button>';
+  }else{
+    let sub;
+    if(mission.status==='active'){const nx=nextItem(nowMs());sub=nx?(esc(rLabel(nx.r))+' · '+(nx.state==='overdue'?'VĖLUOJA ':'po ')+'<span data-cd="'+nx.t+'">'+fmtCd(nx.t-nowMs())+'</span>'):'VYKSTA · rutinų nėra';}
+    else if(mission.status==='planned')sub='PARUOŠTA · spausk ir pradėk';else sub='BAIGTA · žurnalas';
+    h='<button class="rep-btn bl-green" data-act="hm-open"><div class="rep-icon ic-green">M</div><div class="rep-text"><div class="rep-code" style="color:var(--green)">'+esc(mission.name||'MISIJA')+'</div><div class="rep-desc">'+sub+'</div></div><div class="rep-arrow">›</div></button>';
+  }
+  el.innerHTML=h;
+  el.querySelectorAll('[data-act]').forEach(function(b){b.onclick=function(){if(b.dataset.act==='hm-new')openSetup(true);else goTo('mission');};});
+}
+
+/* ───── misijos ekranas ───── */
+function stateBadge(st){return st==='active'?['VYKSTA','var(--green)']:st==='ended'?['BAIGTA','var(--muted)']:['PARUOŠTA','var(--amber)'];}
+function renderMission(){
+  const root=document.getElementById('mission-body');if(!root)return;
+  const sc=root.scrollTop;
+  document.getElementById('mission-title').textContent=mission?(mission.name||'MISIJA'):'MISIJA';
+  if(!mission){root.innerHTML='<div class="mcard">Misijos nėra.</div>';return;}
+  const now=nowMs(),st=mission.status,b=stateBadge(st);
+  let h='<div class="mcard"><div class="row-between"><div class="m-title">'+esc(mission.name)+'</div><span class="chip-status" style="color:'+b[1]+'">'+b[0]+'</span></div>'+
+    '<div class="m-sub">Mano skyrius: <b style="color:var(--text)">'+esc(unitText(mission.me))+'</b> · skyrių: '+mission.units.length+(mission.hq&&mission.hq.callsign?' · štabas: <b style="color:var(--text)">'+esc(mission.hq.callsign)+'</b>':'')+(mission.hq&&mission.hq.freq?' · '+esc(mission.hq.freq):'')+'</div>';
+  if(st==='active')h+='<div class="m-elapsed" id="mi-elapsed">T+'+fmtHMS(now-mission.startedAt)+'</div>';
+  if(st==='ended'&&mission.endedAt)h+='<div class="m-sub">Trukmė: '+fmtHMS(mission.endedAt-mission.startedAt)+'</div>';
+  h+='</div>';
+
+  if(st==='planned'){
+    h+='<button class="m-big go" data-act="start">▶ PRADĖTI MISIJĄ</button>';
+    h+='<div class="mcard"><div class="el-title">RUTINA</div>'+(mission.routines.length?mission.routines.map(function(r){return '<div class="m-sub" style="margin:2px 0">'+(r.on?'●':'○')+' '+esc(rLabel(r))+' – kas '+r.every+' min (pirma po '+r.first+')</div>';}).join(''):'<div class="m-sub">Rutinų nėra</div>')+'</div>';
+    h+='<div class="m-row"><button class="m-btn" data-act="edit">⚙ REDAGUOTI</button><button class="m-btn danger" data-act="del">'+(armed.del?'SPAUSK DAR KARTĄ':'🗑 IŠTRINTI')+'</button></div>';
+  }
+  if(st==='active'){
+    const items=routineItems(now);
+    const live=items.filter(function(o){return o.state==='overdue'||o.state==='upcoming';});
+    const od=live.filter(function(o){return o.state==='overdue';}).sort(function(a,c){return a.t-c.t;});
+    const up=live.filter(function(o){return o.state==='upcoming';}).sort(function(a,c){return a.t-c.t;});
+    const nx=od.length?od[0]:(up[0]||null);
+    if(nx){
+      const rep=RTYPES[nx.r.type].report;
+      h+='<div class="nx-card'+(nx.state==='overdue'?' overdue':'')+'"><div class="nx-top"><span>KITAS: '+esc(rLabel(nx.r))+'</span><span>'+hhmm(nx.t)+'</span></div>'+
+        '<div class="nx-count" data-cd="'+nx.t+'">'+fmtCd(nx.t-now)+'</div><div class="nx-sub">'+(nx.state==='overdue'?'VĖLUOJA':'LIKO')+'</div>'+
+        '<button class="nx-go" data-act="go" data-v="'+nx.key+'">'+(rep?'RENGTI '+esc(rLabel(nx.r))+' ›':'✓ PADARYTA')+'</button></div>';
+    }else h+='<div class="mcard"><div class="m-sub">Rutinų nėra – pridėk per ⚙ REDAGUOTI.</div></div>';
+
+    h+='<div class="mcard"><div class="el-title">GREITI PRANEŠIMAI</div><div class="qgrid">'+['contactrep','saluto','lace','medevac','mist','sitrep'].map(function(id){return '<button class="qbtn" style="color:'+REPORTS[id].color+'" data-act="q" data-v="'+id+'">'+REPORTS[id].title+'</button>';}).join('')+'</div></div>';
+
+    /* laiko juosta: ateities rutinos, DABAR, praeitis (naujausia viršuje) */
+    const rows=[];
+    od.concat(up.slice(0,2)).forEach(function(o){rows.push({ts:o.t,live:o});});
+    mission.log.forEach(function(e){rows.push({ts:e.ts,e:e});});
+    items.filter(function(o){return o.state==='missed';}).forEach(function(o){rows.push({ts:o.t,missed:o});});
+    rows.sort(function(a,c){return c.ts-a.ts;});
+    h+='<div class="sec-title">LAIKO JUOSTA</div><div>';
+    let nowDrawn=false;
+    const drawNow=function(){h+='<div class="tl-now"><span>DABAR</span></div>';nowDrawn=true;};
+    rows.forEach(function(x){
+      if(!nowDrawn&&x.ts<=now&&!(x.live&&x.live.state==='overdue'))drawNow();
+      if(x.live){
+        const o=x.live,od2=o.state==='overdue';
+        h+='<div class="tl-row live'+(od2?' overdue':'')+'" data-act="go" data-v="'+o.key+'"><div class="tl-time">'+hhmm(o.t)+'</div><div class="tl-rail"><div class="tl-dot"></div></div><div class="tl-main"><div class="tl-title">'+esc(rLabel(o.r))+' · rutina</div><div class="tl-sub">'+(od2?'VĖLUOJA ':'po ')+'<span data-cd="'+o.t+'">'+fmtCd(o.t-now)+'</span></div></div></div>';
+      }else if(x.missed){
+        h+='<div class="tl-row missed"><div class="tl-time">'+hhmm(x.ts)+'</div><div class="tl-rail"><div class="tl-dot" style="background:var(--red)"></div></div><div class="tl-main"><div class="tl-title">'+esc(rLabel(x.missed.r))+' – PRALEISTA</div><div class="tl-sub">rutina nebuvo atlikta</div></div></div>';
+      }else{
+        const e=x.e,isMsg=e.kind==='msg',col=typeColor(e.type);
+        h+='<div class="tl-row" data-act="tl" data-v="'+e.id+'"><div class="tl-time">'+hhmm(e.ts)+'</div><div class="tl-rail"><div class="tl-dot" style="background:'+col+'"></div></div><div class="tl-main"><div class="tl-title">'+(isMsg?esc(REPORTS[e.type].title)+' · '+esc(uT(e.unit)):esc(e.label)+' · padaryta')+'</div><div class="tl-sub">'+(isMsg?'išsiųsta':'atlikta')+(e.routineKey?' · ↻ rutina':'')+'</div>'+
+          (isMsg?'<div class="tl-text" id="tt-'+e.id+'">'+esc(e.text)+'</div><div class="tl-act" id="ta-'+e.id+'"><button class="m-btn sm" data-act="tcopy" data-v="'+e.id+'">⧉ KOPIJUOTI</button><button class="m-btn sm" data-act="tsms" data-v="'+e.id+'">✉ SMS</button></div>':'')+'</div></div>';
+      }
+    });
+    if(!nowDrawn)drawNow();
+    if(!mission.log.length&&!live.length)h+='<div class="m-sub">Dar nėra pranešimų.</div>';
+    h+='</div>';
+
+    h+='<div class="m-row" style="margin-top:6px"><button class="m-btn" data-act="edit">⚙ REDAGUOTI</button><button class="m-btn danger" data-act="end">'+(armed.end?'SPAUSK DAR KARTĄ':'■ BAIGTI MISIJĄ')+'</button></div>';
+  }
+  if(st==='ended'){
+    h+='<button class="m-big go" data-act="copylog">⧉ KOPIJUOTI ŽURNALĄ</button>';
+    const hist=mission.log.slice().sort(function(a,c){return c.ts-a.ts;});
+    h+='<div class="sec-title">ŽURNALAS ('+hist.length+')</div>';
+    hist.forEach(function(e){h+='<div class="tl-row"><div class="tl-time">'+hhmm(e.ts)+'</div><div class="tl-rail"><div class="tl-dot" style="background:'+typeColor(e.type)+'"></div></div><div class="tl-main"><div class="tl-title">'+(e.kind==='msg'?esc(REPORTS[e.type].title)+' · '+esc(unitText(e.unit)):esc(e.label)+' · padaryta')+'</div></div></div>';});
+    h+='<div class="m-row"><button class="m-btn danger" data-act="newm">＋ NAUJA MISIJA</button></div>';
+  }
+  if(mission.notes)h+='<div class="mcard"><div class="el-title">PASTABOS</div><div class="m-note">'+esc(mission.notes)+'</div></div>';
+  root.innerHTML=h;root.scrollTop=sc;
+  root.querySelectorAll('[data-act]').forEach(function(el){el.onclick=function(ev){ev.stopPropagation();missionAct(el.dataset.act,el.dataset.v);};});
+}
+function arm(k){armed[k]=true;renderMission();setTimeout(function(){armed[k]=false;if(curScreen==='mission')renderMission();},3000);}
+function missionAct(a,v){
+  if(a==='start'){mission.status='active';mission.startedAt=nowMs();mission.endedAt=null;mission.log=[];saveMission();lastSig='';renderMission();}
+  else if(a==='edit')openSetup(false);
+  else if(a==='del'){if(!armed.del){arm('del');return;}armed.del=false;mission=null;saveMission();goTo('select');}
+  else if(a==='end'){if(!armed.end){arm('end');return;}armed.end=false;mission.status='ended';mission.endedAt=nowMs();saveMission();lastSig='';renderMission();}
+  else if(a==='newm')openSetup(true);
+  else if(a==='q')startReport(v,{from:'mission'});
+  else if(a==='go')goRoutine(v);
+  else if(a==='tl'){const t=document.getElementById('tt-'+v),c=document.getElementById('ta-'+v);if(t){t.classList.toggle('open');c.classList.toggle('open');}}
+  else if(a==='tcopy'||a==='tsms'){const e=mission.log.find(function(x){return x.id===v;});if(!e)return;if(a==='tcopy')copyText(e.text);else{const n=hqNums();openUrl('sms:'+n+(n?'?&body=':'?body=')+encodeURIComponent(e.text));}}
+  else if(a==='copylog')copyText(logText());
+}
+function copyText(t){
+  const done=function(){const el=document.getElementById('toast');el.classList.add('show');setTimeout(function(){el.classList.remove('show');},1800);};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(done).catch(function(){});
+}
+function logText(){
+  const m=mission;
+  let out='MISIJA: '+m.name+'\nPRADŽIA: '+dtgOf(new Date(m.startedAt))+(m.endedAt?'\nPABAIGA: '+dtgOf(new Date(m.endedAt)):'')+'\nMANO SKYRIUS: '+unitText(m.me)+'\n';
+  const rows=m.log.map(function(e){return {ts:e.ts,e:e};});
+  routineItems(nowMs()).filter(function(o){return o.state==='missed';}).forEach(function(o){rows.push({ts:o.t,m:o});});
+  rows.sort(function(a,b){return a.ts-b.ts;});
+  rows.forEach(function(x){
+    out+='\n['+dtgOf(new Date(x.ts))+'] ';
+    if(x.m)out+=rLabel(x.m.r)+' – PRALEISTA\n';
+    else if(x.e.kind==='msg')out+=REPORTS[x.e.type].title+' · '+unitText(x.e.unit)+(x.e.routineKey?' (rutina)':'')+'\n'+x.e.text+'\n';
+    else out+=x.e.label+' – padaryta\n';
+  });
+  return out;
+}
+
+/* ───── nustatymų ekranas ───── */
+function defaultMission(){
+  return {id:uid(),name:'',status:'planned',createdAt:nowMs(),startedAt:null,endedAt:null,me:'CHARLI 1',
+    units:PRESET_UNITS.map(function(n){return {name:n,callsign:'',phone:''};}),
+    hq:{callsign:'',freq:'',phones:''},routines:[{id:uid(),type:'sitrep',label:'',every:60,first:60,on:true}],notes:'',log:[]};
+}
+function openSetup(isNew){
+  draftNew=!!isNew||!mission;
+  draft=draftNew?defaultMission():JSON.parse(JSON.stringify(mission));
+  document.getElementById('setup-msg').textContent='';
+  renderSetup();goTo('msetup');
+}
+function setPath(o,p,v){const a=p.split('.');for(let i=0;i<a.length-1;i++)o=o[a[i]];o[a[a.length-1]]=v;}
+function renderSetup(){
+  const root=document.getElementById('setup-body'),sc=root.scrollTop,d=draft;
+  const have=function(n){return d.units.some(function(u){return u.name===n;});};
+  const chips=function(arr,sel,act,extra,cols,cls){return '<div class="opts-grid '+cols+'" style="padding:0;gap:6px">'+arr.map(function(x){return '<button class="opt-btn '+(cls||'')+(sel(x)?' selected':'')+'" style="color:var(--green)" data-act="'+act+'" data-v="'+esc(x)+'"'+(extra||'')+'>'+esc(x)+'</button>';}).join('')+'</div>';};
+  let h='<div class="mcard"><div class="el-title">MISIJA</div><div class="el-lbl">PAVADINIMAS</div><input class="el-in" data-bind="name" placeholder="pvz. Pratybos ŠILAS" value="'+esc(d.name)+'">'+'</div>';
+
+  h+='<div class="mcard"><div class="el-title">DALYVAUJANTYS SKYRIAI</div>'+
+    '<div class="opts-grid cols3" style="padding:0;gap:6px">'+PRESET_UNITS.map(function(n){return '<button class="opt-btn sm'+(have(n)?' selected':'')+'" style="color:var(--green)" data-act="utog" data-v="'+n+'">'+n+'</button>';}).join('')+'</div>'+
+    '<div class="el-row" style="margin-top:8px"><input class="el-in" id="sf-custom" placeholder="kitas skyrius (pvz. ALFA 1)"><button class="el-mini" data-act="uadd">＋</button></div>';
+  d.units.forEach(function(u){
+    h+='<div class="u-row"><div class="el-row"><div class="u-name">'+esc(u.name)+'</div><button class="m-btn sm'+(d.me===u.name?' on':'')+'" data-act="ume" data-v="'+esc(u.name)+'">◉ MANO</button><button class="m-btn sm" data-act="udel" data-v="'+esc(u.name)+'">✕</button></div>'+
+      '<div class="el-grid2"><input class="el-in" data-unit="'+esc(u.name)+'" data-f="callsign" placeholder="šaukinys" value="'+esc(u.callsign)+'"><input class="el-in" data-unit="'+esc(u.name)+'" data-f="phone" inputmode="tel" placeholder="tel. +370…" value="'+esc(u.phone)+'"></div></div>';
+  });
+  h+='</div>';
+
+  h+='<div class="mcard"><div class="el-title">ŠTABAS / GAVĖJAS</div>'+
+    '<div class="el-grid2"><div><div class="el-lbl">ŠAUKINYS</div><input class="el-in" data-bind="hq.callsign" value="'+esc(d.hq.callsign)+'"></div><div><div class="el-lbl">DAŽNIS / KANALAS</div><input class="el-in" data-bind="hq.freq" placeholder="pvz. 46.250" value="'+esc(d.hq.freq)+'"></div></div>'+
+    '<div class="el-lbl" style="margin-top:10px">SMS NUMERIAI (per kablelį)</div><input class="el-in" data-bind="hq.phones" inputmode="tel" placeholder="+37060000000, +37061111111" value="'+esc(d.hq.phones)+'"></div>';
+
+  h+='<div class="mcard"><div class="el-title">RUTINA (priminimai)</div>';
+  d.routines.forEach(function(r){
+    h+='<div class="u-row"><div class="opts-grid cols4" style="padding:0;gap:6px">'+['sitrep','lace','check','custom'].map(function(t){return '<button class="opt-btn sm'+(r.type===t?' selected':'')+'" style="color:var(--blue)" data-act="rtype" data-r="'+r.id+'" data-v="'+t+'">'+RTYPES[t].label+'</button>';}).join('')+'</div>'+
+      (r.type==='custom'?'<input class="el-in" style="margin-top:8px" data-r="'+r.id+'" data-rf="label" placeholder="ką daryti (pvz. Pakeisti dažnį)" value="'+esc(r.label)+'">':'')+
+      '<div class="el-lbl" style="margin-top:10px">KAS KIEK MINUČIŲ</div><div class="opts-grid cols4" style="padding:0;gap:6px">'+[15,30,60,120].map(function(x){return '<button class="opt-btn sm'+(r.every===x?' selected':'')+'" style="color:var(--green)" data-act="revery" data-r="'+r.id+'" data-v="'+x+'">'+x+'</button>';}).join('')+'</div>'+
+      '<div class="el-grid2" style="margin-top:8px"><div><div class="el-lbl">KITA VERTĖ (min)</div><input class="el-in" type="number" inputmode="numeric" data-r="'+r.id+'" data-rf="every" value="'+r.every+'"></div><div><div class="el-lbl">PIRMA PO (min)</div><input class="el-in" type="number" inputmode="numeric" data-r="'+r.id+'" data-rf="first" value="'+r.first+'"></div></div>'+
+      '<div class="el-row" style="margin-top:8px"><button class="m-btn sm'+(r.on?' on':'')+'" data-act="ron" data-r="'+r.id+'">'+(r.on?'ĮJUNGTA':'IŠJUNGTA')+'</button><button class="m-btn sm" data-act="rdel" data-r="'+r.id+'">✕ PAŠALINTI</button></div></div>';
+  });
+  h+='<button class="m-btn" style="width:100%;margin-top:6px" data-act="radd">＋ PRIDĖTI RUTINĄ</button></div>';
+
+  h+='<div class="mcard"><div class="el-title">PASTABOS</div><textarea class="free-input" data-bind="notes" rows="3" placeholder="RV, kodiniai žodžiai, kita svarbi informacija…">'+esc(d.notes)+'</textarea></div>';
+  root.innerHTML=h;root.scrollTop=sc;
+
+  root.querySelectorAll('[data-bind]').forEach(function(el){el.oninput=function(){setPath(d,el.dataset.bind,el.value);};});
+  root.querySelectorAll('[data-unit]').forEach(function(el){el.oninput=function(){const u=d.units.find(function(x){return x.name===el.dataset.unit;});if(u)u[el.dataset.f]=el.value;};});
+  root.querySelectorAll('[data-rf]').forEach(function(el){el.oninput=function(){const r=d.routines.find(function(x){return x.id===el.dataset.r;});if(!r)return;const f=el.dataset.rf;r[f]=(f==='label')?el.value:Math.max(0,parseInt(el.value,10)||0);};});
+  root.querySelectorAll('[data-act]').forEach(function(el){el.onclick=function(){setupAct(el.dataset.act,el.dataset.v,el.dataset.r);};});
+}
+function setupAct(a,v,rid){
+  const d=draft,r=rid?d.routines.find(function(x){return x.id===rid;}):null;
+  const fixMe=function(){if(!d.units.some(function(u){return u.name===d.me;}))d.me=d.units.length?d.units[0].name:'';};
+  if(a==='utog'){const i=d.units.findIndex(function(u){return u.name===v;});if(i>=0)d.units.splice(i,1);else d.units.push({name:v,callsign:'',phone:''});fixMe();}
+  else if(a==='uadd'){const inp=document.getElementById('sf-custom'),n=(inp.value||'').trim().toUpperCase();if(n&&!d.units.some(function(u){return u.name===n;}))d.units.push({name:n,callsign:'',phone:''});fixMe();}
+  else if(a==='ume')d.me=v;
+  else if(a==='udel'){d.units=d.units.filter(function(u){return u.name!==v;});fixMe();}
+  else if(a==='rtype'&&r){r.type=v;if(v!=='custom')r.label='';}
+  else if(a==='revery'&&r){const wasDefault=r.first===r.every;r.every=parseInt(v,10);if(wasDefault)r.first=r.every;}
+  else if(a==='ron'&&r)r.on=!r.on;
+  else if(a==='rdel'&&r)d.routines=d.routines.filter(function(x){return x.id!==rid;});
+  else if(a==='radd')d.routines.push({id:uid(),type:'sitrep',label:'',every:60,first:60,on:true});
+  else if(a==='cancel'){goTo(mission?'mission':'select');return;}
+  renderSetup();
+}
+function saveSetup(){
+  const d=draft,msg=document.getElementById('setup-msg');
+  if(!d.units.length){msg.textContent='⚠ Pasirink bent vieną skyrių';return;}
+  if(!d.units.some(function(u){return u.name===d.me;}))d.me=d.units[0].name;
+  d.name=(d.name||'').trim()||('Misija '+dtgNow().slice(0,6));
+  d.routines.forEach(function(r){r.every=Math.max(1,r.every|0);r.first=Math.max(0,r.first|0);});
+  mission=d;saveMission();lastSig='';goTo('mission');
+}
+
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')missionTick();});
+function missionTick(){
+  const now=nowMs();
+  document.querySelectorAll('[data-cd]').forEach(function(el){el.textContent=fmtCd(parseInt(el.dataset.cd,10)-now);});
+  if(!mission||mission.status!=='active')return;
+  const el=document.getElementById('mi-elapsed');
+  if(el)el.textContent='T+'+fmtHMS(now-mission.startedAt);
+  const items=routineItems(now);
+  const sig=items.map(function(i){return i.key+i.state;}).join('|')+'#'+mission.log.length;
+  if(sig!==lastSig){lastSig=sig;if(curScreen==='mission')renderMission();else if(curScreen==='select')renderHomeMission();}
 }
 
 /* ───────── naktinis režimas, laikrodis, offline ───────── */
@@ -648,9 +1042,17 @@ try{if(localStorage.getItem('kr_night')==='1')document.body.classList.add('night
 
 function tick(){
   const t=new Date().toTimeString().slice(0,5);
-  ['clock','clock2'].forEach(function(id){const el=document.getElementById(id);if(el)el.textContent=t;});
+  ['clock','clock2','clock3'].forEach(function(id){const el=document.getElementById(id);if(el)el.textContent=t;});
 }
 tick();setInterval(tick,10000);
+
+/* ───── paleidimas ───── */
+loadMission();
+document.getElementById('setup-back').onclick=function(){setupAct('cancel');};
+document.getElementById('setup-cancel').onclick=function(){setupAct('cancel');};
+document.getElementById('setup-save').onclick=saveSetup;
+renderHomeMission();
+setInterval(missionTick,1000);
 
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});
