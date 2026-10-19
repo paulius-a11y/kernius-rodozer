@@ -185,13 +185,12 @@ a.m-btn,a.action-btn{display:flex;align-items:center;justify-content:center;text
 .action-btn.signal{background:#3a76f0;color:#fff;grid-column:1/-1;flex-direction:row;gap:10px;padding:20px 10px}
 .sig-hint{grid-column:1/-1;margin:-2px 0 6px;font-size:11px;color:var(--muted);text-align:center;line-height:1.6}
 .sig-hint a{color:var(--blue);text-decoration:underline}
-body.night .action-btn.signal{background:#ff7a6b;color:#000}
 
-/* naktinis režimas: viskas tampa tik raudona, saugo nakties regą */
-#night-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#cc0000;mix-blend-mode:multiply;pointer-events:none;z-index:99999}
-body.night #night-overlay{display:block}
-/* filtras palieka tik raudoną kanalą, todėl žalią ir mėlyną perkeliam į raudonus atspalvius */
-body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
+/* naktinis režimas: turinys perspalvinamas į gryną raudoną pagal šviesumą (be viso ekrano sluoksnio,
+   kad viršutinė būsenos juosta neįgautų ryškios spalvos) */
+html.night,html.night body{background:#000;color-scheme:dark}
+body.night .screen,body.night .toast{filter:url(#kr-red)}
+body.night{--green:#66ffa8;--blue:#6cb4ff;--muted:#a0a0a8}
 </style>
 <script>
 // Lightweight WGS84 -> MGRS conversion
@@ -317,7 +316,7 @@ body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
 </div>
 
 <div class="toast" id="toast">NUKOPIJUOTA ✓</div>
-<div id="night-overlay"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="kr-red" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%"><feColorMatrix type="matrix" values="0.5 0.5 0.25 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"/><feComponentTransfer><feFuncR type="linear" slope="0.78"/></feComponentTransfer></filter></svg>
 
 <script>
 /* ───────── pagalbinės ───────── */
@@ -1082,11 +1081,17 @@ function missionTick(){
 }
 
 /* ───────── naktinis režimas, laikrodis, offline ───────── */
+function applyNight(on){
+  document.body.classList.toggle('night',on);
+  document.documentElement.classList.toggle('night',on);
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',on?'#000000':'#0e0e0e');
+}
 function toggleNight(){
-  const on=document.body.classList.toggle('night');
+  const on=!document.body.classList.contains('night');
+  applyNight(on);
   try{localStorage.setItem('kr_night',on?'1':'0');}catch(e){}
 }
-try{if(localStorage.getItem('kr_night')==='1')document.body.classList.add('night');}catch(e){}
+try{if(localStorage.getItem('kr_night')==='1')applyNight(true);}catch(e){}
 
 function tick(){
   const t=new Date().toTimeString().slice(0,5);
