@@ -326,7 +326,7 @@ body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
 
 <script>
 /* ───────── pagalbinės ───────── */
-const UNITS=['CHARLI 1','CHARLI 2','CHARLI 3','DELTA 1','DELTA 2','DELTA 3'];
+const UNITS=['ALPHA','BRAVO','CHARLIE','DELTA','ECHO','FOXTROT'];
 const MON=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 function pad(n){return (n<10?'0':'')+n;}
 
@@ -414,7 +414,7 @@ const REPORTS={
     fields:[
       {key:'unit',letter:'◈',label:'VIENETAS (ŠAUKINYS)',hint:'',opts:UNITS,free:false,cols:2},
       {key:'l1',letter:'1',label:'L1 · VIETA (MGRS)',hint:'pvz. 35ULA8910661342',opts:[],free:true,gps:true},
-      {key:'l2',letter:'2',label:'L2 · DAŽNIS, ŠAUKINYS, PRIEDAS',hint:'pvz. 46.250 / CHARLI 1',opts:[],free:true},
+      {key:'l2',letter:'2',label:'L2 · DAŽNIS, ŠAUKINYS, PRIEDAS',hint:'pvz. 46.250 / ALPHA',opts:[],free:true},
       {key:'l3',letter:'3',label:'L3 · PACIENTAI PAGAL PIRMENYBĘ',legend:'A skubus · B skubus chirurginis · C pirmumo · D įprastas · E patogumo',hint:'pvz. 1xA 2xC',opts:['1xA','2xA','1xB','1xC','2xC','1xD'],free:true,cols:3,multi:true},
       {key:'l4',letter:'4',label:'L4 · SPECIALI ĮRANGA',legend:'Gali būti keli pasirinkimai',hint:'',opts:[L('A · nereikia','A'),L('B · keltuvas','B'),L('C · ištraukimo įranga','C'),L('D · ventiliatorius','D')],free:true,cols:2,multi:true},
       {key:'l5',letter:'5',label:'L5 · PACIENTAI PAGAL TIPĄ',legend:'L neštuvai · A vaikšto',hint:'pvz. 1xL 1xA',opts:['1xL','2xL','3xL','1xA','2xA','3xA'],free:true,cols:3,multi:true},
@@ -788,7 +788,7 @@ function copyMsg(){
 
 /* ═════════ MISIJA ═════════ */
 const MKEY='kr_mission_v1';
-const PRESET_UNITS=['CHARLI 1','CHARLI 2','CHARLI 3','DELTA 1','DELTA 2','DELTA 3'];
+const PRESET_UNITS=['ALPHA','BRAVO','CHARLIE','DELTA','ECHO','FOXTROT'];
 const RTYPES={sitrep:{label:'SITREP',report:'sitrep'},lace:{label:'LACE',report:'lace'},check:{label:'RYŠIO PATIKRA',report:null},custom:{label:'KITA',report:null}};
 let mission=null,draft=null,draftNew=true,curScreen='select',lastSig='',lastLogged=null;
 const armed={};
@@ -1017,7 +1017,7 @@ function logText(){
 
 /* ───── nustatymų ekranas ───── */
 function defaultMission(){
-  return {id:uid(),name:'',status:'planned',createdAt:nowMs(),startedAt:null,endedAt:null,me:'CHARLI 1',
+  return {id:uid(),name:'',status:'planned',createdAt:nowMs(),startedAt:null,endedAt:null,me:'ALPHA',
     units:PRESET_UNITS.map(function(n){return {name:n,callsign:'',phone:''};}),
     hq:{callsign:'',freq:'',phones:'',signal:''},routines:[{id:uid(),type:'sitrep',label:'',every:60,first:60,on:true}],notes:'',log:[]};
 }
@@ -1036,7 +1036,7 @@ function renderSetup(){
 
   h+='<div class="mcard"><div class="el-title">DALYVAUJANTYS SKYRIAI</div>'+
     '<div class="opts-grid cols3" style="padding:0;gap:6px">'+PRESET_UNITS.map(function(n){return '<button class="opt-btn sm'+(have(n)?' selected':'')+'" style="color:var(--green)" data-act="utog" data-v="'+n+'">'+n+'</button>';}).join('')+'</div>'+
-    '<div class="el-row" style="margin-top:8px"><input class="el-in" id="sf-custom" placeholder="kitas skyrius (pvz. ALFA 1)"><button class="el-mini" data-act="uadd">＋</button></div>';
+    '<div class="el-row" style="margin-top:8px"><input class="el-in" id="sf-custom" placeholder="kitas skyrius (pvz. GOLF)"><button class="el-mini" data-act="uadd">＋</button></div>';
   d.units.forEach(function(u){
     h+='<div class="u-row"><div class="el-row"><div class="u-name">'+esc(u.name)+'</div><button class="m-btn sm'+(d.me===u.name?' on':'')+'" data-act="ume" data-v="'+esc(u.name)+'">◉ MANO</button><button class="m-btn sm" data-act="udel" data-v="'+esc(u.name)+'">✕</button></div>'+
       '<div class="el-grid2"><input class="el-in" data-unit="'+esc(u.name)+'" data-f="callsign" placeholder="šaukinys" value="'+esc(u.callsign)+'"><input class="el-in" data-unit="'+esc(u.name)+'" data-f="phone" inputmode="tel" placeholder="tel. +370…" value="'+esc(u.phone)+'"></div></div>';
