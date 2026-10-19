@@ -97,6 +97,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Share 
 .el-row .el-big{margin:0;flex:1;padding:14px 6px;font-size:14px}
 .el-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .el-grid3 .el-in{padding:12px 8px}
+.el-name{font-family:'Oswald',sans-serif;font-size:18px;letter-spacing:3px;text-align:center;line-height:1.2;min-height:22px;color:var(--text)}
+.el-headwrap.wide{flex:1;min-width:0}
+.el-big.narrow{flex:0 0 38%}
 .el-link{background:none;border:none;color:var(--blue);font-family:inherit;font-size:11px;text-decoration:underline;cursor:pointer;padding:6px 0}
 .el-result{margin-top:4px;padding:12px;border-radius:10px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.3);color:var(--green);font-size:14px;line-height:1.6;word-break:break-word}
 
@@ -256,7 +259,7 @@ body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
   </div>
   <div class="report-list">
     <div id="home-mission"></div>
-    <button class="rep-btn bl-red" onclick="startReport('contactrep')"><div class="rep-icon ic-red">!</div><div class="rep-text"><div class="rep-code" style="color:var(--red)">CONTACTREP</div><div class="rep-desc">Kontaktas su priešu · pirmoji sekundė<br>Kryptis · Atstumas · Aprašymas</div></div><div class="rep-arrow">›</div></button>
+    <button class="rep-btn bl-red" onclick="startReport('contactrep')"><div class="rep-icon ic-red">!</div><div class="rep-text"><div class="rep-code" style="color:var(--red)">CONTACTREP</div><div class="rep-desc">Kontaktas su priešu · pirmoji sekundė<br>Kryptis (kompasas) · Atstumas · Aprašymas</div></div><div class="rep-arrow">›</div></button>
     <button class="rep-btn bl-amber" onclick="startReport('saluto')"><div class="rep-icon ic-amber">S</div><div class="rep-text"><div class="rep-code" style="color:var(--amber)">SALUTO</div><div class="rep-desc">Priešo stebėjimas · žvalgyba<br>Dydis · Veikla · Vieta (kompasas) · Įranga</div></div><div class="rep-arrow">›</div></button>
     <button class="rep-btn bl-green" onclick="startReport('lace')"><div class="rep-icon ic-green">L</div><div class="rep-text"><div class="rep-code" style="color:var(--green)">LACE</div><div class="rep-desc">Savų resursai · po susirėmimo<br>Vanduo · Šaudmenys · Aukos · Įranga</div></div><div class="rep-arrow">›</div></button>
     <button class="rep-btn bl-pink" onclick="startReport('medevac')"><div class="rep-icon ic-pink">✚</div><div class="rep-text"><div class="rep-code" style="color:var(--pink)">MEDEVAC</div><div class="rep-desc">Medicininė evakuacija · 9 eilutės<br>Naudok kai yra sužeistų</div></div><div class="rep-arrow">›</div></button>
@@ -378,7 +381,7 @@ const REPORTS={
     fields:[
       {key:'time',letter:'⏱',label:'DTG (DATA-LAIKAS)',hint:'pvz. 181315C OCT 26',opts:['DABAR'],free:true},
       {key:'unit',letter:'◈',label:'MANO VIENETAS',hint:'',opts:UNITS,free:false,cols:2},
-      {key:'dir',letter:'K',label:'KRYPTIS',hint:'',opts:['ŠIAURĖ','ŠR','RYTAI','PR','PIETŪS','PV','VAKARAI','ŠV'],free:true,cols:3},
+      {key:'dir',letter:'K',label:'KRYPTIS (AZIMUTAS)',hint:'',type:'bearing',opts:[],free:false},
       {key:'dist',letter:'A',label:'ATSTUMAS',hint:'pvz. 200m',opts:['50m','100m','200m','300m','500m','1km'],free:true,cols:3},
       {key:'desc',letter:'A',label:'APRAŠYMAS',hint:'pvz. 4 pėstininkai, auto. ugnis',opts:['Pėstininkai','Auto. ugnis','Snaiperis','Transportas','Neaiški ugnis','Iš pastato','Iš miškelio'],free:true,cols:2,area:true},
       {key:'action',letter:'▶',label:'MŪSŲ VEIKSMAS',hint:'',opts:['KOVOJAME','TRAUKIAMĖS','GYNYBOJE','PERSIGRUPUOJAME'],free:false,cols:2}
@@ -449,7 +452,7 @@ const REPORTS={
 
 /* ───────── būsena ───────── */
 let currentId=null,currentStep=0,formData={},accentColor='var(--green)';
-let geo={lat:null,lon:null},enemy={az:null,dist:null,decl:null};
+let geo={lat:null,lon:null},enemy={az:null,dist:null,decl:null},brg={az:null,decl:null};
 
 let returnScreen='select',routineKeyCtx=null,forceUnitEdit=false;
 function goTo(s){
@@ -464,7 +467,7 @@ function isSkip(i){const f=REPORTS[currentId].fields[i];return missionUsable()&&
 function startReport(id,opts){
   opts=opts||{};
   returnScreen=opts.from||'select';routineKeyCtx=opts.routineKey||null;
-  currentId=id;currentStep=0;formData={};geo={lat:null,lon:null};enemy={az:null,dist:null,decl:null};forceUnitEdit=false;lastLogged=null;
+  currentId=id;currentStep=0;formData={};geo={lat:null,lon:null};enemy={az:null,dist:null,decl:null};brg={az:null,decl:null};forceUnitEdit=false;lastLogged=null;
   const r=REPORTS[id];accentColor=r.color;
   document.getElementById('form-title').textContent=r.title;
   document.getElementById('form-sub').textContent=r.sub+(missionUsable()?' · '+unitText(mission.me):'');
@@ -605,6 +608,84 @@ function buildEnemyLoc(card,updateVal){
   gpsGo();startC();
 }
 
+/* ───────── kryptis: kompasas + pavadinimas (CONTACTREP) ───────── */
+const CARD8=['ŠIAURĖ','ŠIAURĖS RYTAI','RYTAI','PIETŲ RYTAI','PIETŪS','PIETŲ VAKARAI','VAKARAI','ŠIAURĖS VAKARAI'];
+function cardinal(az){return CARD8[Math.round((((az%360)+360)%360)/45)%8];}
+function bearingText(az){return az+'° '+cardinal(az);}
+function buildBearing(card,updateVal){
+  if(brg.decl==null)brg.decl=declAt(55.2,23.9);
+  const box=document.createElement('div');box.className='el-box';
+  box.innerHTML=
+   '<div class="el-sec"><div class="el-title">KRYPTIS Į PRIEŠĄ</div>'+
+     '<div class="el-row"><div class="el-headwrap wide"><div class="el-heading" id="bg-head">---°</div><div class="el-name" id="bg-name">&nbsp;</div><div class="el-acc" id="bg-acc"></div></div>'+
+     '<button class="el-big lock narrow" id="bg-lock">🎯 FIKSUOTI</button></div>'+
+     '<button class="el-big" id="bg-perm" style="display:none;margin-top:8px;width:100%">🧭 ĮJUNGTI KOMPASĄ</button>'+
+     '<div class="el-hint" style="margin:6px 0 0">Telefonas horizontaliai, viršutinis kraštas į priešą · kompasas ±5–10°</div>'+
+     '<div class="el-warn" id="bg-warn"></div></div>'+
+   '<div class="el-sec"><div class="el-grid2">'+
+     '<div><div class="el-lbl">AZIMUTAS °</div><input class="el-in" id="bg-az" type="number" inputmode="numeric" min="0" max="359" placeholder="0–359"></div>'+
+     '<div><div class="el-lbl">DEKL. °E</div><input class="el-in" id="bg-decl" type="number" inputmode="decimal" step="0.1"></div></div>'+
+     '<div class="opts-grid cols4 el-chips" id="bg-chips"></div></div>';
+  card.appendChild(box);
+  const $=function(s){return box.querySelector(s);};
+  const headEl=$('#bg-head'),nameEl=$('#bg-name'),accEl=$('#bg-acc'),permBtn=$('#bg-perm'),lockBtn=$('#bg-lock'),warnEl=$('#bg-warn'),azIn=$('#bg-az'),declIn=$('#bg-decl'),chipsEl=$('#bg-chips');
+  azIn.value=brg.az==null?'':brg.az;declIn.value=brg.decl;
+  if(brg.az!=null)lockBtn.textContent='✓ '+brg.az+'°';
+  let magH=null,sx=null,sy=null,seen=false,lastDraw=0;
+
+  function showLive(){
+    if(magH==null){headEl.textContent=brg.az!=null?brg.az+'°':'---°';nameEl.textContent=brg.az!=null?cardinal(brg.az):'\u00a0';return;}
+    const a=Math.round((magH+brg.decl+360)%360)%360;
+    headEl.textContent=a+'°';nameEl.textContent=cardinal(a);
+  }
+  function refreshChips(){
+    chipsEl.querySelectorAll('.opt-btn').forEach(function(b){b.classList.toggle('selected',brg.az===parseInt(b.dataset.v,10));});
+  }
+  function setAz(a){
+    brg.az=a;azIn.value=a==null?'':a;
+    if(a!=null){updateVal(bearingText(a));lockBtn.textContent='✓ '+bearingText(a);}
+    refreshChips();
+  }
+  function onHeading(h,acc){
+    seen=true;const r=h*Math.PI/180;
+    if(sx==null){sx=Math.sin(r);sy=Math.cos(r);}else{sx=sx*0.85+Math.sin(r)*0.15;sy=sy*0.85+Math.cos(r)*0.15;}
+    magH=(Math.atan2(sx,sy)*180/Math.PI+360)%360;
+    const now=Date.now();
+    if(now-lastDraw>100){lastDraw=now;showLive();accEl.textContent=acc!=null?'±'+Math.round(acc)+'°':'';}
+  }
+  function startC(){
+    permBtn.style.display='none';seen=false;sx=null;sy=null;
+    compassStart(onHeading,function(kind){
+      permBtn.style.display='block';
+      permBtn.textContent=kind==='denied'?'🧭 KOMPASAS UŽDRAUSTAS · BANDYTI DAR KARTĄ':'🧭 ĮJUNGTI KOMPASĄ';
+    });
+    if(compassTimer)clearTimeout(compassTimer);
+    compassTimer=setTimeout(function(){
+      if(!seen&&permBtn.style.display==='none')warnEl.textContent='⚠ Kompasas nepasiekiamas – pasirink kryptį mygtukais arba įvesk azimutą';
+    },3000);
+  }
+  CARD8.forEach(function(nm,i){
+    const b=document.createElement('button');b.className='opt-btn';b.style.color=accentColor;b.dataset.v=i*45;b.style.fontSize='11px';b.textContent=nm;
+    b.onclick=function(){setAz(i*45);};
+    chipsEl.appendChild(b);
+  });
+  refreshChips();
+  azIn.oninput=function(){const v=parseFloat(azIn.value);if(isNaN(v)){brg.az=null;refreshChips();return;}setAz(((Math.round(v)%360)+360)%360);};
+  declIn.oninput=function(){const v=parseFloat(declIn.value);brg.decl=isNaN(v)?0:v;showLive();};
+  lockBtn.onclick=function(){
+    if(magH==null){warnEl.textContent='⚠ Dar nėra kompaso rodmens – pasirink kryptį mygtukais';return;}
+    setAz(Math.round((magH+brg.decl+360)%360)%360);
+  };
+  permBtn.onclick=startC;
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(p){
+      if(inLT(p.coords.latitude,p.coords.longitude)){brg.decl=declAt(p.coords.latitude,p.coords.longitude);declIn.value=brg.decl;warnEl.textContent='';showLive();}
+      else warnEl.textContent='⚠ Už Lietuvos ribų – patikrink deklinaciją';
+    },function(){},{enableHighAccuracy:false,timeout:8000,maximumAge:600000});
+  }
+  showLive();startC();
+}
+
 /* ───────── žingsnių piešimas ───────── */
 function renderStep(){
   stopCompass();
@@ -661,6 +742,8 @@ function renderStep(){
 
   if(f.type==='enemyloc'){
     buildEnemyLoc(card,updateVal);
+  }else if(f.type==='bearing'){
+    buildBearing(card,updateVal);
   }else{
     if(f.gps){
       const gb=document.createElement('button');gb.className='gps-btn';gb.textContent='📍 GAUTI GPS KOORDINATES (MGRS)';
