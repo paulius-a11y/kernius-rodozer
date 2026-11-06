@@ -231,6 +231,7 @@ body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
 .rf-cw span:last-child{color:var(--amber);font-family:'Oswald',sans-serif;letter-spacing:2px;font-size:15px}
 .auth-card{width:100%;text-align:left;cursor:pointer;color:var(--text);font-family:inherit}
 .auth-sum{font-family:'Oswald',sans-serif;font-size:52px;font-weight:700;color:var(--green);line-height:1}
+.el-todo{font-size:12px;letter-spacing:1px;color:var(--green);min-height:16px;margin-bottom:6px}
 </style>
 <script>
 // Lightweight WGS84 -> MGRS conversion
@@ -617,7 +618,7 @@ function buildDirDist(card,updateVal,cfg,primary){
      '<button class="el-big" id="dd-perm" style="display:none;margin-top:8px;width:100%">🧭 ĮJUNGTI KOMPASĄ</button>'+
      '<div class="el-hint" style="margin:6px 0 0">Telefonas horizontaliai, viršutinis kraštas į priešą · ±5–10°'+(grid?' <button class="el-link" id="dd-manual">✎ MGRS ranka</button>':'')+'</div>'+
      '<div class="el-warn" id="dd-warn"></div></div>'+
-   '<div class="el-sec"><div class="el-grid3">'+
+   '<div class="el-sec"><div class="el-todo" id="dd-todo"></div><div class="el-grid3">'+
      '<div><div class="el-lbl">AZIMUTAS °</div><input class="el-in" id="dd-az" type="number" inputmode="numeric" min="0" max="359" placeholder="0–359"></div>'+
      '<div><div class="el-lbl">DEKL. °E</div><input class="el-in" id="dd-decl" type="number" inputmode="decimal" step="0.1"></div>'+
      '<div><div class="el-lbl">ATSTUMAS m</div><input class="el-in" id="dd-dist" type="number" inputmode="numeric" placeholder="300"></div></div>'+
@@ -626,7 +627,7 @@ function buildDirDist(card,updateVal,cfg,primary){
   card.appendChild(box);
   const $=function(s){return box.querySelector(s);};
   const magBtn=$('#dd-mag'),geoBtn=$('#dd-geo');
-  const gpsSt=$('#dd-gps'),gpsBtn=$('#dd-gps-btn'),headEl=$('#dd-head'),nameEl=$('#dd-name'),accEl=$('#dd-acc'),permBtn=$('#dd-perm'),lockBtn=$('#dd-lock'),warnEl=$('#dd-warn'),azIn=$('#dd-az'),declIn=$('#dd-decl'),distIn=$('#dd-dist'),cardEl=$('#dd-card'),chipsEl=$('#dd-chips'),manualBtn=$('#dd-manual');
+  const gpsSt=$('#dd-gps'),gpsBtn=$('#dd-gps-btn'),headEl=$('#dd-head'),nameEl=$('#dd-name'),accEl=$('#dd-acc'),permBtn=$('#dd-perm'),lockBtn=$('#dd-lock'),warnEl=$('#dd-warn'),azIn=$('#dd-az'),declIn=$('#dd-decl'),distIn=$('#dd-dist'),cardEl=$('#dd-card'),chipsEl=$('#dd-chips'),manualBtn=$('#dd-manual'),todoEl=$('#dd-todo');
   azIn.value=dd.az==null?'':dd.az;declIn.value=dd.decl;distIn.value=dd.dist==null?'':dd.dist;
   if(dd.az!=null)lockBtn.textContent='✓ '+dd.az+'° '+modeTag();
   let magH=null,sx=null,sy=null,seen=false,lastDraw=0;
@@ -639,9 +640,10 @@ function buildDirDist(card,updateVal,cfg,primary){
     headEl.textContent=a+'°';nameEl.textContent=cardinal(a);
   }
   function refreshChips(){
-    cardEl.querySelectorAll('.opt-btn').forEach(function(b){b.classList.toggle('selected',dd.az===parseInt(b.dataset.v,10));});
+    cardEl.querySelectorAll('.opt-btn').forEach(function(b){b.classList.toggle('selected',dd.az!=null&&b.textContent===cardinal(dd.az));});
     chipsEl.querySelectorAll('.opt-btn').forEach(function(b){b.classList.toggle('selected',dd.dist===parseInt(b.dataset.v,10));});
   }
+  function paintTodo(){todoEl.textContent=(dd.az!=null&&!(dd.dist>0))?'✓ Kryptis paimta: '+bearingText(dd.az)+' · liko tik atstumas ↓':'';}
   function commit(){
     const hasAz=dd.az!=null,hasD=dd.dist>0;
     if(cfg.dirKey)formData[cfg.dirKey]=hasAz?bearingText(dd.az):'';
@@ -656,7 +658,7 @@ function buildDirDist(card,updateVal,cfg,primary){
       const fi=card.querySelector('.free-input');if(fi)fi.value=val;
     }
     updateVal(formData[primary]||'');
-    refreshChips();
+    refreshChips();paintTodo();
   }
   function paintMode(){magBtn.classList.toggle('on',azMode==='mag');geoBtn.classList.toggle('on',azMode==='geo');}
   function setAz(a){dd.az=a;azIn.value=a==null?'':a;if(a!=null)lockBtn.textContent='✓ '+a+'° '+modeTag();commit();}
@@ -706,7 +708,7 @@ function buildDirDist(card,updateVal,cfg,primary){
   });
   [50,100,150,200,300,500,800,1000].forEach(function(m){
     const b=document.createElement('button');b.className='opt-btn';b.style.color=accentColor;b.dataset.v=m;b.textContent=m+' m';
-    b.onclick=function(){dd.dist=m;distIn.value=m;commit();};chipsEl.appendChild(b);
+    b.onclick=function(){dd.dist=m;distIn.value=m;commit();if(dd.az!=null)setTimeout(function(){nextStep();},220);};chipsEl.appendChild(b);
   });
   refreshChips();
   azIn.oninput=function(){const v=parseFloat(azIn.value);if(isNaN(v)){dd.az=null;commit();return;}setAz(((Math.round(v)%360)+360)%360);};
@@ -720,7 +722,7 @@ function buildDirDist(card,updateVal,cfg,primary){
   permBtn.onclick=startC;
   if(gpsBtn)gpsBtn.onclick=gpsGo;
   magBtn.onclick=function(){setMode('mag');};geoBtn.onclick=function(){setMode('geo');};paintMode();
-  showLive();gpsGo();startC();
+  paintTodo();showLive();gpsGo();startC();
 }
 
 /* ═════ MATRICA: keli laukai viename žingsnyje (kiekviena eilutė – mygtukai ir/arba tekstas) ═════ */
@@ -858,7 +860,7 @@ function renderStep(){
           }
           let v=val;if(f.key==='time'&&val==='DABAR')v=dtgNow();
           updateVal(v);if(fi)fi.value=v;refreshSel();
-          if(!f.free)setTimeout(function(){nextStep();},200);
+          if(!f.free||(f.key==='time'&&val==='DABAR'))setTimeout(function(){nextStep();},200);
         };
         chipBtns.push({btn:btn,val:val});grid.appendChild(btn);
       });
