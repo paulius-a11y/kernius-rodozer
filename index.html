@@ -207,6 +207,30 @@ body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
 .seg{display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;flex-shrink:0}
 .seg button{background:#252525;color:var(--muted);border:0;padding:8px 12px;font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:2px;cursor:pointer}
 .seg button.on{background:var(--green);color:#000}
+.rf{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;flex-shrink:0}
+.rf summary{padding:14px 16px;font-family:'Oswald',sans-serif;letter-spacing:2px;font-size:14px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.rf summary::-webkit-details-marker{display:none}
+.rf summary:after{content:'+';color:var(--muted);font-size:20px}
+.rf[open] summary:after{content:'–'}
+.rf-b{padding:0 16px 14px;font-size:13px;line-height:1.7}
+.rf-text{white-space:pre-wrap;word-break:break-word}
+.rf-big{font-family:'Oswald',sans-serif;font-size:72px;font-weight:700;color:var(--green);text-align:center;line-height:1.1}
+.rf-sub{text-align:center;font-size:11px;letter-spacing:2px;color:var(--muted)}
+.rf-ans{min-width:70px;text-align:center;font-family:'Oswald',sans-serif;font-size:30px;color:var(--amber);padding-left:12px}
+.rf-t{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+.rf-t td{padding:7px 4px;border-top:1px solid var(--border)}
+.rf-t td:last-child{text-align:right;font-family:'Oswald',sans-serif;font-size:16px}
+.rf-t tr.cur td{color:var(--green)}
+.rf-sig{margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
+.rf-g{margin-top:12px;font-family:'Oswald',sans-serif;letter-spacing:3px;font-size:12px;color:var(--muted)}
+.rf-g.me{color:var(--green)}
+.rf-row{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-top:1px solid var(--border)}
+.rf-row span:first-child{font-family:'Oswald',sans-serif;letter-spacing:1px;font-size:15px}
+.rf-row span:last-child{color:var(--muted);text-align:right}
+.rf-cw span:first-child{color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:0}
+.rf-cw span:last-child{color:var(--amber);font-family:'Oswald',sans-serif;letter-spacing:2px;font-size:15px}
+.auth-card{width:100%;text-align:left;cursor:pointer;color:var(--text);font-family:inherit}
+.auth-sum{font-family:'Oswald',sans-serif;font-size:52px;font-weight:700;color:var(--green);line-height:1}
 </style>
 <script>
 // Lightweight WGS84 -> MGRS conversion
@@ -331,6 +355,15 @@ body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
   <div class="setup-bar"><button class="m-btn" id="setup-cancel" style="flex:0 0 38%">ATŠAUKTI</button><button class="m-big go" id="setup-save" style="margin:0;flex:1">SAUGOTI</button></div>
 </div>
 
+<div class="screen" id="screen-ref">
+  <div class="topbar">
+    <button class="back-btn" onclick="goTo('mission')">‹</button>
+    <div><div class="topbar-title">ŽINYNAS</div><div class="topbar-sub">ATPAŽINIMAS · ŠAUKINIAI · KODAI</div></div>
+    <div class="top-right"><button class="night-btn" onclick="toggleNight()">🌙</button></div>
+  </div>
+  <div class="step-area" id="ref-body"></div>
+</div>
+<input type="file" id="imp-file" accept=".json,application/json,text/plain" style="display:none">
 <div class="toast" id="toast">NUKOPIJUOTA ✓</div>
 <div id="night-overlay"></div>
 
@@ -421,7 +454,7 @@ const REPORTS={
       {key:'size',letter:'S',label:'SIZE · PRIEŠO DYDIS',hint:'pvz. ~6 pėstininkų',opts:['1–2','3–5','6–10','10+','Su transportu','Su šarvuočiu'],free:true,cols:3},
       {key:'activity',letter:'A',label:'ACTIVITY · PRIEŠO VEIKSMAI',hint:'',opts:['Šaudo','Juda į priekį','Gynyboje','Stovi','Traukiasi','Stebi','Neaiški'],free:true,cols:2},
       {key:'loc',letter:'L',label:'LOCATION · PRIEŠO VIETA',hint:'arba įvesk ranka (MGRS)',type:'dirdist',dd:{locKey:'loc'},opts:[],free:true},
-      {key:'actions',letter:'A',label:'ACTIONS TAKEN · MŪSŲ VEIKSMAI (atlikti ir planuojami)',hint:'',opts:['Atsakome ugnimi','Gynyboje','Atitrūkstame','Manevruojame','Laukiame įsakymų','Šaukiame MEDEVAC'],free:true,cols:2,multi:true,area:true},
+      {key:'actions',letter:'A',label:'ACTIONS TAKEN · MŪSŲ VEIKSMAI (atlikti ir planuojami)',legend:'Kodiniai žodžiai (jei misijoje yra) – sąrašo apačioje',hint:'',opts:['Atsakome ugnimi','Gynyboje','Atitrūkstame','Manevruojame','Laukiame įsakymų','Šaukiame MEDEVAC'],free:true,cols:2,multi:true,area:true,codes:true},
       {key:'end',letter:'✓',label:'PABAIGA · BDA · PASTABOS',type:'matrix',rows:[
         {key:'tclose',label:'TIC UŽDARYMAS (kontakto nutraukimo laikas)',chips:['NEBAIGTAS','DABAR'],input:true,hint:''},
         {key:'ff',label:'BDA · FF (savi nuostoliai)',chips:['0','1','2','3','4+']},
@@ -453,7 +486,7 @@ const REPORTS={
       {key:'l7',letter:'7',label:'7 · SURINKIMO PUNKTO ŽYMĖJIMO BŪDAI',hint:'',opts:[L('A · spalvotas ženklas','A'),L('B · pirotechnika','B'),L('C · dūmų signalai','C'),L('D · nieko','D'),L('E · kiti būdai','E')],free:false,cols:2},
       {key:'l8',letter:'8',label:'8 · PACIENTŲ TAUTYBĖ IR STATUSAS',hint:'',opts:[L('A · LT karys','A'),L('B · LT civilis','B'),L('C · ne LT karys','C'),L('D · ne LT civilis','D'),L('E · priešo karys (belaisvis)','E')],free:false,cols:1},
       {key:'l9',letter:'9',label:'9 · MNG SITUACIJA IR TERITORIJOS UŽTERŠTUMAS',hint:'',opts:[L('A · atominis','A'),L('B · biologinis','B'),L('C · cheminis','C'),L('D · nėra','D')],free:true,cols:2,multi:true},
-      {key:'rem',letter:'✎',label:'PASTABOS (nebūtina)',hint:'pvz. sužeidimai, kodinis žodis',opts:[],free:true,area:true}
+      {key:'rem',letter:'✎',label:'PASTABOS (nebūtina)',hint:'pvz. sužeidimai, kodinis žodis',opts:[],free:true,area:true,multi:true,codes:true,cols:2}
     ],
     build:(f,d)=>Hd('MEDEVAC',f,d)+req('1',f.l1)+req('2',f.l2)+req('3',f.l3)+req('4',f.l4)+req('5',f.l5)+req('6',f.l6)+req('7',f.l7)+req('8',f.l8)+req('9',f.l9)+opt('PASTABOS',f.rem)+'\nPABAIGA.'
   },
@@ -472,7 +505,7 @@ const REPORTS={
     fields:[
       {key:'unit',letter:'◈',label:'VIENETAS (NUO KO)',hint:'',opts:UNITS,free:false,cols:2},
       {key:'b',letter:'B',label:'B · DABARTINĖ VIETA, KOORDINATĖS',hint:'pvz. 34UEG 29624 65905',opts:[],free:true,gps:true},
-      {key:'c',letter:'C',label:'C · ATLIKTI VEIKSMAI (po paskutinio raporto)',hint:'',opts:['Judėjome pagal maršrutą','Pasiekėme kontrolinį tašką','Stebėjome','Užėmėme poziciją','Kontakto nebuvo','Buvo kontaktas (SALTA)'],free:true,cols:2,multi:true,area:true},
+      {key:'c',letter:'C',label:'C · ATLIKTI VEIKSMAI (po paskutinio raporto)',hint:'',opts:['Judėjome pagal maršrutą','Pasiekėme kontrolinį tašką','Stebėjome','Užėmėme poziciją','Kontakto nebuvo','Buvo kontaktas (SALTA)'],free:true,cols:2,multi:true,area:true,codes:true},
       {key:'dpl',letter:'D',label:'D · PLANUOJAMI VEIKSMAI',type:'matrix',rows:[
         {key:'d1',label:'D1 · 12 VAL. Į PRIEKĮ',chips:['Laikome poziciją','Judame pagal maršrutą','Atliekame užduotį','Laukiame įsakymų'],input:true,hint:''},
         {key:'d2',label:'D2 · 24 VAL. Į PRIEKĮ',chips:['Laikome poziciją','Judame pagal maršrutą','Atliekame užduotį','Laukiame įsakymų'],input:true,hint:''}]},
@@ -485,7 +518,7 @@ const REPORTS={
         {key:'e6',label:'E6 · ASMENINĖ SUDĖTIS',chips:['Visi','Yra sužeistų','Yra nuostolių'],input:true,hint:'pvz. 8/9'},
         {key:'e7',label:'E7 · KITA',chips:[],input:true,hint:''}]},
       {key:'f',letter:'F',label:'F · PAŽEIDIMAI, GEDIMAI',hint:'',opts:['Nėra','Ryšio įranga','Transportas','Ginklai','Optika / NVG','Sužeidimai'],free:true,cols:2,multi:true},
-      {key:'g',letter:'G',label:'G · KITA INFORMACIJA',hint:'',opts:[],free:true,area:true}
+      {key:'g',letter:'G',label:'G · KITA INFORMACIJA',hint:'',opts:[],free:true,area:true,multi:true,codes:true,cols:2}
     ],
     build:(f,d)=>Hd('SITREP',f,'')+'\nA: '+d+req('B',f.b)+req('C',f.c)+req('D1',f.d1)+req('D2',f.d2)+req('E1 MAISTAS',f.e1)+req('E2 VANDUO',f.e2)+req('E3 ŠAUDMENYS',f.e3)+req('E4 SPROGMENYS',f.e4)+req('E5 GINKLAI',f.e5)+req('E6 ASM. SUDĖTIS',f.e6)+opt('E7 KITA',f.e7)+req('F',f.f)+opt('G',f.g)+'\nPABAIGA.'
   }
@@ -504,6 +537,7 @@ function goTo(s){
   curScreen=s;
   if(s==='select')renderHomeMission();
   if(s==='mission')renderMission();
+  if(s==='ref')renderRef();
 }
 function isSkip(i){const f=REPORTS[currentId].fields[i];return missionUsable()&&f&&f.key==='unit'&&!!formData.unit&&!forceUnitEdit;}
 function startReport(id,opts){
@@ -946,6 +980,8 @@ function rLabel(r){return r.type==='custom'?(r.label||'KITA'):RTYPES[r.type].lab
 function typeColor(t){return REPORTS[t]?REPORTS[t].color:(t==='check'?'var(--amber)':'var(--orange)');}
 function fieldOpts(f){
   if(f.opts===UNITS&&missionUsable())return mission.units.map(function(u){return L(u.callsign?(u.callsign+' · '+u.name):u.name,u.name);});
+  if(f.codes&&missionUsable()&&mission.codewords&&mission.codewords.length)
+    return (f.opts||[]).concat(mission.codewords.map(function(c){return L((c.event?c.event+' ▸ ':'')+c.word,c.word);}));
   return f.opts;
 }
 
@@ -1009,8 +1045,9 @@ function renderHomeMission(){
     else if(mission.status==='planned')sub='PARUOŠTA · spausk ir pradėk';else sub='BAIGTA · žurnalas';
     h='<button class="rep-btn bl-green" data-act="hm-open"><div class="rep-icon ic-green">M</div><div class="rep-text"><div class="rep-code" style="color:var(--green)">'+esc(mission.name||'MISIJA')+'</div><div class="rep-desc">'+sub+'</div></div><div class="rep-arrow">›</div></button>';
   }
+  h+='<button class="rep-btn" data-act="hm-imp" style="padding:12px 16px"><div class="rep-icon ic-amber" style="width:42px;height:42px;font-size:18px">📥</div><div class="rep-text"><div class="rep-code" style="font-size:15px;color:var(--amber)">IMPORTUOTI MISIJĄ</div><div class="rep-desc">iš failo (.json) · duomenys lieka tik telefone</div></div></button>';
   el.innerHTML=h;
-  el.querySelectorAll('[data-act]').forEach(function(b){b.onclick=function(){if(b.dataset.act==='hm-new')openSetup(true);else goTo('mission');};});
+  el.querySelectorAll('[data-act]').forEach(function(b){b.onclick=function(){const a=b.dataset.act;if(a==='hm-new')openSetup(true);else if(a==='hm-imp')pickImportFile();else goTo('mission');};});
 }
 
 /* ───── misijos ekranas ───── */
@@ -1026,6 +1063,9 @@ function renderMission(){
   if(st==='active')h+='<div class="m-elapsed" id="mi-elapsed">T+'+fmtHMS(now-mission.startedAt)+'</div>';
   if(st==='ended'&&mission.endedAt)h+='<div class="m-sub">Trukmė: '+fmtHMS(mission.endedAt-mission.startedAt)+'</div>';
   h+='</div>';
+  const an0=authNow(now);
+  if(st!=='ended'&&mission.auth&&mission.auth.length)h+='<button class="mcard auth-card" data-act="ref"><div class="row-between"><div><div class="el-title" style="margin:0">🔑 SKAIČIŲ SUMA</div><div class="m-sub" data-authlbl>'+(an0?esc(authLabel(an0)):'šiuo metu sumos nėra')+'</div></div><div class="auth-sum" data-authsum>'+(an0?esc(an0.sum):'—')+'</div></div></button>';
+  if((mission.roster&&mission.roster.length)||(mission.codewords&&mission.codewords.length)||(mission.reference&&mission.reference.length)||(mission.signals&&mission.signals.length))h+='<div class="m-row"><button class="m-btn" data-act="ref">📖 ŽINYNAS · šaukiniai, kodai, atpažinimas</button></div>';
 
   if(st==='planned'){
     h+='<button class="m-big go" data-act="start">▶ PRADĖTI MISIJĄ</button>';
@@ -1090,6 +1130,7 @@ function arm(k){armed[k]=true;renderMission();setTimeout(function(){armed[k]=fal
 function missionAct(a,v,ev){
   if(a==='start'){mission.status='active';mission.startedAt=nowMs();mission.endedAt=null;mission.log=[];saveMission();lastSig='';renderMission();}
   else if(a==='edit')openSetup(false);
+  else if(a==='ref')goTo('ref');
   else if(a==='del'){if(!armed.del){arm('del');return;}armed.del=false;mission=null;saveMission();goTo('select');}
   else if(a==='end'){if(!armed.end){arm('end');return;}armed.end=false;mission.status='ended';mission.endedAt=nowMs();saveMission();lastSig='';renderMission();}
   else if(a==='newm')openSetup(true);
@@ -1120,10 +1161,103 @@ function logText(){
 }
 
 /* ───── nustatymų ekranas ───── */
+/* ───── misijos importas / eksportas (duomenys lieka tik telefone) ───── */
+let importOpen=false,pendingImport=null,lastAuthKey='';
+function cut(v,max){return String(v==null?'':v).slice(0,max||200);}
+function parseLocal(str){
+  const m=String(str||'').match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})$/);
+  return m?new Date(+m[1],+m[2]-1,+m[3],+m[4],+m[5]).getTime():null;
+}
+function authNow(now){
+  const a=(mission&&mission.auth)||[];
+  for(let i=0;i<a.length;i++){const f=parseLocal(a[i].from),t=parseLocal(a[i].to);if(f!=null&&t!=null&&now>=f&&now<t)return a[i];}
+  return null;
+}
+function authLabel(a){
+  const toS=(a.to.slice(11)==='00:00'&&a.to.slice(0,10)!==a.from.slice(0,10))?'24:00':a.to.slice(11);
+  return a.from.slice(8,10)+' d. '+a.from.slice(11)+'–'+toS;
+}
+function normalizeMission(raw){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('Failas nėra misijos duomenys');
+  const arr=function(a,n){return Array.isArray(a)?a.slice(0,n):[];};
+  const units=arr(raw.units,30).map(function(u){u=u||{};return {name:cut(u.name,40).trim().toUpperCase(),callsign:cut(u.callsign,40).trim(),phone:cut(u.phone,40).trim()};}).filter(function(u){return u.name;});
+  if(!units.length)throw new Error('Misijoje nėra nė vieno skyriaus („units“)');
+  const meN=cut(raw.me,40).trim().toUpperCase(),hq=(raw.hq&&typeof raw.hq==='object')?raw.hq:{};
+  const rin=arr(raw.routines,10).length?arr(raw.routines,10):[{type:'sitrep',every:180,first:180,on:true}];
+  return {
+    id:uid(),name:cut(raw.name,80).trim()||'Misija',status:'planned',createdAt:nowMs(),startedAt:null,endedAt:null,
+    me:units.some(function(u){return u.name===meN;})?meN:units[0].name,units:units,
+    hq:{callsign:cut(hq.callsign,40).trim(),freq:cut(hq.freq,40).trim(),phones:cut(hq.phones,200).trim(),signal:cut(hq.signal,300).trim()},
+    routines:rin.map(function(r){r=r||{};const ev=Math.max(1,parseInt(r.every,10)||180);return {id:uid(),type:RTYPES[r.type]?r.type:'custom',label:cut(r.label,60),every:ev,first:r.first==null?ev:Math.max(0,parseInt(r.first,10)||0),on:r.on!==false};}),
+    notes:cut(raw.notes,3000),msgNo:0,log:[],
+    roster:arr(raw.roster,300).map(function(r){r=r||{};return {unit:cut(r.unit,40).trim().toUpperCase(),callsign:cut(r.callsign,40).trim(),role:cut(r.role,60).trim()};}).filter(function(r){return r.callsign;}),
+    codewords:arr(raw.codewords,60).map(function(c){c=c||{};return {event:cut(c.event,60).trim(),word:cut(c.word,40).trim()};}).filter(function(c){return c.word;}),
+    auth:arr(raw.auth,60).map(function(a){a=a||{};return {from:cut(a.from,20),to:cut(a.to,20),sum:Number(a.sum)};}).filter(function(a){return parseLocal(a.from)!=null&&parseLocal(a.to)!=null&&isFinite(a.sum);}),
+    signals:arr(raw.signals,20).map(function(s){s=s||{};return {label:cut(s.label,40),ask:cut(s.ask,200),reply:cut(s.reply,200)};}),
+    reference:arr(raw.reference,30).map(function(x){x=x||{};return {title:cut(x.title,80),text:cut(x.text,4000)};}).filter(function(x){return x.title||x.text;})
+  };
+}
+function importText(text){
+  let raw;
+  try{raw=JSON.parse(String(text||'').replace(/^\uFEFF/,''));}catch(e){throw new Error('Tekstas nėra teisingas JSON');}
+  return normalizeMission(raw);
+}
+function setSetupMsg(t,html){const el=document.getElementById('setup-msg');if(html)el.innerHTML=t;else el.textContent=t;}
+function applyImport(m){mission=m;saveMission();lastSig='';pendingImport=null;importOpen=false;goTo('mission');}
+function tryImport(text){
+  let m;
+  try{m=importText(text);}catch(e){openSetup(!mission);setSetupMsg('⚠ '+e.message);return;}
+  if(mission&&mission.status!=='ended'){pendingImport=m;openSetup(false);setSetupMsg('Esama misija „'+esc(mission.name)+'“ bus pakeista. <button class="m-btn sm danger" data-sm="imp-confirm">PAKEISTI</button>',true);return;}
+  applyImport(m);
+}
+function pickImportFile(){document.getElementById('imp-file').click();}
+function exportJson(){
+  const m=mission;if(!m)return '';
+  return JSON.stringify({format:'kernius-rodozer-mission-v1',name:m.name,me:m.me,units:m.units,hq:m.hq,
+    routines:m.routines.map(function(r){return {type:r.type,label:r.label,every:r.every,first:r.first,on:r.on};}),
+    notes:m.notes,roster:m.roster||[],codewords:m.codewords||[],auth:m.auth||[],signals:m.signals||[],reference:m.reference||[]},null,1);
+}
+function exportMission(){
+  const t=exportJson();if(!t)return;
+  try{const file=new File([t],'misija.json',{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[file]})){navigator.share({files:[file],title:'Misija'}).catch(function(){});return;}}catch(e){}
+  copyText(t);
+}
+
+/* ───── žinynas: atpažinimas, šaukiniai, kodiniai žodžiai, nuorodos ───── */
+function renderRef(){
+  const root=document.getElementById('ref-body');if(!root)return;
+  if(!mission){root.innerHTML='<div class="mcard">Misijos nėra.</div>';return;}
+  const m=mission,now=nowMs(),an=authNow(now);let h='';
+  if((m.auth&&m.auth.length)||(m.signals&&m.signals.length)){
+    h+='<details class="rf" open><summary>🔑 ATPAŽINIMAS</summary><div class="rf-b">';
+    if(m.auth&&m.auth.length){
+      h+='<div class="rf-big" data-authsum>'+(an?esc(an.sum):'—')+'</div><div class="rf-sub" data-authlbl>'+(an?'SKAIČIŲ SUMA · '+esc(authLabel(an)):'ŠIUO METU GALIOJANČIOS SUMOS NĖRA')+'</div>'+
+        '<div class="el-lbl" style="margin-top:14px">IŠŠŪKIS → ATSAKYMAS (suma − iššūkis)</div><div class="el-row"><input class="el-in" id="rf-ch" type="number" inputmode="numeric" placeholder="iššūkio skaičius"><div class="rf-ans" id="rf-ans">—</div></div>'+
+        '<div class="m-sub" style="margin-top:4px">Pagalbinė skaičiuoklė – patikrink, ar taip taikote savo tvarką.</div>'+
+        '<table class="rf-t">'+m.auth.map(function(r){return '<tr class="'+(an===r?'cur':'')+'"><td>'+esc(authLabel(r))+'</td><td>'+esc(r.sum)+'</td></tr>';}).join('')+'</table>';
+    }
+    (m.signals||[]).forEach(function(s){h+='<div class="rf-sig"><b>'+esc(s.label)+'</b><div>Užklausimas: '+esc(s.ask)+'</div><div>Atsakymas: '+esc(s.reply)+'</div></div>';});
+    h+='</div></details>';
+  }
+  if(m.roster&&m.roster.length){
+    const g={},order=[];m.roster.forEach(function(r){const k=r.unit||'—';if(!g[k]){g[k]=[];order.push(k);}g[k].push(r);});
+    h+='<details class="rf"><summary>📻 ŠAUKINIAI</summary><div class="rf-b">';
+    order.forEach(function(u){h+='<div class="rf-g'+(u===m.me?' me':'')+'">'+esc(u)+(u===m.me?' · MANO':'')+'</div>'+g[u].map(function(r){return '<div class="rf-row"><span>'+esc(r.callsign)+'</span><span>'+esc(r.role)+'</span></div>';}).join('');});
+    h+='</div></details>';
+  }
+  if(m.codewords&&m.codewords.length){
+    h+='<details class="rf"><summary>🗝 KODINIAI ŽODŽIAI</summary><div class="rf-b">'+m.codewords.map(function(c){return '<div class="rf-row rf-cw"><span>'+esc(c.event)+'</span><span>'+esc(c.word)+'</span></div>';}).join('')+'</div></details>';
+  }
+  (m.reference||[]).forEach(function(x){h+='<details class="rf"><summary>'+esc(x.title)+'</summary><div class="rf-b rf-text">'+esc(x.text)+'</div></details>';});
+  root.innerHTML=h||'<div class="mcard">Žinyno duomenų nėra. Importuok misiją: ⚙ → 📥.</div>';
+  const ch=document.getElementById('rf-ch');
+  if(ch)ch.oninput=function(){const v=parseFloat(ch.value),ans=document.getElementById('rf-ans');ans.textContent=(!an||isNaN(v)||an.sum-v<0)?'—':String(an.sum-v);};
+}
+
 function defaultMission(){
   return {id:uid(),name:'',status:'planned',createdAt:nowMs(),startedAt:null,endedAt:null,me:'ALPHA',
     units:PRESET_UNITS.map(function(n){return {name:n,callsign:'',phone:''};}),
-    hq:{callsign:'',freq:'',phones:'',signal:''},routines:[{id:uid(),type:'sitrep',label:'',every:180,first:180,on:true}],notes:'',msgNo:0,log:[]};
+    hq:{callsign:'',freq:'',phones:'',signal:''},routines:[{id:uid(),type:'sitrep',label:'',every:180,first:180,on:true}],notes:'',msgNo:0,log:[],roster:[],codewords:[],auth:[],signals:[],reference:[]};
 }
 function openSetup(isNew){
   draftNew=!!isNew||!mission;
@@ -1136,7 +1270,8 @@ function renderSetup(){
   const root=document.getElementById('setup-body'),sc=root.scrollTop,d=draft;
   const have=function(n){return d.units.some(function(u){return u.name===n;});};
   const chips=function(arr,sel,act,extra,cols,cls){return '<div class="opts-grid '+cols+'" style="padding:0;gap:6px">'+arr.map(function(x){return '<button class="opt-btn '+(cls||'')+(sel(x)?' selected':'')+'" style="color:var(--green)" data-act="'+act+'" data-v="'+esc(x)+'"'+(extra||'')+'>'+esc(x)+'</button>';}).join('')+'</div>';};
-  let h='<div class="mcard"><div class="el-title">MISIJA</div><div class="el-lbl">PAVADINIMAS</div><input class="el-in" data-bind="name" placeholder="pvz. Pratybos ŠILAS" value="'+esc(d.name)+'">'+'</div>';
+  let h='<div class="mcard"><div class="el-title">📥 IMPORTAS / EKSPORTAS</div><div class="m-sub" style="margin:0 0 10px">Misijos duomenys (šaukiniai, kodai, slaptažodžiai) įkeliami iš failo ir lieka <b style="color:var(--text)">tik šiame telefone</b>.</div><div class="m-row" style="margin:0"><button class="m-btn" data-act="imp-file">📥 IŠ FAILO</button><button class="m-btn" data-act="imp-paste">📋 ĮKLIJUOTI</button>'+(mission?'<button class="m-btn" data-act="exp">📤 EKSPORTAS</button>':'')+'</div>'+(importOpen?'<textarea class="free-input" id="imp-text" rows="5" style="margin-top:10px" placeholder="Įklijuok misijos JSON…"></textarea><button class="m-btn" style="width:100%;margin-top:8px" data-act="imp-go">IMPORTUOTI</button>':'')+'</div>';
+  h+='<div class="mcard"><div class="el-title">MISIJA</div><div class="el-lbl">PAVADINIMAS</div><input class="el-in" data-bind="name" placeholder="pvz. Pratybos ŠILAS" value="'+esc(d.name)+'">'+'</div>';
 
   h+='<div class="mcard"><div class="el-title">DALYVAUJANTYS SKYRIAI</div>'+
     '<div class="opts-grid cols3" style="padding:0;gap:6px">'+PRESET_UNITS.map(function(n){return '<button class="opt-btn sm'+(have(n)?' selected':'')+'" style="color:var(--green)" data-act="utog" data-v="'+n+'">'+n+'</button>';}).join('')+'</div>'+
@@ -1190,6 +1325,10 @@ function setupAct(a,v,rid){
   else if(a==='rdel'&&r)d.routines=d.routines.filter(function(x){return x.id!==rid;});
   else if(a==='radd')d.routines.push({id:uid(),type:'sitrep',label:'',every:60,first:60,on:true});
   else if(a==='cancel'){goTo(mission?'mission':'select');return;}
+  else if(a==='imp-file'){pickImportFile();return;}
+  else if(a==='imp-paste'){importOpen=!importOpen;}
+  else if(a==='imp-go'){const el=document.getElementById('imp-text');tryImport(el?el.value:'');return;}
+  else if(a==='exp'){exportMission();return;}
   renderSetup();
 }
 function saveSetup(){
@@ -1205,6 +1344,10 @@ document.addEventListener('visibilitychange',function(){if(document.visibilitySt
 function missionTick(){
   const now=nowMs();
   document.querySelectorAll('[data-cd]').forEach(function(el){el.textContent=fmtCd(parseInt(el.dataset.cd,10)-now);});
+  if(mission&&mission.auth&&mission.auth.length){
+    const an=authNow(now),key=an?an.from:'';
+    if(key!==lastAuthKey){lastAuthKey=key;if(curScreen==='mission')renderMission();else if(curScreen==='ref')renderRef();}
+  }
   if(!mission||mission.status!=='active')return;
   const el=document.getElementById('mi-elapsed');
   if(el)el.textContent='T+'+fmtHMS(now-mission.startedAt);
@@ -1237,6 +1380,14 @@ loadMission();
 document.getElementById('setup-back').onclick=function(){setupAct('cancel');};
 document.getElementById('setup-cancel').onclick=function(){setupAct('cancel');};
 document.getElementById('setup-save').onclick=saveSetup;
+document.getElementById('setup-msg').onclick=function(e){if(e.target&&e.target.dataset&&e.target.dataset.sm==='imp-confirm'&&pendingImport)applyImport(pendingImport);};
+document.getElementById('imp-file').onchange=function(ev){
+  const f=ev.target.files&&ev.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=function(){tryImport(String(r.result||''));};
+  r.onerror=function(){openSetup(!mission);setSetupMsg('⚠ Nepavyko perskaityti failo');};
+  r.readAsText(f);ev.target.value='';
+};
 renderHomeMission();
 setInterval(missionTick,1000);
 
