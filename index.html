@@ -442,11 +442,11 @@ const REPORTS={
       {key:'time',letter:'⏱',label:'DTG (DATA-LAIKAS)',hint:'pvz. 081030BLAP26',opts:['DABAR'],free:true},
       {key:'unit',letter:'◈',label:'MANO VIENETAS',hint:'',opts:UNITS,free:false,cols:2},
       {key:'pos',letter:'◎',label:'MANO VIETA (GPS)',hint:'',type:'mypos',opts:[],free:false},
-      {key:'dir',letter:'K',label:'KRYPTIS IR ATSTUMAS',hint:'',type:'dirdist',dd:{dirKey:'dir',distKey:'dist',gridKey:'eloc'},sum:['dir','dist'],opts:[],free:false},
+      {key:'dir',letter:'K',label:'KRYPTIS IR ATSTUMAS',hint:'',type:'dirdist',dd:{dirKey:'dir',distKey:'dist'},sum:['dir','dist'],opts:[],free:false},
       {key:'desc',letter:'A',label:'APRAŠYMAS',hint:'pvz. 4 pėstininkai, auto. ugnis',opts:['Pėstininkai','Auto. ugnis','Snaiperis','Transportas','Neaiški ugnis','Iš pastato','Iš miškelio'],free:true,cols:2,area:true},
       {key:'action',letter:'▶',label:'MŪSŲ VEIKSMAS',hint:'',opts:['KOVOJAME','TRAUKIAMĖS','GYNYBOJE','PERSIGRUPUOJAME'],free:false,cols:2}
     ],
-    build:(f,d)=>Hd('CONTACTREP',f,f.time||d)+opt('MANO VIETA',f.pos)+req('KRYPTIS',f.dir)+req('ATSTUMAS',f.dist)+opt('PRIEŠO VIETA',f.eloc)+req('PRIEŠAS',f.desc)+req('VEIKSMAS',f.action)+'\nPABAIGA.'
+    build:(f,d)=>Hd('CONTACTREP',f,f.time||d)+opt('MANO VIETA',f.pos)+req('KRYPTIS',f.dir)+req('ATSTUMAS',f.dist)+req('PRIEŠAS',f.desc)+req('VEIKSMAS',f.action)+'\nPABAIGA.'
   },
   salta:{title:'SALTA',sub:'KONTAKTAS · SALTA FORMA',color:'var(--amber)',
     fields:[
@@ -457,7 +457,7 @@ const REPORTS={
       {key:'size',letter:'S',label:'SIZE · PRIEŠO DYDIS',hint:'pvz. ~6 pėstininkų',opts:['1–2','3–5','6–10','10+','Su transportu','Su šarvuočiu'],free:true,cols:3},
       {key:'activity',letter:'A',label:'ACTIVITY · PRIEŠO VEIKSMAI',hint:'',opts:['Šaudo','Juda į priekį','Gynyboje','Stovi','Traukiasi','Stebi','Neaiški'],free:true,cols:2},
       {key:'pos',letter:'◎',label:'MANO VIETA (GPS)',hint:'',type:'mypos',opts:[],free:false},
-      {key:'loc',letter:'L',label:'LOCATION · PRIEŠO VIETA',hint:'arba įvesk ranka (MGRS)',type:'dirdist',dd:{locKey:'loc'},opts:[],free:true},
+      {key:'loc',letter:'L',label:'LOCATION · PRIEŠO VIETA (kryptis ir atstumas nuo manęs)',hint:'',type:'dirdist',dd:{locKey:'loc'},opts:[],free:false},
       {key:'actions',letter:'A',label:'ACTIONS TAKEN · MŪSŲ VEIKSMAI (atlikti ir planuojami)',legend:'Kodiniai žodžiai (jei misijoje yra) – sąrašo apačioje',hint:'',opts:['Atsakome ugnimi','Gynyboje','Atitrūkstame','Manevruojame','Laukiame įsakymų','Šaukiame MEDEVAC'],free:true,cols:2,multi:true,area:true,codes:true},
       {key:'end',letter:'✓',label:'PABAIGA · BDA · PASTABOS',type:'matrix',rows:[
         {key:'tclose',label:'TIC UŽDARYMAS (kontakto nutraukimo laikas)',chips:['NEBAIGTAS','DABAR'],input:true,hint:''},
@@ -596,7 +596,7 @@ function compassStart(onHeading,onNeedPermission){
   }else attach();
 }
 
-/* ═════ MANO VIETA: GPS paimamas iškart atidarius žingsnį ir pats atidaro kitą ═════ */
+/* ═════ MANO VIETA: GPS paimamas iškart atidarius žingsnį; toliau – tik paspaudus TOLIAU ═════ */
 let geoHook=null;
 function advanceSoon(ms){
   const rep=currentId,st=currentStep;
@@ -611,8 +611,7 @@ function buildMyPos(card,updateVal,f){
   card.appendChild(box);
   const $=function(s){return box.querySelector(s);};
   const valEl=$('#mp-val'),accEl=$('#mp-acc'),warnEl=$('#mp-warn'),inEl=$('#mp-in');
-  const had=!!formData[f.key],stepAt=currentStep,repAt=currentId;
-  let done=false;
+  const had=!!formData[f.key];
   function paint(){const v=formData[f.key]||'';valEl.textContent=v||'—';valEl.style.color=v?'var(--green)':'var(--muted)';}
   function take(auto){
     valEl.textContent='⏳ Nustatoma…';valEl.style.color='var(--muted)';warnEl.textContent='';
@@ -623,7 +622,6 @@ function buildMyPos(card,updateVal,f){
       formData[f.key]=m;updateVal(m);paint();
       accEl.textContent='±'+Math.round(p.coords.accuracy)+' m';
       if(geoHook)geoHook();
-      if(auto&&!done){done=true;if(curScreen==='form'&&currentStep===stepAt&&currentId===repAt)advanceSoon(700);}
     },function(){
       valEl.textContent='—';valEl.style.color='var(--muted)';
       warnEl.textContent='⚠ GPS nepavyko (leidimas? uždengta?) – bandyk ↻, įvesk ranka arba spausk TOLIAU';
@@ -640,7 +638,7 @@ function buildMyPos(card,updateVal,f){
    Naudojamas visur, kur reikia nurodyti kryptį ir atstumą (CONTACTREP, SALUTO, ...).
    cfg: {dirKey}  -> rašo „279° VAKARAI“
         {distKey} -> rašo „300m“
-        {locKey}  -> rašo priešo MGRS pagal GPS + azimutą + atstumą (rodo ir „Mano vieta“) */
+        {locKey}  -> rašo „279° MAG VAKARAI, 300m“ (kryptis ir atstumas nuo mano vietos; priešo koordinačių neskaičiuojame) */
 const CARD8=['ŠIAURĖ','ŠIAURĖS RYTAI','RYTAI','PIETŲ RYTAI','PIETŪS','PIETŲ VAKARAI','VAKARAI','ŠIAURĖS VAKARAI'];
 function cardinal(az){return CARD8[Math.round((((az%360)+360)%360)/45)%8];}
 let azMode='mag';
@@ -660,7 +658,7 @@ function buildDirDist(card,updateVal,cfg,primary){
      '<div class="el-row"><div class="el-headwrap wide"><div class="el-heading" id="dd-head">---°</div><div class="el-name" id="dd-name">&nbsp;</div><div class="el-acc" id="dd-acc"></div></div>'+
      '<button class="el-big lock narrow" id="dd-lock">🎯 FIKSUOTI</button></div>'+
      '<button class="el-big" id="dd-perm" style="display:none;margin-top:8px;width:100%">🧭 ĮJUNGTI KOMPASĄ</button>'+
-     '<div class="el-hint" style="margin:6px 0 0">Telefonas horizontaliai, viršutinis kraštas į priešą'+(grid?' <button class="el-link" id="dd-manual">✎ MGRS ranka</button>':'')+'</div>'+
+     '<div class="el-hint" style="margin:6px 0 0">Telefonas horizontaliai, viršutinis kraštas į priešą'+'</div>'+
      '<div class="el-warn" id="dd-warn"></div></div>'+
    '<div class="el-sec"><div class="el-todo" id="dd-todo"></div><div class="el-grid3">'+
      '<div><div class="el-lbl">AZIMUTAS °</div><input class="el-in" id="dd-az" type="number" inputmode="numeric" min="0" max="359" placeholder="0–359"></div>'+
@@ -671,13 +669,11 @@ function buildDirDist(card,updateVal,cfg,primary){
   card.appendChild(box);
   const $=function(s){return box.querySelector(s);};
   const magBtn=$('#dd-mag'),geoBtn=$('#dd-geo');
-  const posEl=$('#dd-pos'),headEl=$('#dd-head'),nameEl=$('#dd-name'),accEl=$('#dd-acc'),permBtn=$('#dd-perm'),lockBtn=$('#dd-lock'),warnEl=$('#dd-warn'),azIn=$('#dd-az'),declIn=$('#dd-decl'),distIn=$('#dd-dist'),cardEl=$('#dd-card'),chipsEl=$('#dd-chips'),manualBtn=$('#dd-manual'),todoEl=$('#dd-todo');
+  const posEl=$('#dd-pos'),headEl=$('#dd-head'),nameEl=$('#dd-name'),accEl=$('#dd-acc'),permBtn=$('#dd-perm'),lockBtn=$('#dd-lock'),warnEl=$('#dd-warn'),azIn=$('#dd-az'),declIn=$('#dd-decl'),distIn=$('#dd-dist'),cardEl=$('#dd-card'),chipsEl=$('#dd-chips'),todoEl=$('#dd-todo');
   azIn.value=dd.az==null?'':dd.az;declIn.value=dd.decl;distIn.value=dd.dist==null?'':dd.dist;
   if(dd.az!=null)lockBtn.textContent='✓ '+dd.az+'° '+modeTag();
   let magH=null,sx=null,sy=null,seen=false,lastDraw=0;
 
-  function manualWrap(){return card.querySelector('.free-input-wrap');}
-  function showManual(on){const w=manualWrap();if(w)w.style.display=on?'block':'none';}
   function showLive(){
     if(magH==null){headEl.textContent=dd.az!=null?dd.az+'°':'---°';nameEl.textContent=dd.az!=null?cardinal(dd.az):'\u00a0';return;}
     const a=Math.round(((azMode==='mag'?magH:magH+dd.decl)+360)%360)%360;
@@ -692,15 +688,8 @@ function buildDirDist(card,updateVal,cfg,primary){
     const hasAz=dd.az!=null,hasD=dd.dist>0;
     if(cfg.dirKey)formData[cfg.dirKey]=hasAz?bearingText(dd.az):'';
     if(cfg.distKey)formData[cfg.distKey]=hasD?dd.dist+'m':'';
-    if(cfg.gridKey)formData[cfg.gridKey]=(hasAz&&hasD&&geo.lat!=null)?(function(){const q=destPoint(geo.lat,geo.lon,toTrue(dd.az),dd.dist);return mgrsFmt(q[0],q[1],4);})():'';
     if(cfg.locKey){
-      let val='';
-      if(hasAz&&hasD){
-        if(geo.lat!=null){const p=destPoint(geo.lat,geo.lon,toTrue(dd.az),dd.dist);val=mgrsFmt(p[0],p[1],4)+' ('+bearingText(dd.az)+', '+dd.dist+'m)';}
-        else val=bearingText(dd.az)+', '+dd.dist+'m';
-      }else if(hasAz)val=bearingText(dd.az);
-      formData[cfg.locKey]=val;
-      const fi=card.querySelector('.free-input');if(fi)fi.value=val;
+      formData[cfg.locKey]=hasAz?(hasD?bearingText(dd.az)+', '+dd.dist+'m':bearingText(dd.az)):'';
     }
     updateVal(formData[primary]||'');
     refreshChips();paintTodo();
@@ -763,12 +752,10 @@ function buildDirDist(card,updateVal,cfg,primary){
     if(magH==null){warnEl.textContent='⚠ Dar nėra kompaso rodmens – pasirink kryptį mygtukais arba įvesk azimutą';return;}
     setAz(Math.round(((azMode==='mag'?magH:magH+dd.decl)+360)%360)%360);
   };
-  if(manualBtn)manualBtn.onclick=function(){const w=manualWrap();showManual(!w||w.style.display==='none');};
   permBtn.onclick=startC;
   magBtn.onclick=function(){setMode('mag');};geoBtn.onclick=function(){setMode('geo');};paintMode();
   paintTodo();showLive();paintPos();geoHook=onGeo;startC();
   setTimeout(function(){
-    if(grid&&geo.lat==null)showManual(true);
     if(geo.lat!=null&&!inLT(geo.lat,geo.lon))warnEl.textContent='⚠ Už Lietuvos ribų – patikrink deklinaciją';
   },0);
 }
