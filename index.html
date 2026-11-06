@@ -197,6 +197,16 @@ body{position:relative}
 #night-overlay{display:none;position:absolute;top:0;left:0;width:100%;height:100%;background-image:linear-gradient(#cc0000,#cc0000);mix-blend-mode:multiply;pointer-events:none;z-index:99999}
 body.night #night-overlay{display:block}
 body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
+.mx-box{padding:4px 14px 10px}
+.mx-row{padding:7px 0;border-top:1px solid var(--border)}
+.mx-row:first-child{border-top:none}
+.mx-lbl{font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:4px}
+.mx-chips{display:flex;flex-wrap:wrap;gap:6px}
+.mx-chips .opt-btn{min-height:38px;flex:1 1 auto;padding:6px 10px;font-size:12px}
+.mx-in{margin-top:6px;min-height:46px;padding:10px 12px;font-size:15px}
+.seg{display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;flex-shrink:0}
+.seg button{background:#252525;color:var(--muted);border:0;padding:8px 12px;font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:2px;cursor:pointer}
+.seg button.on{background:var(--green);color:#000}
 </style>
 <script>
 // Lightweight WGS84 -> MGRS conversion
@@ -261,11 +271,11 @@ body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
   <div class="report-list">
     <div id="home-mission"></div>
     <button class="rep-btn bl-red" onclick="startReport('contactrep')"><div class="rep-icon ic-red">!</div><div class="rep-text"><div class="rep-code" style="color:var(--red)">CONTACTREP</div><div class="rep-desc">Kontaktas su priešu · pirmoji sekundė<br>Kryptis (kompasas) · Atstumas · Aprašymas</div></div><div class="rep-arrow">›</div></button>
-    <button class="rep-btn bl-amber" onclick="startReport('saluto')"><div class="rep-icon ic-amber">S</div><div class="rep-text"><div class="rep-code" style="color:var(--amber)">SALUTO</div><div class="rep-desc">Priešo stebėjimas · žvalgyba<br>Dydis · Veikla · Vieta (kompasas) · Įranga</div></div><div class="rep-arrow">›</div></button>
+    <button class="rep-btn bl-amber" onclick="startReport('salta')"><div class="rep-icon ic-amber">S</div><div class="rep-text"><div class="rep-code" style="color:var(--amber)">SALTA</div><div class="rep-desc">Kontaktas · TIC · SALTA forma<br>Dydis · Veiksmai · Vieta (kompasas) · BDA</div></div><div class="rep-arrow">›</div></button>
     <button class="rep-btn bl-green" onclick="startReport('lace')"><div class="rep-icon ic-green">L</div><div class="rep-text"><div class="rep-code" style="color:var(--green)">LACE</div><div class="rep-desc">Savų resursai · po susirėmimo<br>Vanduo · Šaudmenys · Aukos · Įranga</div></div><div class="rep-arrow">›</div></button>
-    <button class="rep-btn bl-pink" onclick="startReport('medevac')"><div class="rep-icon ic-pink">✚</div><div class="rep-text"><div class="rep-code" style="color:var(--pink)">MEDEVAC</div><div class="rep-desc">Medicininė evakuacija · 9 eilutės<br>Naudok kai yra sužeistų</div></div><div class="rep-arrow">›</div></button>
+    <button class="rep-btn bl-pink" onclick="startReport('medevac')"><div class="rep-icon ic-pink">✚</div><div class="rep-text"><div class="rep-code" style="color:var(--pink)">MEDEVAC</div><div class="rep-desc">Medicininės pagalbos iškvietimas · 9 eilutės<br>Naudok kai yra sužeistų</div></div><div class="rep-arrow">›</div></button>
     <button class="rep-btn bl-orange" onclick="startReport('mist')"><div class="rep-icon ic-orange">M</div><div class="rep-text"><div class="rep-code" style="color:var(--orange)">MIST</div><div class="rep-desc">Sužeistojo perdavimas<br>Mechanizmas · Sužeidimai · Požymiai · Gydymas</div></div><div class="rep-arrow">›</div></button>
-    <button class="rep-btn bl-blue" onclick="startReport('sitrep')"><div class="rep-icon ic-blue">≡</div><div class="rep-text"><div class="rep-code" style="color:var(--blue)">SITREP</div><div class="rep-desc">Situacijos ataskaita · periodiškai<br>Vieta · Nuveikta · Planas · Poreikiai</div></div><div class="rep-arrow">›</div></button>
+    <button class="rep-btn bl-blue" onclick="startReport('sitrep')"><div class="rep-icon ic-blue">≡</div><div class="rep-text"><div class="rep-code" style="color:var(--blue)">SITREP</div><div class="rep-desc">Patrulio situacijos pranešimas · A–G<br>Vieta · Veiksmai · Planas · LOG</div></div><div class="rep-arrow">›</div></button>
   </div>
 </div>
 
@@ -327,10 +337,10 @@ body.night{--green:#ff3b30;--blue:#ff7a6b;--muted:#c06a60}
 <script>
 /* ───────── pagalbinės ───────── */
 const UNITS=['ALPHA','BRAVO','CHARLIE','DELTA','ECHO','FOXTROT'];
-const MON=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const MON=['SAU','VAS','KOV','BAL','GEG','BIR','LIE','RGP','RGS','SPA','LAP','GRU'];   /* lietuviški mėnesių sutrumpinimai kaip OPORD (pvz. 080900BLAP26) */
 function pad(n){return (n<10?'0':'')+n;}
 
-/* DTG pagal NATO: DDHHMM + laiko juostos raidė + MMM YY (pvz. 181315C OCT 26) */
+/* DTG kaip OPORD: DDHHMM + laiko juostos raidė + LT mėnuo + YY (pvz. 080900BLAP26) */
 function dtgNow(){return dtgOf(new Date(nowMs()));}
 function dtgOf(d){
   const offMin=-d.getTimezoneOffset();
@@ -342,7 +352,7 @@ function dtgOf(d){
   }else{
     L='Z';Y=d.getUTCFullYear();Mo=d.getUTCMonth();D=d.getUTCDate();h=d.getUTCHours();mi=d.getUTCMinutes();
   }
-  return pad(D)+pad(h)+pad(mi)+L+' '+MON[Mo]+' '+pad(Y%100);
+  return pad(D)+pad(h)+pad(mi)+L+MON[Mo]+pad(Y%100);
 }
 
 /* magnetinė deklinacija Lietuvai (WMM2025, epocha 2026.8), bilinijinė interpoliacija */
@@ -354,6 +364,20 @@ function declAt(lat,lon){
   const a=V[y0][x0]*(1-tx)+V[y0][x1]*tx,b=V[y1][x0]*(1-tx)+V[y1][x1]*tx;
   return Math.round((a*(1-ty)+b*ty)*10)/10;
 }
+function mgrsFmt(lat,lon,prec){
+  const s=latLonToMGRS(lat,lon,prec),m=s.match(/^(\d{1,2}[A-Z][A-Z]{2})(\d+)$/);
+  if(!m)return s;const h=m[2].length/2;return m[1]+' '+m[2].slice(0,h)+' '+m[2].slice(h);
+}
+/* pranešimo antraštė: misijos metu pridedama NR / NUO / KAM (kaip UVG formose) */
+function Hd(title,f,dtg){
+  if(missionUsable()){
+    const n=(mission.msgNo||0)+1;
+    return title+' NR '+n+' · NUO '+uT(f.unit)+(mission.hq&&mission.hq.callsign?' · KAM '+mission.hq.callsign:'')+(dtg?' · '+dtg:'');
+  }
+  return title+(f.unit?' · '+uT(f.unit):'')+(dtg?' · '+dtg:'');
+}
+function opt(label,v){return v?'\n'+label+': '+v:'';}
+function req(label,v){return '\n'+label+': '+(v||'?');}
 function inLT(lat,lon){return lat>=53.3&&lat<=57.1&&lon>=20.3&&lon<=27.5;}
 
 /* taško paieška pagal tikrąjį azimutą ir atstumą (metrais) */
@@ -380,25 +404,32 @@ const L=(label,value)=>({label:label,value:value});
 const REPORTS={
   contactrep:{title:'CONTACTREP',sub:'KONTAKTAS · 3D',color:'var(--red)',
     fields:[
-      {key:'time',letter:'⏱',label:'DTG (DATA-LAIKAS)',hint:'pvz. 181315C OCT 26',opts:['DABAR'],free:true},
+      {key:'time',letter:'⏱',label:'DTG (DATA-LAIKAS)',hint:'pvz. 081030BLAP26',opts:['DABAR'],free:true},
       {key:'unit',letter:'◈',label:'MANO VIENETAS',hint:'',opts:UNITS,free:false,cols:2},
       {key:'dir',letter:'K',label:'KRYPTIS IR ATSTUMAS',hint:'',type:'dirdist',dd:{dirKey:'dir',distKey:'dist'},sum:['dir','dist'],opts:[],free:false},
       {key:'desc',letter:'A',label:'APRAŠYMAS',hint:'pvz. 4 pėstininkai, auto. ugnis',opts:['Pėstininkai','Auto. ugnis','Snaiperis','Transportas','Neaiški ugnis','Iš pastato','Iš miškelio'],free:true,cols:2,area:true},
       {key:'action',letter:'▶',label:'MŪSŲ VEIKSMAS',hint:'',opts:['KOVOJAME','TRAUKIAMĖS','GYNYBOJE','PERSIGRUPUOJAME'],free:false,cols:2}
     ],
-    build:(f,d)=>'CONTACTREP · '+(f.time||d)+' · '+uT(f.unit)+'\nKRYPTIS: '+(f.dir||'?')+'\nATSTUMAS: '+(f.dist||'?')+'\nPRIEŠAS: '+(f.desc||'?')+'\nVEIKSMAS: '+(f.action||'?')+'\nPABAIGA.'
+    build:(f,d)=>Hd('CONTACTREP',f,f.time||d)+req('KRYPTIS',f.dir)+req('ATSTUMAS',f.dist)+req('PRIEŠAS',f.desc)+req('VEIKSMAS',f.action)+'\nPABAIGA.'
   },
-  saluto:{title:'SALUTO',sub:'PRIEŠO ŽVALGYBA',color:'var(--amber)',
+  salta:{title:'SALTA',sub:'KONTAKTAS · SALTA FORMA',color:'var(--amber)',
     fields:[
-      {key:'time',letter:'⏱',label:'DTG (STEBĖJIMO LAIKAS)',hint:'pvz. 181315C OCT 26',opts:['DABAR'],free:true},
-      {key:'unit',letter:'◈',label:'VIENETAS',hint:'',opts:UNITS,free:false,cols:2},
-      {key:'size',letter:'S',label:'DYDIS',hint:'',opts:['1–2','3–5','6–10','10+','Su transportu','Su šarvuočiu'],free:true,cols:3},
-      {key:'activity',letter:'A',label:'VEIKLA',hint:'',opts:['Juda į priekį','Gynyboje','Stovi','Traukiasi','Stato blokpostą','Neaiški'],free:true,cols:2},
-      {key:'loc',letter:'L',label:'VIETA (PRIEŠO)',hint:'arba įvesk ranka (MGRS)',type:'dirdist',dd:{locKey:'loc'},opts:[],free:true},
-      {key:'equip',letter:'E',label:'ĮRANGA / GINKLAI',hint:'',opts:['AK','PKM','SVD','RPG','UAZ','Šarvuotis','Nematyta'],free:true,cols:3,multi:true},
-      {key:'unit_e',letter:'U',label:'PADALINYS',hint:'',opts:['Nežinoma','Be ženklų','Su uniforma','Civiliai'],free:false,cols:2}
+      {key:'tl',letter:'⏱',label:'LAIKAI',type:'matrix',init:{tic:'@DTG',etime:'@TIC'},rows:[
+        {key:'tic',label:'TIC ATIDARYMAS (kada prasidėjo kontaktas)',chips:['DABAR'],input:true,hint:'pvz. 081030BLAP26'},
+        {key:'etime',label:'PRIEŠO VEIKSMŲ LAIKAS',chips:['KAIP TIC','DABAR'],input:true,hint:''}]},
+      {key:'unit',letter:'◈',label:'MANO VIENETAS',hint:'',opts:UNITS,free:false,cols:2},
+      {key:'size',letter:'S',label:'SIZE · PRIEŠO DYDIS',hint:'pvz. ~6 pėstininkų',opts:['1–2','3–5','6–10','10+','Su transportu','Su šarvuočiu'],free:true,cols:3},
+      {key:'activity',letter:'A',label:'ACTIVITY · PRIEŠO VEIKSMAI',hint:'',opts:['Šaudo','Juda į priekį','Gynyboje','Stovi','Traukiasi','Stebi','Neaiški'],free:true,cols:2},
+      {key:'loc',letter:'L',label:'LOCATION · PRIEŠO VIETA',hint:'arba įvesk ranka (MGRS)',type:'dirdist',dd:{locKey:'loc'},opts:[],free:true},
+      {key:'actions',letter:'A',label:'ACTIONS TAKEN · MŪSŲ VEIKSMAI (atlikti ir planuojami)',hint:'',opts:['Atsakome ugnimi','Gynyboje','Atitrūkstame','Manevruojame','Laukiame įsakymų','Šaukiame MEDEVAC'],free:true,cols:2,multi:true,area:true},
+      {key:'end',letter:'✓',label:'PABAIGA · BDA · PASTABOS',type:'matrix',rows:[
+        {key:'tclose',label:'TIC UŽDARYMAS (kontakto nutraukimo laikas)',chips:['NEBAIGTAS','DABAR'],input:true,hint:''},
+        {key:'ff',label:'BDA · FF (savi nuostoliai)',chips:['0','1','2','3','4+']},
+        {key:'ef',label:'BDA · EF (priešo nuostoliai)',chips:['0','1','2','3','4+']},
+        {key:'civ',label:'BDA · CIV (civiliai)',chips:['0','1','2','3','4+']},
+        {key:'remarks',label:'PASTABOS / PAPILDOMA INFORMACIJA',chips:[],input:true,hint:''}]}
     ],
-    build:(f,d)=>'SALUTO · '+(f.time||d)+' · '+uT(f.unit)+'\nDYDIS: '+(f.size||'?')+'\nVEIKLA: '+(f.activity||'?')+'\nVIETA: '+(f.loc||'?')+'\nPADALINYS: '+(f.unit_e||'nežinoma')+'\nĮRANGA: '+(f.equip||'?')+'\nPABAIGA.'
+    build:(f,d)=>Hd('SALTA',f,'')+'\nTIC OPEN: '+(f.tic||d)+req('SIZE',f.size)+req('ACTIVITY',f.activity)+req('LOCATION',f.loc)+'\nTIME: '+(f.etime||f.tic||d)+req('ACTIONS TAKEN',f.actions)+opt('TIC CLOSED',f.tclose)+((f.ff||f.ef||f.civ)?'\nBDA: FF '+(f.ff||'?')+' · EF '+(f.ef||'?')+' · CIV '+(f.civ||'?'):'')+opt('REMARKS',f.remarks)+'\nPABAIGA.'
   },
   lace:{title:'LACE',sub:'RESURSŲ ATASKAITA',color:'var(--green)',
     fields:[
@@ -408,22 +439,23 @@ const REPORTS={
       {key:'casualties',letter:'C',label:'AUKOS (TRIAŽAS)',legend:'T1 neatidėliotinas · T2 atidėtinas · T3 lengvas · T4 beviltiškas',hint:'pvz. 1xT1 2xT3',opts:['NĖRA','1xT1','2xT1','1xT2','2xT2','1xT3','2xT3','1xT4'],free:true,cols:3,multi:true},
       {key:'equip',letter:'E',label:'ĮRANGA',hint:'',opts:['Visa veikianti','Radijas LIMA','PNV sugadintas','Transportas out','Kita'],free:true,cols:2}
     ],
-    build:(f,d)=>'LACE · '+uT(f.unit)+' · '+d+'\nL – VANDUO: '+(f.liquid||'?')+'\nA – ŠAUDMENYS: '+(f.ammo||'?')+'\nC – AUKOS: '+(f.casualties||'?')+'\nE – ĮRANGA: '+(f.equip||'?')+'\nPABAIGA.'
+    build:(f,d)=>Hd('LACE',f,d)+'\nL – VANDUO: '+(f.liquid||'?')+'\nA – ŠAUDMENYS: '+(f.ammo||'?')+'\nC – AUKOS: '+(f.casualties||'?')+'\nE – ĮRANGA: '+(f.equip||'?')+'\nPABAIGA.'
   },
-  medevac:{title:'MEDEVAC',sub:'EVAKUACIJA · 9 EILUTĖS',color:'var(--pink)',
+  medevac:{title:'MEDEVAC',sub:'MEDICININĖS PAGALBOS IŠKVIETIMAS',color:'var(--pink)',
     fields:[
-      {key:'unit',letter:'◈',label:'VIENETAS (ŠAUKINYS)',hint:'',opts:UNITS,free:false,cols:2},
-      {key:'l1',letter:'1',label:'L1 · VIETA (MGRS)',hint:'pvz. 35ULA8910661342',opts:[],free:true,gps:true},
-      {key:'l2',letter:'2',label:'L2 · DAŽNIS, ŠAUKINYS, PRIEDAS',hint:'pvz. 46.250 / ALPHA',opts:[],free:true},
-      {key:'l3',letter:'3',label:'L3 · PACIENTAI PAGAL PIRMENYBĘ',legend:'A skubus · B skubus chirurginis · C pirmumo · D įprastas · E patogumo',hint:'pvz. 1xA 2xC',opts:['1xA','2xA','1xB','1xC','2xC','1xD'],free:true,cols:3,multi:true},
-      {key:'l4',letter:'4',label:'L4 · SPECIALI ĮRANGA',legend:'Gali būti keli pasirinkimai',hint:'',opts:[L('A · nereikia','A'),L('B · keltuvas','B'),L('C · ištraukimo įranga','C'),L('D · ventiliatorius','D')],free:true,cols:2,multi:true},
-      {key:'l5',letter:'5',label:'L5 · PACIENTAI PAGAL TIPĄ',legend:'L neštuvai · A vaikšto',hint:'pvz. 1xL 1xA',opts:['1xL','2xL','3xL','1xA','2xA','3xA'],free:true,cols:3,multi:true},
-      {key:'l6',letter:'6',label:'L6 · SAUGUMAS PAĖMIMO VIETOJE',hint:'',opts:[L('N · priešo nėra','N'),L('P · galimas priešas','P'),L('E · priešas rajone, atsargiai','E'),L('X · priešas rajone, reikia ginkluotos palydos','X')],free:false,cols:1},
-      {key:'l7',letter:'7',label:'L7 · PAĖMIMO VIETOS ŽYMĖJIMAS',hint:'',opts:[L('A · panelės','A'),L('B · pirotechnika','B'),L('C · dūmai','C'),L('D · nieko','D'),L('E · kita','E')],free:false,cols:2},
-      {key:'l8',letter:'8',label:'L8 · PACIENTO TAUTYBĖ IR STATUSAS',hint:'',opts:[L('A · sąjungininkų karys','A'),L('B · sąjungininkų civilis','B'),L('C · ne sąjungininkų saugumo pajėgos','C'),L('D · ne sąjungininkų civilis','D'),L('E · priešo pajėgos','E')],free:false,cols:1},
-      {key:'l9',letter:'9',label:'L9 · CBRN UŽTERŠTUMAS',legend:'Taikos metu čia rašomas paėmimo vietos reljefas',hint:'pvz. atvira pieva',opts:[L('Nėra','NĖRA'),L('N · branduolinis','N'),L('B · biologinis','B'),L('C · cheminis','C')],free:true,cols:2}
+      {key:'unit',letter:'◈',label:'VIENETAS (NUO KO)',hint:'',opts:UNITS,free:false,cols:2},
+      {key:'l1',letter:'1',label:'1 · SUŽEISTŲJŲ VIETOS KOORDINATĖS',hint:'pvz. 34UEG 29624 65905',opts:[],free:true,gps:true},
+      {key:'l2',letter:'2',label:'2 · RADIJO DAŽNIS (surinkimo vietoje), ŠAUKINYS, SLAPTAŽODIS',hint:'pvz. 46.250 / ŽALTYS / slaptažodis',opts:[],free:true},
+      {key:'l3',letter:'3',label:'3 · PACIENTAI PAGAL SUŽEIDIMO LAIPSNĮ',legend:'A neatidėliotini · B neatidėliotini-chirurginiai · C skubūs · D įprastinės evakuacijos · E evakuojami pagal galimybes',hint:'pvz. 1xA 2xC',opts:['1xA','2xA','1xB','1xC','2xC','1xD','1xE'],free:true,cols:3,multi:true},
+      {key:'l4',letter:'4',label:'4 · REIKALINGA SPEC. ĮRANGA',legend:'Gali būti keli pasirinkimai',hint:'',opts:[L('A · nereikalinga','A'),L('B · keltuvai','B'),L('C · neštuvai','C'),L('D · dirbtinis plaučių ventiliavimas','D')],free:true,cols:2,multi:true},
+      {key:'l5',letter:'5',label:'5 · SUŽEISTŲJŲ SKAIČIUS PAGAL TIPĄ',legend:'N gulintys (neštuvuose) · A ambulatoriniai (sėdintys)',hint:'pvz. 1xN 1xA',opts:['1xN','2xN','3xN','1xA','2xA','3xA'],free:true,cols:3,multi:true},
+      {key:'l6',letter:'6',label:'6 · SURINKIMO VIETOS SAUGUMAS',hint:'',opts:[L('N · rajone priešo nėra','N'),L('G · priešas gali būti rajone','G'),L('P · priešas rajone','P'),L('X · priešas rajone (reikalinga ginkluota palyda)','X')],free:false,cols:1},
+      {key:'l7',letter:'7',label:'7 · SURINKIMO PUNKTO ŽYMĖJIMO BŪDAI',hint:'',opts:[L('A · spalvotas ženklas','A'),L('B · pirotechnika','B'),L('C · dūmų signalai','C'),L('D · nieko','D'),L('E · kiti būdai','E')],free:false,cols:2},
+      {key:'l8',letter:'8',label:'8 · PACIENTŲ TAUTYBĖ IR STATUSAS',hint:'',opts:[L('A · LT karys','A'),L('B · LT civilis','B'),L('C · ne LT karys','C'),L('D · ne LT civilis','D'),L('E · priešo karys (belaisvis)','E')],free:false,cols:1},
+      {key:'l9',letter:'9',label:'9 · MNG SITUACIJA IR TERITORIJOS UŽTERŠTUMAS',hint:'',opts:[L('A · atominis','A'),L('B · biologinis','B'),L('C · cheminis','C'),L('D · nėra','D')],free:true,cols:2,multi:true},
+      {key:'rem',letter:'✎',label:'PASTABOS (nebūtina)',hint:'pvz. sužeidimai, kodinis žodis',opts:[],free:true,area:true}
     ],
-    build:(f,d)=>'MEDEVAC · '+uT(f.unit)+' · '+d+'\nL1: '+(f.l1||'?')+'\nL2: '+(f.l2||'?')+'\nL3: '+(f.l3||'?')+'\nL4: '+(f.l4||'?')+'\nL5: '+(f.l5||'?')+'\nL6: '+(f.l6||'?')+'\nL7: '+(f.l7||'?')+'\nL8: '+(f.l8||'?')+'\nL9: '+(f.l9||'?')+'\nPABAIGA.'
+    build:(f,d)=>Hd('MEDEVAC',f,d)+req('1',f.l1)+req('2',f.l2)+req('3',f.l3)+req('4',f.l4)+req('5',f.l5)+req('6',f.l6)+req('7',f.l7)+req('8',f.l8)+req('9',f.l9)+opt('PASTABOS',f.rem)+'\nPABAIGA.'
   },
   mist:{title:'MIST',sub:'SUŽEISTOJO PERDAVIMAS',color:'var(--orange)',
     fields:[
@@ -434,21 +466,31 @@ const REPORTS={
       {key:'s',letter:'S',label:'POŽYMIAI (BŪKLĖ)',legend:'A sąmoningas · V reaguoja į balsą · P į skausmą · U nereaguoja',hint:'pvz. pulsas 110, kvėpavimas 24',opts:['A','V','P','U','Kvėpuoja','Nekvėpuoja','Pulsas yra','Pulso nėra','Stiprus kraujavimas'],free:true,cols:3,multi:true},
       {key:'t',letter:'T',label:'GYDYMAS (KAS PADARYTA)',hint:'pvz. žnyplė dešinė koja 1315',opts:['Žnyplė','Spaudžiamasis tvarstis','Hemostatinis tvarstis','Kvėpavimo takų atvėrimas','Krūtinės plėvelė','Skysčiai','Nuskausminimas','Šildymas','Imobilizacija'],free:true,cols:2,multi:true}
     ],
-    build:(f,d)=>'MIST · '+uT(f.unit)+' · '+d+'\nPACIENTAS: '+(f.pt||'?')+'\nM: '+(f.m||'?')+'\nI: '+(f.i||'?')+'\nS: '+(f.s||'?')+'\nT: '+(f.t||'?')+'\nPABAIGA.'
+    build:(f,d)=>Hd('MIST',f,d)+req('PACIENTAS',f.pt)+req('M',f.m)+req('I',f.i)+req('S',f.s)+req('T',f.t)+'\nPABAIGA.'
   },
-  sitrep:{title:'SITREP',sub:'SITUACIJOS ATASKAITA',color:'var(--blue)',
+  sitrep:{title:'SITREP',sub:'PATRULIO SITUACIJOS PRANEŠIMAS',color:'var(--blue)',
     fields:[
-      {key:'unit',letter:'◈',label:'VIENETAS',hint:'',opts:UNITS,free:false,cols:2},
-      {key:'loc',letter:'L',label:'DABARTINĖ VIETA (MGRS)',hint:'koordinatės / orientyras',opts:[],free:true,gps:true},
-      {key:'strength',letter:'S',label:'SUDĖTIS',hint:'',opts:['Pilna, be nuostolių','1 sužeistas','2 sužeisti','Didelis nuostolis'],free:true,cols:2},
-      {key:'done',letter:'N',label:'NUVEIKTA',hint:'kas atlikta',opts:['Užėmėme objektą','Neutralizavome priešą','Patruliavome','Pasiruošėme gynybai'],free:true,cols:2,area:true},
-      {key:'enemy',letter:'P',label:'PRIEŠO VEIKLA',hint:'',opts:['Nesimato','Traukiasi','Puola','Gynyboje','Neaiški'],free:false,cols:2},
-      {key:'plan',letter:'T',label:'TOLIMESNIS PLANAS',hint:'',opts:['Laikome poziciją','Judame į RV','Persigrupuojame','Laukiame įsakymų'],free:true,cols:2},
-      {key:'needs',letter:'R',label:'POREIKIAI',hint:'',opts:['Nėra','Šaudmenys','Mediko','Transporto','Evakuacijos'],free:false,cols:2}
+      {key:'unit',letter:'◈',label:'VIENETAS (NUO KO)',hint:'',opts:UNITS,free:false,cols:2},
+      {key:'b',letter:'B',label:'B · DABARTINĖ VIETA, KOORDINATĖS',hint:'pvz. 34UEG 29624 65905',opts:[],free:true,gps:true},
+      {key:'c',letter:'C',label:'C · ATLIKTI VEIKSMAI (po paskutinio raporto)',hint:'',opts:['Judėjome pagal maršrutą','Pasiekėme kontrolinį tašką','Stebėjome','Užėmėme poziciją','Kontakto nebuvo','Buvo kontaktas (SALTA)'],free:true,cols:2,multi:true,area:true},
+      {key:'dpl',letter:'D',label:'D · PLANUOJAMI VEIKSMAI',type:'matrix',rows:[
+        {key:'d1',label:'D1 · 12 VAL. Į PRIEKĮ',chips:['Laikome poziciją','Judame pagal maršrutą','Atliekame užduotį','Laukiame įsakymų'],input:true,hint:''},
+        {key:'d2',label:'D2 · 24 VAL. Į PRIEKĮ',chips:['Laikome poziciją','Judame pagal maršrutą','Atliekame užduotį','Laukiame įsakymų'],input:true,hint:''}]},
+      {key:'log',letter:'E',label:'E · LOG SITUACIJA',type:'matrix',rows:[
+        {key:'e1',label:'E1 · MAISTAS',chips:['100%','75%','50%','25%','0%']},
+        {key:'e2',label:'E2 · VANDUO',chips:['100%','75%','50%','25%','0%']},
+        {key:'e3',label:'E3 · ŠAUDMENYS',chips:['100%','75%','50%','25%','0%']},
+        {key:'e4',label:'E4 · SPROGMENYS',chips:['100%','75%','50%','25%','0%']},
+        {key:'e5',label:'E5 · GINKLAI',chips:['Visi veikia','Yra gedimų','Prarasta']},
+        {key:'e6',label:'E6 · ASMENINĖ SUDĖTIS',chips:['Visi','Yra sužeistų','Yra nuostolių'],input:true,hint:'pvz. 8/9'},
+        {key:'e7',label:'E7 · KITA',chips:[],input:true,hint:''}]},
+      {key:'f',letter:'F',label:'F · PAŽEIDIMAI, GEDIMAI',hint:'',opts:['Nėra','Ryšio įranga','Transportas','Ginklai','Optika / NVG','Sužeidimai'],free:true,cols:2,multi:true},
+      {key:'g',letter:'G',label:'G · KITA INFORMACIJA',hint:'',opts:[],free:true,area:true}
     ],
-    build:(f,d)=>'SITREP · '+uT(f.unit)+' · '+d+'\nLOC: '+(f.loc||'?')+'\nSUDĖTIS: '+(f.strength||'?')+'\nNUVEIKTA: '+(f.done||'?')+'\nPRIEŠAS: '+(f.enemy||'?')+'\nPLANAS: '+(f.plan||'?')+'\nPOREIKIAI: '+(f.needs||'?')+'\nPABAIGA.'
+    build:(f,d)=>Hd('SITREP',f,'')+'\nA: '+d+req('B',f.b)+req('C',f.c)+req('D1',f.d1)+req('D2',f.d2)+req('E1 MAISTAS',f.e1)+req('E2 VANDUO',f.e2)+req('E3 ŠAUDMENYS',f.e3)+req('E4 SPROGMENYS',f.e4)+req('E5 GINKLAI',f.e5)+req('E6 ASM. SUDĖTIS',f.e6)+opt('E7 KITA',f.e7)+req('F',f.f)+opt('G',f.g)+'\nPABAIGA.'
   }
 };
+REPORTS.saluto=REPORTS.salta;   /* senų žurnalo įrašų suderinamumas */
 
 /* ───────── būsena ───────── */
 let currentId=null,currentStep=0,formData={},accentColor='var(--green)';
@@ -472,6 +514,7 @@ function startReport(id,opts){
   document.getElementById('form-title').textContent=r.title;
   document.getElementById('form-sub').textContent=r.sub+(missionUsable()?' · '+unitText(mission.me):'');
   if(r.fields.some(f=>f.key==='time'))formData.time=dtgNow();
+  r.fields.forEach(function(f){if(f.init)for(const k in f.init){const v=f.init[k];formData[k]=v==='@DTG'?dtgNow():(v==='@TIC'?(formData.tic||dtgNow()):v);}});
   if(missionUsable()){
     formData.unit=mission.me;
     if(id==='medevac'&&mission.hq&&mission.hq.freq)formData.l2=mission.hq.freq+' / '+unitText(mission.me);
@@ -522,7 +565,11 @@ function compassStart(onHeading,onNeedPermission){
         {locKey}  -> rašo priešo MGRS pagal GPS + azimutą + atstumą (rodo ir „Mano vieta“) */
 const CARD8=['ŠIAURĖ','ŠIAURĖS RYTAI','RYTAI','PIETŲ RYTAI','PIETŪS','PIETŲ VAKARAI','VAKARAI','ŠIAURĖS VAKARAI'];
 function cardinal(az){return CARD8[Math.round((((az%360)+360)%360)/45)%8];}
-function bearingText(az){return az+'° '+cardinal(az);}
+let azMode='mag';
+try{azMode=localStorage.getItem('kr_azmode')==='geo'?'geo':'mag';}catch(e){}
+function modeTag(){return azMode==='mag'?'MAG':'GEO';}
+function toTrue(az){return azMode==='mag'?(az+dd.decl+360)%360:az;}
+function bearingText(az){return az+'° '+modeTag()+' '+cardinal(az);}
 function buildDirDist(card,updateVal,cfg,primary){
   cfg=cfg||{};
   const grid=!!cfg.locKey;
@@ -530,7 +577,7 @@ function buildDirDist(card,updateVal,cfg,primary){
   const box=document.createElement('div');box.className='el-box';
   box.innerHTML=
    (grid?'<div class="el-sec"><div class="el-row"><div class="el-title" style="margin:0">MANO VIETA</div><div class="el-status" id="dd-gps">⏳ GPS…</div><button class="el-mini" id="dd-gps-btn">↻</button></div></div>':'')+
-   '<div class="el-sec"><div class="el-title">KRYPTIS Į PRIEŠĄ</div>'+
+   '<div class="el-sec"><div class="el-row" style="margin-bottom:8px"><div class="el-title" style="margin:0;flex:1">KRYPTIS Į PRIEŠĄ</div><div class="seg"><button id="dd-mag">MAG</button><button id="dd-geo">GEO</button></div></div>'+
      '<div class="el-row"><div class="el-headwrap wide"><div class="el-heading" id="dd-head">---°</div><div class="el-name" id="dd-name">&nbsp;</div><div class="el-acc" id="dd-acc"></div></div>'+
      '<button class="el-big lock narrow" id="dd-lock">🎯 FIKSUOTI</button></div>'+
      '<button class="el-big" id="dd-perm" style="display:none;margin-top:8px;width:100%">🧭 ĮJUNGTI KOMPASĄ</button>'+
@@ -544,16 +591,17 @@ function buildDirDist(card,updateVal,cfg,primary){
      '<div class="opts-grid cols4 el-chips" id="dd-chips" style="padding-top:6px"></div></div>';
   card.appendChild(box);
   const $=function(s){return box.querySelector(s);};
+  const magBtn=$('#dd-mag'),geoBtn=$('#dd-geo');
   const gpsSt=$('#dd-gps'),gpsBtn=$('#dd-gps-btn'),headEl=$('#dd-head'),nameEl=$('#dd-name'),accEl=$('#dd-acc'),permBtn=$('#dd-perm'),lockBtn=$('#dd-lock'),warnEl=$('#dd-warn'),azIn=$('#dd-az'),declIn=$('#dd-decl'),distIn=$('#dd-dist'),cardEl=$('#dd-card'),chipsEl=$('#dd-chips'),manualBtn=$('#dd-manual');
   azIn.value=dd.az==null?'':dd.az;declIn.value=dd.decl;distIn.value=dd.dist==null?'':dd.dist;
-  if(dd.az!=null)lockBtn.textContent='✓ '+bearingText(dd.az);
+  if(dd.az!=null)lockBtn.textContent='✓ '+dd.az+'° '+modeTag();
   let magH=null,sx=null,sy=null,seen=false,lastDraw=0;
 
   function manualWrap(){return card.querySelector('.free-input-wrap');}
   function showManual(on){const w=manualWrap();if(w)w.style.display=on?'block':'none';}
   function showLive(){
     if(magH==null){headEl.textContent=dd.az!=null?dd.az+'°':'---°';nameEl.textContent=dd.az!=null?cardinal(dd.az):'\u00a0';return;}
-    const a=Math.round((magH+dd.decl+360)%360)%360;
+    const a=Math.round(((azMode==='mag'?magH:magH+dd.decl)+360)%360)%360;
     headEl.textContent=a+'°';nameEl.textContent=cardinal(a);
   }
   function refreshChips(){
@@ -567,7 +615,7 @@ function buildDirDist(card,updateVal,cfg,primary){
     if(cfg.locKey){
       let val='';
       if(hasAz&&hasD){
-        if(geo.lat!=null){const p=destPoint(geo.lat,geo.lon,dd.az,dd.dist);val=latLonToMGRS(p[0],p[1],4)+' ('+bearingText(dd.az)+', '+dd.dist+'m)';}
+        if(geo.lat!=null){const p=destPoint(geo.lat,geo.lon,toTrue(dd.az),dd.dist);val=mgrsFmt(p[0],p[1],4)+' ('+bearingText(dd.az)+', '+dd.dist+'m)';}
         else val=bearingText(dd.az)+', '+dd.dist+'m';
       }else if(hasAz)val=bearingText(dd.az);
       formData[cfg.locKey]=val;
@@ -576,13 +624,23 @@ function buildDirDist(card,updateVal,cfg,primary){
     updateVal(formData[primary]||'');
     refreshChips();
   }
-  function setAz(a){dd.az=a;azIn.value=a==null?'':a;if(a!=null)lockBtn.textContent='✓ '+bearingText(a);commit();}
+  function paintMode(){magBtn.classList.toggle('on',azMode==='mag');geoBtn.classList.toggle('on',azMode==='geo');}
+  function setAz(a){dd.az=a;azIn.value=a==null?'':a;if(a!=null)lockBtn.textContent='✓ '+a+'° '+modeTag();commit();}
+  function setMode(m){
+    if(m===azMode)return;
+    const tr=dd.az==null?null:toTrue(dd.az);
+    azMode=m;try{localStorage.setItem('kr_azmode',m);}catch(e){}
+    dd.az=tr==null?null:(Math.round(azMode==='mag'?(tr-dd.decl+360)%360:tr)%360);
+    azIn.value=dd.az==null?'':dd.az;paintMode();
+    if(dd.az!=null)lockBtn.textContent='✓ '+dd.az+'° '+modeTag();
+    showLive();commit();
+  }
   function gpsGo(){
     if(gpsSt)gpsSt.textContent='⏳ GPS…';
     if(!navigator.geolocation){if(gpsSt){gpsSt.textContent='⚠ GPS nepasiekiamas';showManual(true);}return;}
     navigator.geolocation.getCurrentPosition(function(p){
       geo.lat=p.coords.latitude;geo.lon=p.coords.longitude;
-      if(gpsSt)gpsSt.textContent='✓ '+latLonToMGRS(geo.lat,geo.lon,5);
+      if(gpsSt)gpsSt.textContent='✓ '+mgrsFmt(geo.lat,geo.lon,5);
       if(inLT(geo.lat,geo.lon)){dd.decl=declAt(geo.lat,geo.lon);warnEl.textContent='';}
       else warnEl.textContent='⚠ Už Lietuvos ribų – patikrink deklinaciją';
       declIn.value=dd.decl;showLive();commit();
@@ -594,7 +652,7 @@ function buildDirDist(card,updateVal,cfg,primary){
     if(sx==null){sx=Math.sin(r);sy=Math.cos(r);}else{sx=sx*0.85+Math.sin(r)*0.15;sy=sy*0.85+Math.cos(r)*0.15;}
     magH=(Math.atan2(sx,sy)*180/Math.PI+360)%360;
     const now=Date.now();
-    if(now-lastDraw>100){lastDraw=now;showLive();accEl.textContent=acc!=null?'±'+Math.round(acc)+'°':'';}
+    if(now-lastDraw>100){lastDraw=now;showLive();accEl.textContent=(acc!=null?'±'+Math.round(acc)+'° · ':'')+(azMode==='mag'?'MAGNETINIS':'GEOGRAFINIS');}
   }
   function startC(){
     permBtn.style.display='none';seen=false;sx=null;sy=null;
@@ -622,16 +680,59 @@ function buildDirDist(card,updateVal,cfg,primary){
   declIn.oninput=function(){const v=parseFloat(declIn.value);dd.decl=isNaN(v)?0:v;showLive();};
   lockBtn.onclick=function(){
     if(magH==null){warnEl.textContent='⚠ Dar nėra kompaso rodmens – pasirink kryptį mygtukais arba įvesk azimutą';return;}
-    setAz(Math.round((magH+dd.decl+360)%360)%360);
+    setAz(Math.round(((azMode==='mag'?magH:magH+dd.decl)+360)%360)%360);
   };
   if(manualBtn)manualBtn.onclick=function(){const w=manualWrap();showManual(!w||w.style.display==='none');};
   permBtn.onclick=startC;
   if(gpsBtn)gpsBtn.onclick=gpsGo;
+  magBtn.onclick=function(){setMode('mag');};geoBtn.onclick=function(){setMode('geo');};paintMode();
   showLive();gpsGo();startC();
 }
 
+/* ═════ MATRICA: keli laukai viename žingsnyje (kiekviena eilutė – mygtukai ir/arba tekstas) ═════ */
+function buildMatrix(card,updateVal,f){
+  const box=document.createElement('div');box.className='mx-box';
+  f.rows.forEach(function(row){
+    const wrap=document.createElement('div');wrap.className='mx-row';
+    const lb=document.createElement('div');lb.className='mx-lbl';lb.textContent=row.label;wrap.appendChild(lb);
+    const btns=[];let inp=null;
+    function paint(){
+      const v=formData[row.key]||'';
+      btns.forEach(function(c){c.b.classList.toggle('selected',row.multi?v.split(', ').indexOf(c.v)>=0:v===c.v);});
+      if(inp&&document.activeElement!==inp)inp.value=v;
+      updateVal(formData[f.key]||'');
+    }
+    if(row.chips&&row.chips.length){
+      const cw=document.createElement('div');cw.className='mx-chips';
+      row.chips.forEach(function(ch){
+        const b=document.createElement('button');b.className='opt-btn';b.style.color=accentColor;b.textContent=ch;
+        b.onclick=function(){
+          const cur=formData[row.key]||'';
+          if(ch==='DABAR'){formData[row.key]=dtgNow();}
+          else if(ch==='KAIP TIC'){formData[row.key]=formData.tic||dtgNow();}
+          else if(row.multi){const a=cur.split(', ').filter(Boolean),ix=a.indexOf(ch);if(ix>=0)a.splice(ix,1);else a.push(ch);formData[row.key]=a.join(', ');}
+          else formData[row.key]=(cur===ch)?'':ch;
+          paint();
+        };
+        btns.push({b:b,v:ch});cw.appendChild(b);
+      });
+      wrap.appendChild(cw);
+    }
+    if(row.input){
+      inp=document.createElement('input');inp.type='text';inp.className='free-input mx-in';inp.placeholder=row.hint||'';
+      inp.oninput=function(){formData[row.key]=inp.value;btns.forEach(function(c){const v=inp.value;c.b.classList.toggle('selected',row.multi?v.split(', ').indexOf(c.v)>=0:v===c.v);});updateVal(formData[f.key]||'');};
+      wrap.appendChild(inp);
+    }
+    box.appendChild(wrap);paint();
+  });
+  card.appendChild(box);
+}
+
 /* ───────── žingsnių piešimas ───────── */
-function fieldValue(fd){return fd.sum?fd.sum.map(function(k){return formData[k];}).filter(Boolean).join(' · '):formData[fd.key];}
+function fieldValue(fd){
+  if(fd.type==='matrix')return fd.rows.map(function(r){return formData[r.key];}).filter(Boolean).join(' · ');
+  return fd.sum?fd.sum.map(function(k){return formData[k];}).filter(Boolean).join(' · '):formData[fd.key];
+}
 
 function renderStep(){
   stopCompass();
@@ -688,6 +789,8 @@ function renderStep(){
 
   if(f.type==='dirdist'){
     buildDirDist(card,updateVal,f.dd,f.key);
+  }else if(f.type==='matrix'){
+    buildMatrix(card,updateVal,f);
   }else{
     if(f.gps){
       const gb=document.createElement('button');gb.className='gps-btn';gb.textContent='📍 GAUTI GPS KOORDINATES (MGRS)';
@@ -696,7 +799,7 @@ function renderStep(){
         gb.textContent='⏳ NUSTATOMA…';gb.classList.add('loading');msg.textContent='';
         if(!navigator.geolocation){gb.classList.remove('loading');gb.textContent='📍 BANDYTI DAR KARTĄ';msg.textContent='⚠ GPS nepasiekiamas – įvesk MGRS ranka.';return;}
         navigator.geolocation.getCurrentPosition(function(p){
-          const mg=latLonToMGRS(p.coords.latitude,p.coords.longitude,5);
+          const mg=mgrsFmt(p.coords.latitude,p.coords.longitude,5);
           updateVal(mg);const fi=card.querySelector('.free-input');if(fi)fi.value=mg;
           gb.className='gps-btn success';gb.textContent='✓ '+mg;
         },function(){
@@ -883,6 +986,7 @@ function logMessage(){
   if(lastLogged===text)return;lastLogged=text;
   const ts=nowMs();
   mission.log.push({id:uid(),ts:ts,kind:'msg',type:currentId,unit:formData.unit||mission.me,text:text,routineKey:routineKeyCtx||matchRoutine(currentId,ts)||null});
+  mission.msgNo=(mission.msgNo||0)+1;
   saveMission();lastSig='';
 }
 function goRoutine(key){
@@ -941,7 +1045,7 @@ function renderMission(){
         '<button class="nx-go" data-act="go" data-v="'+nx.key+'">'+(rep?'RENGTI '+esc(rLabel(nx.r))+' ›':'✓ PADARYTA')+'</button></div>';
     }else h+='<div class="mcard"><div class="m-sub">Rutinų nėra – pridėk per ⚙ REDAGUOTI.</div></div>';
 
-    h+='<div class="mcard"><div class="el-title">GREITI PRANEŠIMAI</div><div class="qgrid">'+['contactrep','saluto','lace','medevac','mist','sitrep'].map(function(id){return '<button class="qbtn" style="color:'+REPORTS[id].color+'" data-act="q" data-v="'+id+'">'+REPORTS[id].title+'</button>';}).join('')+'</div></div>';
+    h+='<div class="mcard"><div class="el-title">GREITI PRANEŠIMAI</div><div class="qgrid">'+['contactrep','salta','lace','medevac','mist','sitrep'].map(function(id){return '<button class="qbtn" style="color:'+REPORTS[id].color+'" data-act="q" data-v="'+id+'">'+REPORTS[id].title+'</button>';}).join('')+'</div></div>';
 
     /* laiko juosta: ateities rutinos, DABAR, praeitis (naujausia viršuje) */
     const rows=[];
@@ -1019,7 +1123,7 @@ function logText(){
 function defaultMission(){
   return {id:uid(),name:'',status:'planned',createdAt:nowMs(),startedAt:null,endedAt:null,me:'ALPHA',
     units:PRESET_UNITS.map(function(n){return {name:n,callsign:'',phone:''};}),
-    hq:{callsign:'',freq:'',phones:'',signal:''},routines:[{id:uid(),type:'sitrep',label:'',every:60,first:60,on:true}],notes:'',log:[]};
+    hq:{callsign:'',freq:'',phones:'',signal:''},routines:[{id:uid(),type:'sitrep',label:'',every:180,first:180,on:true}],notes:'',msgNo:0,log:[]};
 }
 function openSetup(isNew){
   draftNew=!!isNew||!mission;
